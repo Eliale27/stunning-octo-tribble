@@ -39,6 +39,16 @@ Montagem final: cada beat = clipe + narração; quando a narração excede o
 clipe, o último quadro do clipe é congelado até o fim da fala; os três
 segmentos são concatenados em `atc-voice-doc.mp4` (1280×720, H.264 + AAC).
 
+## Filme final
+
+**31,6 s · 1280×720 · 9,5 MB**
+
+https://d2ol7oe51mr4n9.cloudfront.net/user_3GuV0bQEGHjGktfruhC28a4m0mx/af45d309-cd9a-423c-8c38-13c1c2c99b55.mp4
+
+Segmentos: beat 1 = 13,0 s (clipe 9 s + congelamento de 3,9 s) ·
+beat 2 = 9,5 s · beat 3 = 9,0 s. Media ID Higgsfield:
+`af45d309-cd9a-423c-8c38-13c1c2c99b55`.
+
 Observações de produção:
 - O repositório é privado, então o screenshot real do app não pôde ser
   anexado como referência ao gerador; os boards descrevem a interface real
