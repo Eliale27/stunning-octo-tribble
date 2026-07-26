@@ -6,9 +6,11 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { COLORS, OUTRO_DURATION } from "./constants";
+import { COLORS } from "./constants";
 
-export const Outro: React.FC = () => {
+export const Outro: React.FC<{ durationInFrames: number }> = ({
+  durationInFrames,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -19,7 +21,7 @@ export const Outro: React.FC = () => {
   });
   const fadeOut = interpolate(
     frame,
-    [OUTRO_DURATION - 15, OUTRO_DURATION],
+    [durationInFrames - 15, durationInFrames],
     [1, 0],
     { extrapolateLeft: "clamp" },
   );

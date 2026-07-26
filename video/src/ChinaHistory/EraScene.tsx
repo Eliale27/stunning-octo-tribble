@@ -6,9 +6,12 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { COLORS, Era, SCENE_DURATION } from "./constants";
+import { COLORS, Era } from "./constants";
 
-export const EraScene: React.FC<{ era: Era }> = ({ era }) => {
+export const EraScene: React.FC<{ era: Era; durationInFrames: number }> = ({
+  era,
+  durationInFrames,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -17,7 +20,7 @@ export const EraScene: React.FC<{ era: Era }> = ({ era }) => {
   });
   const fadeOut = interpolate(
     frame,
-    [SCENE_DURATION - 12, SCENE_DURATION],
+    [durationInFrames - 12, durationInFrames],
     [1, 0],
     { extrapolateLeft: "clamp" },
   );

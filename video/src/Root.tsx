@@ -1,5 +1,6 @@
 import { Composition } from "remotion";
 import { ChinaHistory } from "./ChinaHistory";
+import { calculateChinaHistoryMetadata } from "./ChinaHistory/calculate-metadata";
 import { FPS, TOTAL_DURATION } from "./ChinaHistory/constants";
 import { HelloWorld, myCompSchema } from "./HelloWorld";
 import { Logo, myCompSchema2 } from "./HelloWorld/Logo";
@@ -17,6 +18,8 @@ export const RemotionRoot: React.FC = () => {
         fps={FPS}
         width={1920}
         height={1080}
+        defaultProps={{ segments: null }}
+        calculateMetadata={calculateChinaHistoryMetadata}
       />
 
       <Composition

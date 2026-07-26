@@ -1,20 +1,28 @@
+import { Audio } from "@remotion/media";
 import React from "react";
-import { AbsoluteFill, Sequence, useCurrentFrame } from "remotion";
 import {
+  AbsoluteFill,
+  Sequence,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+import { ChinaHistoryProps } from "./calculate-metadata";
+import {
+  AUDIO_START_FRAMES,
   COLORS,
   ERAS,
-  INTRO_DURATION,
-  OUTRO_DURATION,
-  SCENE_DURATION,
-  TOTAL_DURATION,
+  defaultSegmentDuration,
 } from "./constants";
 import { EraScene } from "./EraScene";
 import { Intro } from "./Intro";
+import { NARRATION, audioFileFor } from "./narration";
 import { Outro } from "./Outro";
 
 const TimelineBar: React.FC = () => {
   const frame = useCurrentFrame();
-  const progress = (frame / TOTAL_DURATION) * 100;
+  const { durationInFrames } = useVideoConfig();
+  const progress = (frame / durationInFrames) * 100;
 
   return (
     <div
@@ -40,27 +48,51 @@ const TimelineBar: React.FC = () => {
   );
 };
 
-export const ChinaHistory: React.FC = () => {
+export const ChinaHistory: React.FC<ChinaHistoryProps> = ({ segments }) => {
+  const resolved =
+    segments ??
+    NARRATION.map((_, index) => ({
+      durationInFrames: defaultSegmentDuration(index),
+      hasAudio: false,
+    }));
+
+  let start = 0;
+  const starts = resolved.map((segment) => {
+    const current = start;
+    start += segment.durationInFrames;
+    return current;
+  });
+
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.ink }}>
-      <Sequence durationInFrames={INTRO_DURATION}>
-        <Intro />
-      </Sequence>
-      {ERAS.map((era, index) => (
-        <Sequence
-          key={era.title}
-          from={INTRO_DURATION + index * SCENE_DURATION}
-          durationInFrames={SCENE_DURATION}
-        >
-          <EraScene era={era} />
-        </Sequence>
-      ))}
-      <Sequence
-        from={INTRO_DURATION + ERAS.length * SCENE_DURATION}
-        durationInFrames={OUTRO_DURATION}
-      >
-        <Outro />
-      </Sequence>
+      {resolved.map((segment, index) => {
+        const content =
+          index === 0 ? (
+            <Intro durationInFrames={segment.durationInFrames} />
+          ) : index === resolved.length - 1 ? (
+            <Outro durationInFrames={segment.durationInFrames} />
+          ) : (
+            <EraScene
+              era={ERAS[index - 1]}
+              durationInFrames={segment.durationInFrames}
+            />
+          );
+
+        return (
+          <Sequence
+            key={NARRATION[index].id}
+            from={starts[index]}
+            durationInFrames={segment.durationInFrames}
+          >
+            {content}
+            {segment.hasAudio ? (
+              <Sequence from={AUDIO_START_FRAMES}>
+                <Audio src={staticFile(audioFileFor(NARRATION[index].id))} />
+              </Sequence>
+            ) : null}
+          </Sequence>
+        );
+      })}
       <TimelineBar />
     </AbsoluteFill>
   );

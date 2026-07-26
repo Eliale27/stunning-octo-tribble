@@ -87,3 +87,25 @@ export const ERAS: Era[] = [
 
 export const TOTAL_DURATION =
   INTRO_DURATION + ERAS.length * SCENE_DURATION + OUTRO_DURATION;
+
+// Narration timing: the voiceover starts a beat after the scene appears
+// and the scene lingers briefly after the speech ends.
+export const AUDIO_START_FRAMES = 10;
+export const AUDIO_TAIL_FRAMES = 20;
+
+export type Segment = {
+  durationInFrames: number;
+  hasAudio: boolean;
+};
+
+// Segment layout: index 0 is the intro, 1..ERAS.length are the era
+// scenes, and the last one is the outro.
+export const defaultSegmentDuration = (index: number): number => {
+  if (index === 0) {
+    return INTRO_DURATION;
+  }
+  if (index === ERAS.length + 1) {
+    return OUTRO_DURATION;
+  }
+  return SCENE_DURATION;
+};
