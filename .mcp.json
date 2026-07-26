@@ -6,6 +6,10 @@
       "env": {
         "ELEVENLABS_API_KEY": "${ELEVENLABS_API_KEY}"
       }
+    },
+    "pollinations": {
+      "command": "npx",
+      "args": ["-y", "@pollinations/model-context-protocol"]
     }
   }
 }
