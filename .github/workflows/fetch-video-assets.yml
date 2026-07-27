@@ -1,0 +1,40 @@
+name: fetch-video-assets
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download generated images
+        run: |
+          set -euo pipefail
+          BASE="https://d8j0ntlcm91z4.cloudfront.net/user_3GuV0bQEGHjGktfruhC28a4m0mx"
+          mkdir -p video/public/images
+          declare -A IMGS=(
+            [01]="hf_20260727_174525_662e8af3-96b5-4f4d-8797-924122652977"
+            [02]="hf_20260727_174532_75fae3c2-2da2-42db-b446-7582c106a6a4"
+            [03]="hf_20260727_174535_3920d7b6-f0b0-498a-82a7-d4e36500831a"
+            [04]="hf_20260727_174538_ca80f2b4-ea73-4df6-b811-c47bd269ffd4"
+            [05]="hf_20260727_174540_4b26243b-0258-4fd0-a582-00a328be2828"
+            [06]="hf_20260727_174543_78740588-62c6-4266-a7ec-18ee990d2460"
+            [07]="hf_20260727_174545_4c477164-343c-4a17-b73b-23d3e8d44d40"
+            [08]="hf_20260727_174547_0a967d74-3ab9-4913-93cf-71c36f01c173"
+            [09]="hf_20260727_174549_72dd2425-6a20-4bb6-a349-a68923363a55"
+            [10]="hf_20260727_174552_90a22ea8-e560-446c-a742-ee7dff9b8a04"
+          )
+          for k in "${!IMGS[@]}"; do
+            curl -sS -f --retry 3 -o "video/public/images/img_$k.jpg" "$BASE/${IMGS[$k]}.png"
+            echo "img_$k: $(stat -c%s video/public/images/img_$k.jpg) bytes"
+          done
+      - name: Commit images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add video/public/images
+          git commit -m "Add generated scene images for book video"
+          git push
