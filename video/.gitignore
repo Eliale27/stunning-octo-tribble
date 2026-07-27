@@ -2,3 +2,4 @@ node_modules/
 out/
 .cache/
 render.log
+render.pid
