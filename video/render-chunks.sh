@@ -17,7 +17,7 @@ IDX=0
 while [ "$START" -lt "$TOTAL" ]; do
   END=$((START + STEP - 1)); [ "$END" -ge "$TOTAL" ] && END=$((TOTAL - 1))
   CHUNK="out/chunks/chunk_$(printf '%03d' $IDX).mp4"
-  echo "file 'chunks/chunk_$(printf '%03d' $IDX).mp4'" >> "$LIST"
+  echo "file 'chunk_$(printf '%03d' $IDX).mp4'" >> "$LIST"
   if [ ! -s "$CHUNK" ] || [ -f "$CHUNK.tmp" ]; then
     rm -f "$CHUNK" "$CHUNK.tmp"; touch "$CHUNK.tmp"
     echo ">>> bloco $IDX: frames $START-$END"
