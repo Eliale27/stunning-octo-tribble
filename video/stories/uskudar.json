@@ -1,0 +1,257 @@
+{
+  "title": "O Segredo da Casa de Üsküdar",
+  "subtitle": "Uma história de Istambul",
+  "voice": "Charon",
+  "basePrompt": "Narre em português do Brasil com voz grave, cadenciada e envolvente, como quem conta um segredo. Pronuncie palavras turcas (Üsküdar, Hanım, Bey) com naturalidade, sem exagerar o sotaque.",
+  "scenes": [
+    {
+      "id": 1,
+      "tone": "Ritmo levemente acelerado, tom de mistério.",
+      "text": "Em Istambul, do lado asiático do Bósforo, existe uma mansão de madeira escura no bairro de Üsküdar. Por trinta anos, uma mulher chamada Emine limpou cada cômodo daquela casa. Ela conhecia cada tábua que rangia, cada retrato na parede, cada segredo varrido para debaixo dos tapetes persas.",
+      "caption": "Üsküdar, Istambul",
+      "icon": "boat",
+      "palette": ["#0f2233", "#1e4258", "#e3b877"]
+    },
+    {
+      "id": 2,
+      "tone": "Tom de mistério, terminando em suspense. Faça uma pausa dramática antes da última frase.",
+      "text": "Os patrões achavam que ela era apenas a empregada. Silenciosa. Invisível. Fiel. Mas quando o patriarca da família morreu, e o advogado abriu o testamento diante de todos, o nome que ele leu em voz alta fez a sala inteira congelar. Porque o maior segredo daquela casa nunca esteve escondido em um cofre. Estava servindo o chá.",
+      "caption": "O segredo servia o chá",
+      "icon": "teacup",
+      "palette": ["#141d2e", "#2a3550", "#dcac62"],
+      "padAfter": 2
+    },
+    {
+      "id": 3,
+      "tone": "Tom próximo e convidativo, depois misterioso.",
+      "text": "Antes de continuar, deixa aqui o seu like e me conta nos comentários de que cidade você está assistindo. Agora, vamos voltar trinta anos no tempo.",
+      "caption": "Trinta anos antes…",
+      "icon": "book",
+      "palette": ["#1a1a26", "#33334d", "#d9b46a"],
+      "padAfter": 1.5
+    },
+    {
+      "id": 4,
+      "tone": "Tom descritivo, curioso, cadenciado.",
+      "text": "Ano de mil novecentos e noventa e quatro. Uma jovem de vinte e dois anos desce de um ônibus na estação de Harem, em Istambul, carregando uma mala de pano e um endereço anotado num pedaço de papel. O nome dela é Emine. Ela vem de uma aldeia perto de Kayseri, no coração da Anatólia, onde os invernos são brancos e as oportunidades, raras.",
+      "caption": "1994 · Uma mala e um endereço",
+      "icon": "letter",
+      "palette": ["#2b1f16", "#5a3f28", "#e8c07d"]
+    },
+    {
+      "id": 5,
+      "tone": "Tom descritivo, admirado.",
+      "text": "O endereço no papel a leva até a mansão da família Demiroğlu, uma das famílias mais ricas do comércio de tecidos de Istambul. Uma casa de três andares, de madeira escura, com janelas voltadas para o Bósforo, onde os navios passam lentos como se o tempo lá dentro corresse diferente.",
+      "caption": "A mansão Demiroğlu",
+      "icon": "manor",
+      "palette": ["#1c1410", "#3e2b1e", "#d9a95e"]
+    },
+    {
+      "id": 6,
+      "tone": "Tom frio na fala da patroa, depois grave e pesado.",
+      "text": "Quem abre a porta é Nurten Hanım, a matriarca. Uma mulher elegante, de olhar frio, colar de pérolas e perfume francês. Ela examina Emine da cabeça aos pés e diz apenas uma frase: Aqui, você vê tudo, e não conta nada. Emine baixa os olhos e responde: Sim, senhora. Ela ainda não sabe, mas acabou de aceitar muito mais do que um emprego. Aceitou uma sentença.",
+      "caption": "“Você vê tudo. E não conta nada.”",
+      "icon": "crown",
+      "palette": ["#23222b", "#454358", "#d8c9a8"],
+      "padAfter": 1.5
+    },
+    {
+      "id": 7,
+      "tone": "Tom descritivo, apresentando personagens.",
+      "text": "O patriarca da casa é Kemal Bey, um homem de sessenta anos, sério, respeitado nos bazares e temido nos negócios. Ele tem dois filhos: Sinan, o herdeiro arrogante, de trinta anos, que dirige carros importados e coleciona inimigos; e Leyla, a caçula, doce e sonhadora, que passa as tardes tocando piano na sala grande.",
+      "caption": "A família Demiroğlu",
+      "icon": "family",
+      "palette": ["#241a12", "#4a3826", "#e2b878"]
+    },
+    {
+      "id": 8,
+      "tone": "Tensão baixa, sussurro na fala da cozinheira. Termine em suspense.",
+      "text": "E há mais alguém na casa. Uma pessoa que ninguém apresenta a Emine no primeiro dia. No terceiro andar, atrás de uma porta que fica sempre trancada, alguém tosse durante a noite. Quando Emine pergunta à cozinheira quem vive lá em cima, a mulher empalidece, olha para os lados e sussurra: Nunca pergunte isso de novo, menina. Nunca.",
+      "caption": "A porta do terceiro andar",
+      "icon": "candle",
+      "palette": ["#12101c", "#282442", "#b8a8d8"],
+      "padAfter": 2
+    },
+    {
+      "id": 9,
+      "tone": "Tom descritivo, ritmo de rotina.",
+      "text": "Os meses passam. Emine aprende a rotina da casa: o chá de Kemal Bey às sete da manhã, sem açúcar. As camisas de Sinan, passadas com goma. As partituras de Leyla, organizadas por cor. E aprende, sobretudo, a regra não escrita: ninguém sobe ao terceiro andar. Apenas Nurten Hanım, uma vez por dia, carregando uma bandeja coberta por um pano branco.",
+      "caption": "A regra não escrita",
+      "icon": "teacup",
+      "palette": ["#1e1812", "#403225", "#dcb26b"]
+    },
+    {
+      "id": 10,
+      "tone": "Tensão crescente, voz baixa.",
+      "text": "Mas o destino tem o costume de empurrar as pessoas exatamente para as portas que elas foram proibidas de abrir. Numa noite de inverno, Nurten Hanım adoece com febre. E pela primeira vez em anos, é Emine quem recebe a bandeja nas mãos. Suba. Deixe na porta. Bata três vezes. E desça sem olhar.",
+      "caption": "A bandeja",
+      "icon": "key",
+      "palette": ["#141824", "#2c3350", "#b8c4de"]
+    },
+    {
+      "id": 11,
+      "tone": "Tensão alta, ritmo lento, cada frase pesa.",
+      "text": "Emine sobe as escadas. Cada degrau range como um aviso. Ela deixa a bandeja, bate três vezes, mas antes que consiga se virar, a porta se abre.",
+      "caption": "A escada que range",
+      "icon": "key",
+      "palette": ["#100f18", "#242238", "#a9a0c9"],
+      "padAfter": 2
+    },
+    {
+      "id": 12,
+      "tone": "Quase sussurrado, arrepiante na fala da mulher.",
+      "text": "Do outro lado, está uma mulher. Jovem, talvez da idade de Emine. Pálida como papel, cabelos longos e desalinhados, olhos fundos de quem não vê o sol há muito tempo. Ela olha para Emine e diz apenas: Você é nova. Eles ainda não te contaram o que fizeram comigo. Passos soam na escada. A mulher fecha a porta. E Emine desce correndo, com o coração batendo na garganta.",
+      "caption": "A mulher pálida",
+      "icon": "moon",
+      "palette": ["#0e1630", "#26355e", "#cfd6e8"],
+      "padAfter": 2
+    },
+    {
+      "id": 13,
+      "tone": "Tom de investigação, curioso e tenso.",
+      "text": "Nas semanas seguintes, Emine monta o quebra-cabeça em silêncio, juntando pedaços de conversas, fotografias antigas e documentos esquecidos na biblioteca. O nome da mulher do terceiro andar é Feride. E ela não é uma estranha.",
+      "caption": "Quem é Feride?",
+      "icon": "frame",
+      "palette": ["#1a1420", "#382c42", "#cba8d8"]
+    },
+    {
+      "id": 14,
+      "tone": "Revelação grave. Pausa antes da pergunta final. Termine em suspense.",
+      "text": "Ela é filha de Kemal Bey. A filha mais velha. Aquela que a família inteira jura, para a sociedade de Istambul, que morreu num acidente de carro em mil novecentos e oitenta e nove. Mas por quê? Por que uma família declararia a própria filha morta, e a manteria viva, trancada, no andar de cima da própria casa? A resposta, Emine descobriria da pior forma possível.",
+      "caption": "A filha que “morreu” em 1989",
+      "icon": "frame",
+      "palette": ["#181018", "#362436", "#d8a8c0"],
+      "padAfter": 2
+    },
+    {
+      "id": 15,
+      "tone": "Tom confessional, íntimo, ritmo lento.",
+      "text": "Numa madrugada, meses depois, Emine ouve a tosse no terceiro andar piorar. A casa dorme. Ela sobe com água e um xarope, desobedecendo todas as regras. E dessa vez, Feride a deixa entrar. O quarto é pequeno, mas cheio de livros. Nas paredes, desenhos a lápis: o Bósforo, os minaretes, um rosto de bebê desenhado dezenas de vezes, sempre o mesmo rosto.",
+      "caption": "O quarto cheio de livros",
+      "icon": "candle",
+      "palette": ["#120d0a", "#33241a", "#e0a95e"]
+    },
+    {
+      "id": 16,
+      "tone": "Confessional, quase sussurrado, doce e triste.",
+      "text": "E então, entre lágrimas e sussurros, Feride conta a verdade. Em mil novecentos e oitenta e nove, ela se apaixonou por Mahmut, um jovem pescador de Üsküdar. Pobre. Sem sobrenome importante. Sem nada além de um barco e uma promessa.",
+      "caption": "Mahmut, o pescador",
+      "icon": "boat",
+      "palette": ["#0f2028", "#28464f", "#e5c184"]
+    },
+    {
+      "id": 17,
+      "tone": "Tom grave, indignado contido.",
+      "text": "Para a família Demiroğlu, aquilo era uma vergonha inaceitável. Kemal Bey havia prometido a filha em casamento ao herdeiro de outra família rica, um negócio disfarçado de matrimônio. Mas Feride já estava grávida.",
+      "caption": "Um casamento por negócio",
+      "icon": "rings",
+      "palette": ["#241c10", "#463620", "#ecd3a3"],
+      "padAfter": 1.5
+    },
+    {
+      "id": 18,
+      "tone": "Tom sombrio, pesado, ritmo lento.",
+      "text": "Quando o pai descobriu, o mundo dela acabou em uma única noite. Mahmut desapareceu, pago para sumir, ou algo pior, ela nunca soube. O casamento arranjado foi cancelado sob a desculpa de um acidente trágico. A sociedade de Istambul chorou a morte da jovem Feride Demiroğlu.",
+      "caption": "A noite em que o mundo acabou",
+      "icon": "manor",
+      "palette": ["#151a2b", "#2e3a56", "#9fb0d0"]
+    },
+    {
+      "id": 19,
+      "tone": "Pausa longa antes de começar. Quase sussurrado, partido de emoção.",
+      "text": "E o bebê? Nurten Hanım entregou a criança, ainda recém-nascida, a uma família de conhecidos que partia para longe. Feride nunca soube para onde. Nunca soube o nome que deram a ela. Só sabia de uma coisa: era uma menina.",
+      "caption": "Era uma menina",
+      "icon": "heart",
+      "palette": ["#1c1016", "#3c2430", "#e0a8b8"],
+      "padAfter": 2
+    },
+    {
+      "id": 20,
+      "tone": "Fala de Feride grave e firme. Depois, tom de juramento solene.",
+      "text": "Eu não estou trancada aqui porque eles me odeiam, disse Feride, olhando pela janela. Estou trancada porque eu sou a prova viva do que eles fizeram. Uma morta não pode procurar a própria filha. Naquela noite, Emine fez um juramento em silêncio. Ela não sabia como. Não sabia quando. Mas um dia, aquela porta se abriria.",
+      "caption": "A prova viva",
+      "icon": "key",
+      "palette": ["#101622", "#26324a", "#b8c4de"],
+      "padAfter": 2
+    },
+    {
+      "id": 21,
+      "tone": "Ritmo de passagem de tempo, melancólico com esperança.",
+      "text": "E aqui está a parte desta história que ninguém espera: Emine ficou. Ano após ano, década após década. Viu Sinan assumir os negócios e afundá-los em dívidas de jogo. Viu Leyla se casar e partir para Ancara. Viu Nurten Hanım envelhecer, endurecer e, num inverno, partir para sempre, levando o segredo, acreditava ela, para debaixo da terra.",
+      "caption": "Trinta anos de paciência",
+      "icon": "moon",
+      "palette": ["#131b2e", "#2c3a5c", "#c8d2e8"]
+    },
+    {
+      "id": 22,
+      "tone": "Tom de cumplicidade, esperançoso.",
+      "text": "Mas o segredo tinha duas guardiãs. E uma delas ainda subia as escadas todas as noites. Porque Emine nunca deixou de servir Feride. Trouxe livros. Trouxe notícias. Trouxe, escondidos no avental, jornais e mais tarde um celular. E juntas, em madrugadas silenciosas, as duas procuraram. Registros de cartório. Listas de famílias que emigraram em mil novecentos e oitenta e nove. Cartas enviadas para endereços antigos.",
+      "caption": "Duas guardiãs",
+      "icon": "letter",
+      "palette": ["#1c1610", "#3c3022", "#e2c078"]
+    },
+    {
+      "id": 23,
+      "tone": "Emoção crescente, revelação luminosa.",
+      "text": "Foram anos de portas fechadas. Até que, em dois mil e dezenove, uma resposta chegou. Uma mulher de trinta anos, criada na Alemanha, filha adotiva de um casal turco de Izmir. Ela havia feito um teste de DNA por curiosidade. O nome dela era Elif. O rosto no desenho a lápis, finalmente, tinha um nome.",
+      "caption": "Elif",
+      "icon": "frame",
+      "palette": ["#1e1a10", "#403620", "#f0d494"],
+      "padAfter": 2
+    },
+    {
+      "id": 24,
+      "tone": "Tom grave, de consequência inevitável. Termine em suspense.",
+      "text": "Feride estava doente demais para viajar. Fraca demais, depois de trinta anos sem sol. Mas escreveu uma carta, doze páginas, e Emine a enviou. E então aconteceu o que ninguém na mansão Demiroğlu poderia prever. Kemal Bey, agora com mais de noventa anos, à beira da morte, chamou um advogado ao seu quarto. A culpa, que ele carregou calado por três décadas, finalmente pesou mais do que o orgulho. Ninguém soube o que ele ditou naquele documento. Ninguém, exceto a empregada silenciosa que trocava as flores do quarto enquanto ele falava.",
+      "caption": "Doze páginas",
+      "icon": "candle",
+      "palette": ["#14100a", "#362a18", "#e0b060"],
+      "padAfter": 2
+    },
+    {
+      "id": 25,
+      "tone": "Solene, ritmo lento, tensão de velório e cobiça.",
+      "text": "Kemal Bey morreu numa manhã de outubro, com os navios passando lentos na janela, como sempre. Uma semana depois, a família se reuniu na sala grande. Sinan, já de cabelos grisalhos, sentou-se na cadeira do pai antes mesmo do advogado abrir a pasta. Leyla veio de Ancara. Primos distantes apareceram como aparecem os urubus: pontuais. E no canto da sala, de pé, com as mãos cruzadas sobre o avental, estava Emine. Sessenta e poucos anos. Trinta deles dentro daquela casa. O advogado limpou a garganta e começou a ler. Eu, Kemal Demiroğlu, em pleno uso das minhas faculdades, declaro diante da lei e diante de Deus,",
+      "caption": "O testamento",
+      "icon": "book",
+      "palette": ["#16120e", "#332a20", "#d9b46a"],
+      "padAfter": 2.5
+    },
+    {
+      "id": 26,
+      "tone": "A frase mais importante do vídeo. Pausa longa antes e depois de dizer que ela está viva. Depois, tom de desabamento.",
+      "text": "que minha filha Feride Demiroğlu está viva. O som que se ouviu na sala não foi um grito. Foi o som de trinta anos de mentiras desabando de uma vez. Sinan levantou-se, pálido. Leyla levou as mãos à boca. E o advogado continuou: A ela, deixo esta casa e metade de tudo o que possuo. À minha neta, Elif, que jamais tive coragem de conhecer, deixo a outra metade, e o meu pedido de perdão, que sei que não mereço.",
+      "caption": "“Está viva.”",
+      "icon": "chandelier",
+      "palette": ["#0e0c14", "#242032", "#e8c88a"],
+      "padAfter": 2.5
+    },
+    {
+      "id": 27,
+      "tone": "Emoção contida, solene, terminando em ternura triunfante.",
+      "text": "E então, o advogado virou a página. Havia um último parágrafo. E à mulher que foi mais família para minha filha do que todos nós, à mulher que subiu aquelas escadas todas as noites quando nós escolhemos esquecer que elas existiam, a Emine, deixo a minha eterna vergonha e a minha eterna gratidão. Que ela nunca mais sirva ninguém. E que esta casa, que ela conhece melhor do que qualquer Demiroğlu, seja também o lar dela, pelo tempo que ela quiser. Todos os olhos da sala se voltaram para o canto, para a empregada invisível que, de repente, ninguém mais conseguia deixar de ver. Emine não disse nada. Apenas olhou para o teto, na direção do terceiro andar, e sorriu. A porta, finalmente, estava aberta.",
+      "caption": "A porta, finalmente, aberta",
+      "icon": "heart",
+      "palette": ["#141d38", "#2a3560", "#e8c88a"],
+      "padAfter": 3
+    },
+    {
+      "id": 28,
+      "tone": "Caloroso, emocional, resolutivo, ritmo lento.",
+      "text": "Um mês depois, um táxi parou diante da mansão de Üsküdar. Dele desceu uma mulher de trinta e poucos anos, com uma mala e os mesmos olhos de Feride. Dizem os vizinhos que o abraço entre mãe e filha, no portão daquela casa, durou tanto tempo que as gaivotas trocaram de lugar no céu. Feride viveu seus últimos anos com sol no rosto, com a filha por perto, e com Emine ao seu lado, não mais como empregada, mas como irmã que a vida lhe deu pela porta dos fundos.",
+      "caption": "Mãe e filha",
+      "icon": "family",
+      "palette": ["#2e2214", "#5c4628", "#f2d494"],
+      "padAfter": 2
+    },
+    {
+      "id": 29,
+      "tone": "Reflexivo e poético, depois caloroso no convite final. Termine com tom de despedida intrigante.",
+      "text": "E se hoje você passar por Üsküdar e vir uma mansão de madeira escura com as janelas todas abertas, saiba: nem sempre foi assim. Houve um tempo em que aquela casa guardava um segredo no terceiro andar. Mas os segredos são como o Bósforo: podem parecer parados, e no entanto, nunca deixam de se mover em direção ao mar. E você? O que teria feito no lugar de Emine: teria ficado trinta anos, ou teria denunciado tudo logo no início? Me conta nos comentários, eu leio todos. Se essa história tocou você, se inscreve no canal, ativa o sininho e deixa o seu like, porque toda semana tem uma nova história como essa esperando por você. Até a próxima, e cuidado com as portas trancadas da sua própria casa.",
+      "caption": "Os segredos e o Bósforo",
+      "icon": "boat",
+      "palette": ["#0f2233", "#1e4258", "#e3b877"],
+      "padAfter": 2
+    }
+  ]
+}

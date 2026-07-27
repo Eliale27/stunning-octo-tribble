@@ -104,6 +104,39 @@ export const Icons: Record<string, React.FC<{stroke: string}>> = {
       <path d="M40 26 C44 22 50 22 52 26 M68 26 C72 22 78 22 80 26" strokeWidth={1.5} />
     </Wrap>
   ),
+  teacup: ({stroke}) => (
+    <Wrap stroke={stroke}>
+      {/* copo de chá turco (tulipa) com pires */}
+      <path d="M44 34 C44 48 40 52 40 62 C40 76 48 84 60 84 C72 84 80 76 80 62 C80 52 76 48 76 34 Z" />
+      <path d="M34 92 C34 88 86 88 86 92 C86 97 34 97 34 92 Z" />
+      <path d="M52 16 C50 22 54 24 52 30 M66 14 C64 20 68 22 66 28" strokeWidth={2} />
+      <path d="M48 62 L72 62" strokeWidth={1.5} />
+    </Wrap>
+  ),
+  key: ({stroke}) => (
+    <Wrap stroke={stroke}>
+      <circle cx="38" cy="42" r="18" />
+      <circle cx="38" cy="42" r="8" strokeWidth={2} />
+      <path d="M51 55 L88 92" />
+      <path d="M74 78 L84 68 M82 86 L92 76" />
+    </Wrap>
+  ),
+  boat: ({stroke}) => (
+    <Wrap stroke={stroke}>
+      <path d="M22 64 L98 64 L86 82 L34 82 Z" />
+      <path d="M60 64 L60 24 M60 24 C74 32 78 44 74 56 L60 56" />
+      <path d="M14 92 C22 86 30 98 38 92 C46 86 54 98 62 92 C70 86 78 98 86 92 C94 86 100 92 106 92" strokeWidth={2} />
+      <path d="M28 22 C32 18 36 22 40 18 M84 14 C88 10 92 14 96 10" strokeWidth={1.5} />
+    </Wrap>
+  ),
+  frame: ({stroke}) => (
+    <Wrap stroke={stroke}>
+      <rect x="30" y="22" width="60" height="76" rx="2" />
+      <rect x="38" y="30" width="44" height="60" strokeWidth={1.5} />
+      <path d="M60 74 C48 64 50 52 60 58 C70 52 72 64 60 74 Z" strokeWidth={2} />
+      <path d="M52 44 C55 40 65 40 68 44" strokeWidth={1.5} />
+    </Wrap>
+  ),
   family: ({stroke}) => (
     <Wrap stroke={stroke}>
       <path d="M60 74 C40 58 43 38 60 48 C77 38 80 58 60 74 Z" />

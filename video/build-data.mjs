@@ -10,7 +10,11 @@ import {fileURLToPath} from 'node:url';
 const root = dirname(fileURLToPath(import.meta.url));
 const FPS = 30;
 const PAD_SECONDS = 0.5;
-const PROCEDURAL = process.env.VISUALS === 'procedural';
+const STORY = process.env.STORY || '';
+// Histórias em stories/ são sempre procedurais (sem imagens de IA)
+const PROCEDURAL = process.env.VISUALS === 'procedural' || Boolean(STORY);
+const SCENES_FILE = STORY ? join('stories', `${STORY}.json`) : 'scenes.json';
+const AUDIO_DIR = STORY ? `audio/${STORY}` : 'audio';
 
 // cena (1-15) -> imagem (1-10)
 const SCENE_IMAGE = [1, 2, 3, 4, 5, 6, 3, 1, 7, 8, 9, 5, 9, 10, 2];
@@ -23,10 +27,10 @@ const wavDuration = (path) => {
   return dataSize / byteRate;
 };
 
-const scenesJson = JSON.parse(readFileSync(join(root, 'scenes.json'), 'utf8'));
+const scenesJson = JSON.parse(readFileSync(join(root, SCENES_FILE), 'utf8'));
 
 const scenes = scenesJson.scenes.map((scene, i) => {
-  const audio = `audio/scene_${String(i + 1).padStart(2, '0')}.wav`;
+  const audio = `${AUDIO_DIR}/scene_${String(i + 1).padStart(2, '0')}.wav`;
   if (!existsSync(join(root, 'public', audio))) {
     throw new Error(`arquivo faltando: public/${audio}`);
   }
@@ -37,7 +41,8 @@ const scenes = scenesJson.scenes.map((scene, i) => {
       throw new Error(`arquivo faltando: public/${image}`);
     }
   }
-  const seconds = wavDuration(join(root, 'public', audio)) + PAD_SECONDS;
+  const pad = scene.padAfter ?? PAD_SECONDS;
+  const seconds = wavDuration(join(root, 'public', audio)) + pad;
   return {
     image,
     audio,
