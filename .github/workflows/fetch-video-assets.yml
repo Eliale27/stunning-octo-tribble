@@ -1,6 +1,9 @@
 name: fetch-video-assets
 on:
   workflow_dispatch: {}
+  push:
+    branches: ['claude/**']
+    paths: ['.github/workflows/fetch-video-assets.yml']
 
 permissions:
   contents: write
