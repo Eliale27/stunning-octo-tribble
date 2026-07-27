@@ -1,0 +1,81 @@
+{
+  "title": "O Duque e Eu — Julia Quinn",
+  "subtitle": "Resumo e resenha · Bridgerton, Livro 1",
+  "scenes": [
+    {
+      "image": "images/img_01.jpg",
+      "audio": "audio/scene_01.wav",
+      "durationInFrames": 707
+    },
+    {
+      "image": "images/img_02.jpg",
+      "audio": "audio/scene_02.wav",
+      "durationInFrames": 698
+    },
+    {
+      "image": "images/img_03.jpg",
+      "audio": "audio/scene_03.wav",
+      "durationInFrames": 794
+    },
+    {
+      "image": "images/img_04.jpg",
+      "audio": "audio/scene_04.wav",
+      "durationInFrames": 764
+    },
+    {
+      "image": "images/img_05.jpg",
+      "audio": "audio/scene_05.wav",
+      "durationInFrames": 824
+    },
+    {
+      "image": "images/img_06.jpg",
+      "audio": "audio/scene_06.wav",
+      "durationInFrames": 661
+    },
+    {
+      "image": "images/img_03.jpg",
+      "audio": "audio/scene_07.wav",
+      "durationInFrames": 733
+    },
+    {
+      "image": "images/img_01.jpg",
+      "audio": "audio/scene_08.wav",
+      "durationInFrames": 743
+    },
+    {
+      "image": "images/img_07.jpg",
+      "audio": "audio/scene_09.wav",
+      "durationInFrames": 728
+    },
+    {
+      "image": "images/img_08.jpg",
+      "audio": "audio/scene_10.wav",
+      "durationInFrames": 739
+    },
+    {
+      "image": "images/img_09.jpg",
+      "audio": "audio/scene_11.wav",
+      "durationInFrames": 616
+    },
+    {
+      "image": "images/img_05.jpg",
+      "audio": "audio/scene_12.wav",
+      "durationInFrames": 740
+    },
+    {
+      "image": "images/img_09.jpg",
+      "audio": "audio/scene_13.wav",
+      "durationInFrames": 693
+    },
+    {
+      "image": "images/img_10.jpg",
+      "audio": "audio/scene_14.wav",
+      "durationInFrames": 726
+    },
+    {
+      "image": "images/img_02.jpg",
+      "audio": "audio/scene_15.wav",
+      "durationInFrames": 630
+    }
+  ]
+}
