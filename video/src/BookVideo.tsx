@@ -9,6 +9,7 @@ import {
   useCurrentFrame,
 } from 'remotion';
 import data from '../public/video-data.json';
+import {ProceduralScene, Visual} from './ProceduralScene';
 
 const XFADE = 15; // frames de crossfade entre cenas
 
@@ -103,11 +104,20 @@ export const BookVideo: React.FC = () => {
           from={Math.max(0, starts[i] - XFADE)}
           durationInFrames={scene.durationInFrames + XFADE}
         >
-          <KenBurnsImage
-            src={scene.image}
-            duration={scene.durationInFrames + XFADE}
-            index={i}
-          />
+          {scene.image ? (
+            <KenBurnsImage
+              src={scene.image}
+              duration={scene.durationInFrames + XFADE}
+              index={i}
+            />
+          ) : (
+            <ProceduralScene
+              visual={scene.visual as Visual}
+              duration={scene.durationInFrames + XFADE}
+              index={i}
+              fadeFrames={XFADE}
+            />
+          )}
         </Sequence>
       ))}
       {data.scenes.map((scene, i) => (

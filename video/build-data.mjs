@@ -1,5 +1,8 @@
 // Monta public/video-data.json a partir de scenes.json, dos WAVs de narração
-// e das imagens baixadas. Cada cena dura a narração + 0,5s de respiro.
+// e (opcionalmente) das imagens. Cada cena dura a narração + 0,5s de respiro.
+//
+//   node build-data.mjs               -> usa imagens (video/public/images)
+//   VISUALS=procedural node build-data.mjs -> cenas 100% Remotion (sem imagens)
 import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {join, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -7,13 +10,13 @@ import {fileURLToPath} from 'node:url';
 const root = dirname(fileURLToPath(import.meta.url));
 const FPS = 30;
 const PAD_SECONDS = 0.5;
+const PROCEDURAL = process.env.VISUALS === 'procedural';
 
 // cena (1-15) -> imagem (1-10)
 const SCENE_IMAGE = [1, 2, 3, 4, 5, 6, 3, 1, 7, 8, 9, 5, 9, 10, 2];
 
 const wavDuration = (path) => {
   const buf = readFileSync(path);
-  // WAV PCM: procura o chunk "data"; áudio é mono 16-bit 24 kHz
   const idx = buf.indexOf('data');
   const dataSize = buf.readUInt32LE(idx + 4);
   const byteRate = buf.readUInt32LE(28);
@@ -24,17 +27,28 @@ const scenesJson = JSON.parse(readFileSync(join(root, 'scenes.json'), 'utf8'));
 
 const scenes = scenesJson.scenes.map((scene, i) => {
   const audio = `audio/scene_${String(i + 1).padStart(2, '0')}.wav`;
-  const image = `images/img_${String(SCENE_IMAGE[i]).padStart(2, '0')}.jpg`;
-  for (const rel of [audio, image]) {
-    if (!existsSync(join(root, 'public', rel))) {
-      throw new Error(`arquivo faltando: public/${rel}`);
+  if (!existsSync(join(root, 'public', audio))) {
+    throw new Error(`arquivo faltando: public/${audio}`);
+  }
+  let image = null;
+  if (!PROCEDURAL) {
+    image = `images/img_${String(SCENE_IMAGE[i]).padStart(2, '0')}.jpg`;
+    if (!existsSync(join(root, 'public', image))) {
+      throw new Error(`arquivo faltando: public/${image}`);
     }
   }
   const seconds = wavDuration(join(root, 'public', audio)) + PAD_SECONDS;
-  return {image, audio, durationInFrames: Math.round(seconds * FPS)};
+  return {
+    image,
+    audio,
+    durationInFrames: Math.round(seconds * FPS),
+    visual: {caption: scene.caption, icon: scene.icon, palette: scene.palette},
+  };
 });
 
 const data = {title: scenesJson.title, subtitle: scenesJson.subtitle, scenes};
 writeFileSync(join(root, 'public', 'video-data.json'), JSON.stringify(data, null, 2));
 const total = scenes.reduce((a, s) => a + s.durationInFrames, 0);
-console.log(`video-data.json gerado: ${scenes.length} cenas, ${(total / FPS).toFixed(1)}s no total`);
+console.log(
+  `video-data.json gerado (${PROCEDURAL ? 'procedural' : 'imagens'}): ${scenes.length} cenas, ${(total / FPS).toFixed(1)}s`
+);

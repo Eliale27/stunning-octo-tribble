@@ -3,79 +3,214 @@
   "subtitle": "Resumo e resenha · Bridgerton, Livro 1",
   "scenes": [
     {
-      "image": "images/img_01.jpg",
+      "image": null,
       "audio": "audio/scene_01.wav",
-      "durationInFrames": 707
+      "durationInFrames": 707,
+      "visual": {
+        "caption": "Tudo começa com uma mentira",
+        "icon": "chandelier",
+        "palette": [
+          "#141d38",
+          "#2a3560",
+          "#d9b46a"
+        ]
+      }
     },
     {
-      "image": "images/img_02.jpg",
+      "image": null,
       "audio": "audio/scene_02.wav",
-      "durationInFrames": 698
+      "durationInFrames": 698,
+      "visual": {
+        "caption": "Bridgerton · Livro 1",
+        "icon": "book",
+        "palette": [
+          "#2d1218",
+          "#57222b",
+          "#dcb26b"
+        ]
+      }
     },
     {
-      "image": "images/img_03.jpg",
+      "image": null,
       "audio": "audio/scene_03.wav",
-      "durationInFrames": 794
+      "durationInFrames": 794,
+      "visual": {
+        "caption": "Londres, 1813",
+        "icon": "letter",
+        "palette": [
+          "#232833",
+          "#7a5b4d",
+          "#e3bd7d"
+        ]
+      }
     },
     {
-      "image": "images/img_04.jpg",
+      "image": null,
       "audio": "audio/scene_04.wav",
-      "durationInFrames": 764
+      "durationInFrames": 764,
+      "visual": {
+        "caption": "Daphne Bridgerton",
+        "icon": "fan",
+        "palette": [
+          "#24384f",
+          "#5b7ea6",
+          "#ecd3a3"
+        ]
+      }
     },
     {
-      "image": "images/img_05.jpg",
+      "image": null,
       "audio": "audio/scene_05.wav",
-      "durationInFrames": 824
+      "durationInFrames": 824,
+      "visual": {
+        "caption": "Simon, o Duque de Hastings",
+        "icon": "crown",
+        "palette": [
+          "#15121c",
+          "#332b40",
+          "#c9a45e"
+        ]
+      }
     },
     {
-      "image": "images/img_06.jpg",
+      "image": null,
       "audio": "audio/scene_06.wav",
-      "durationInFrames": 661
+      "durationInFrames": 661,
+      "visual": {
+        "caption": "O acordo secreto",
+        "icon": "moon",
+        "palette": [
+          "#0e1630",
+          "#26355e",
+          "#cfd6e8"
+        ]
+      }
     },
     {
-      "image": "images/img_03.jpg",
+      "image": null,
       "audio": "audio/scene_07.wav",
-      "durationInFrames": 733
+      "durationInFrames": 733,
+      "visual": {
+        "caption": "O plano funciona… bem demais",
+        "icon": "letter",
+        "palette": [
+          "#3a2530",
+          "#7a4a55",
+          "#ecc493"
+        ]
+      }
     },
     {
-      "image": "images/img_01.jpg",
+      "image": null,
       "audio": "audio/scene_08.wav",
-      "durationInFrames": 743
+      "durationInFrames": 743,
+      "visual": {
+        "caption": "Quando o fingimento vira verdade",
+        "icon": "chandelier",
+        "palette": [
+          "#241536",
+          "#4a2a63",
+          "#dcb26b"
+        ]
+      }
     },
     {
-      "image": "images/img_07.jpg",
+      "image": null,
       "audio": "audio/scene_09.wav",
-      "durationInFrames": 728
+      "durationInFrames": 728,
+      "visual": {
+        "caption": "Um duelo ao amanhecer",
+        "icon": "pistols",
+        "palette": [
+          "#1e242b",
+          "#46525c",
+          "#c4cdd4"
+        ]
+      }
     },
     {
-      "image": "images/img_08.jpg",
+      "image": null,
       "audio": "audio/scene_10.wav",
-      "durationInFrames": 739
+      "durationInFrames": 739,
+      "visual": {
+        "caption": "Um casamento arranjado",
+        "icon": "rings",
+        "palette": [
+          "#3a3325",
+          "#6d5f43",
+          "#f0dcae"
+        ]
+      }
     },
     {
-      "image": "images/img_09.jpg",
+      "image": null,
       "audio": "audio/scene_11.wav",
-      "durationInFrames": 616
+      "durationInFrames": 616,
+      "visual": {
+        "caption": "A promessa sombria",
+        "icon": "manor",
+        "palette": [
+          "#151a2b",
+          "#2e3a56",
+          "#9fb0d0"
+        ]
+      }
     },
     {
-      "image": "images/img_05.jpg",
+      "image": null,
       "audio": "audio/scene_12.wav",
-      "durationInFrames": 740
+      "durationInFrames": 740,
+      "visual": {
+        "caption": "O passado cobra seu preço",
+        "icon": "candle",
+        "palette": [
+          "#120d0a",
+          "#33241a",
+          "#e0a95e"
+        ]
+      }
     },
     {
-      "image": "images/img_09.jpg",
+      "image": null,
       "audio": "audio/scene_13.wav",
-      "durationInFrames": 693
+      "durationInFrames": 693,
+      "visual": {
+        "caption": "A escolha de Simon",
+        "icon": "heart",
+        "palette": [
+          "#0f2428",
+          "#28504f",
+          "#e5c184"
+        ]
+      }
     },
     {
-      "image": "images/img_10.jpg",
+      "image": null,
       "audio": "audio/scene_14.wav",
-      "durationInFrames": 726
+      "durationInFrames": 726,
+      "visual": {
+        "caption": "Família, feridas e cura",
+        "icon": "family",
+        "palette": [
+          "#3b2a18",
+          "#7a5526",
+          "#f2d494"
+        ]
+      }
     },
     {
-      "image": "images/img_02.jpg",
+      "image": null,
       "audio": "audio/scene_15.wav",
-      "durationInFrames": 630
+      "durationInFrames": 630,
+      "visual": {
+        "caption": "Vale a leitura?",
+        "icon": "book",
+        "palette": [
+          "#141d38",
+          "#2a3560",
+          "#d9b46a"
+        ]
+      }
     }
   ]
 }
