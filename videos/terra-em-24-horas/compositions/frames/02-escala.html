@@ -1,0 +1,257 @@
+<template>
+  <style>
+    /* Frame 02 — A escala. Broadside dark register: ink-black ground, cream text,
+       fire-orange the lone accent. NOTE: frame.md's display face is Barlow + IBM Plex
+       Mono, but no .woff2 for either ships with this project, so per the "never name a
+       font with no file" rule the type falls back to generic sans / mono stacks — the
+       identity is carried by weight (900), lowercase, negative tracking and the
+       two-register colour system, exactly as frame.md prescribes. */
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      background: transparent;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    #root svg { overflow: visible; display: block; }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="02-escala"
+    data-width="1080"
+    data-height="1920"
+  >
+    <!-- full-bleed ink-black ground (dedicated background clip, not #root) -->
+    <div
+      class="clip 02-escala-bg"
+      data-start="0"
+      data-duration="3.904"
+      data-track-index="0"
+      style="position:absolute; inset:0; background:#111111;"
+    ></div>
+
+    <!-- SCENE 1 — the count-up number (foreground subject) -->
+    <div
+      class="clip 02-escala-numlayer"
+      data-start="0"
+      data-duration="3.904"
+      data-track-index="1"
+      style="position:absolute; inset:0;"
+    >
+      <div
+        id="02-escala-kicker"
+        style="position:absolute; left:0; right:0; top:472px; text-align:center;
+               font-size:22px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase;
+               color:#E85D26; font-family:'Courier New',ui-monospace,monospace;"
+      >idade da terra&nbsp;&middot;&nbsp;anos</div>
+
+      <div
+        id="02-escala-numwrap"
+        style="position:absolute; left:0; right:0; top:548px; text-align:center;
+               transform-origin:center center; will-change:transform;"
+      >
+        <span
+          id="02-escala-num"
+          style="display:inline-block; font-size:104px; font-weight:900; line-height:1;
+                 letter-spacing:-0.02em; color:#E85D26;
+                 font-variant-numeric:tabular-nums; font-feature-settings:'tnum' 1;
+                 transform-origin:center center;"
+        >0</span>
+      </div>
+    </div>
+
+    <!-- SCENE 2+ — the 24h clock dial (foreground subject / the recurring stage) -->
+    <div
+      class="clip 02-escala-diallayer"
+      data-start="0"
+      data-duration="3.904"
+      data-track-index="2"
+      style="position:absolute; inset:0;"
+    >
+      <svg
+        id="02-escala-dial"
+        width="600" height="600" viewBox="0 0 600 600"
+        style="position:absolute; left:240px; top:300px; transform-origin:center center; will-change:transform;"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          id="02-escala-ring"
+          cx="300" cy="300" r="250"
+          transform="rotate(-90 300 300)"
+          fill="none" stroke="#E85D26" stroke-width="8" stroke-linecap="round"
+        ></circle>
+        <g id="02-escala-ticks"></g>
+        <g id="02-escala-labels"></g>
+        <line
+          id="02-escala-hand"
+          x1="300" y1="300" x2="300" y2="96"
+          stroke="#E85D26" stroke-width="11" stroke-linecap="round"
+        ></line>
+        <circle id="02-escala-hub" cx="300" cy="300" r="14" fill="#E85D26"></circle>
+      </svg>
+    </div>
+
+    <!-- SCENE 3 — supporting legend -->
+    <div
+      class="clip 02-escala-legendlayer"
+      data-start="0"
+      data-duration="3.904"
+      data-track-index="3"
+      style="position:absolute; inset:0;"
+    >
+      <div
+        id="02-escala-legend"
+        style="position:absolute; left:0; right:0; top:986px; text-align:center;
+               font-size:34px; font-weight:400; line-height:1.4; letter-spacing:0.005em;
+               text-transform:lowercase; color:#888880; padding:0 60px;"
+      ></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+    (function () {
+      var CX = 300, CY = 300, R = 250;
+      var DEG = Math.PI / 180;
+      var SVGNS = "http://www.w3.org/2000/svg";
+
+      // --- build 24 hour ticks (major every 3h) ---
+      var ticksG = document.getElementById("02-escala-ticks");
+      var ticks = [];
+      for (var i = 0; i < 24; i++) {
+        var a = (-90 + i * 15) * DEG;
+        var major = i % 3 === 0;
+        var inner = major ? 226 : 238;
+        var ln = document.createElementNS(SVGNS, "line");
+        ln.setAttribute("x1", (CX + Math.cos(a) * inner).toFixed(2));
+        ln.setAttribute("y1", (CY + Math.sin(a) * inner).toFixed(2));
+        ln.setAttribute("x2", (CX + Math.cos(a) * R).toFixed(2));
+        ln.setAttribute("y2", (CY + Math.sin(a) * R).toFixed(2));
+        ln.setAttribute("stroke", major ? "#888880" : "#505048");
+        ln.setAttribute("stroke-width", major ? "4" : "2");
+        ln.setAttribute("stroke-linecap", "round");
+        ln.style.opacity = "0";
+        ticksG.appendChild(ln);
+        ticks.push(ln);
+      }
+
+      // --- build hour labels every 3h (mono chrome) ---
+      var labelsG = document.getElementById("02-escala-labels");
+      var hours = [0, 3, 6, 9, 12, 15, 18, 21];
+      var labels = [];
+      for (var j = 0; j < hours.length; j++) {
+        var h = hours[j];
+        var la = (-90 + h * 15) * DEG;
+        var lr = 198;
+        var t = document.createElementNS(SVGNS, "text");
+        t.setAttribute("x", (CX + Math.cos(la) * lr).toFixed(2));
+        t.setAttribute("y", (CY + Math.sin(la) * lr).toFixed(2));
+        t.setAttribute("text-anchor", "middle");
+        t.setAttribute("dominant-baseline", "central");
+        t.setAttribute("fill", "#888880");
+        t.setAttribute("font-family", "'Courier New', ui-monospace, monospace");
+        t.setAttribute("font-size", "24");
+        t.setAttribute("letter-spacing", "1");
+        t.textContent = (h < 10 ? "0" + h : "" + h);
+        t.style.opacity = "0";
+        labelsG.appendChild(t);
+        labels.push(t);
+      }
+
+      // --- build the supporting legend as per-word spans ---
+      var legendEl = document.getElementById("02-escala-legend");
+      var words = ["cada", "segundo", "≈", "52", "mil", "anos"];
+      var wordEls = [];
+      for (var k = 0; k < words.length; k++) {
+        var w = document.createElement("span");
+        w.textContent = words[k];
+        w.style.display = "inline-block";
+        w.style.margin = "0 0.16em";
+        w.style.opacity = "0";
+        // "52" gets the lone accent voice; the rest stay quiet cream-muted
+        if (words[k] === "52" || words[k] === "mil" || words[k] === "anos") {
+          w.style.color = "#F0ECE5";
+        }
+        legendEl.appendChild(w);
+        wordEls.push(w);
+      }
+
+      // --- number formatter: dotted thousands, pt-BR style ---
+      var numEl = document.getElementById("02-escala-num");
+      function fmt(n) {
+        return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+      var counter = { v: 0 };
+
+      // --- ring stroke-draw setup (measured length) ---
+      var ring = document.getElementById("02-escala-ring");
+      var ringLen = ring.getTotalLength();
+      ring.style.strokeDasharray = ringLen;
+      ring.style.strokeDashoffset = ringLen;
+
+      // ================= TIMELINE =================
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      // SCENE 1 — count-up + slow push-in from below (0.0–~1.9s)
+      tl.fromTo("#02-escala-kicker",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0);
+
+      tl.fromTo("#02-escala-numwrap",
+        { y: 74 },
+        { y: 0, duration: 1.35, ease: "power2.out" }, 0);
+
+      tl.fromTo("#02-escala-num",
+        { scale: 0.55 },
+        { scale: 1, duration: 1.7, ease: "power3.out" }, 0);
+
+      tl.to(counter,
+        { v: 4540000000, duration: 1.7, ease: "power3.out",
+          onUpdate: function () { numEl.textContent = fmt(counter.v); } }, 0);
+
+      // SCENE 2 — on "espremidos", the number squeezes / collapses into the dial (~1.85s)
+      tl.to("#02-escala-numwrap",
+        { scale: 0.12, opacity: 0, duration: 0.55, ease: "power2.in" }, 1.85);
+      tl.to("#02-escala-kicker",
+        { scale: 0.6, opacity: 0, duration: 0.4, ease: "power2.in" }, 1.85);
+
+      // the dial forms as the number collapses in
+      tl.fromTo("#02-escala-dial",
+        { scale: 0.62, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" }, 1.95);
+
+      // ring draws (SVG stroke-draw)
+      tl.fromTo(ring,
+        { strokeDashoffset: ringLen },
+        { strokeDashoffset: 0, duration: 0.85, ease: "power2.out" }, 2.05);
+
+      // hour ticks + labels reveal, staggered
+      tl.fromTo(ticks,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "power1.out", stagger: 0.018 }, 2.35);
+      tl.fromTo(labels,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "power1.out", stagger: 0.03 }, 2.5);
+
+      // hub + hand: the pointer sweeps to 00h (top / midnight)
+      tl.fromTo("#02-escala-hub",
+        { opacity: 0, scale: 0, svgOrigin: "300 300" },
+        { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 2.55);
+      tl.fromTo("#02-escala-hand",
+        { rotation: -58, opacity: 0, svgOrigin: "300 300" },
+        { rotation: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 2.78);
+
+      // SCENE 3 — quiet per-word reveal of the supporting legend, then hold
+      tl.fromTo(wordEls,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", stagger: 0.085 }, 3.02);
+
+      window.__timelines["02-escala"] = tl;
+    })();
+  </script>
+</template>
