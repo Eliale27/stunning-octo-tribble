@@ -13,7 +13,7 @@
       }
 
       /* full-bleed ground painted on a clip layer, not on #root */
-      .04-microbios-bg {
+      [class~="04-microbios-bg"] {
         position: absolute;
         inset: 0;
         width: 1080px;
@@ -21,7 +21,7 @@
         background: #111111;
       }
       /* faint vignette so the dark ground has depth */
-      .04-microbios-bg::after {
+      [class~="04-microbios-bg"]::after {
         content: "";
         position: absolute;
         inset: 0;
@@ -29,7 +29,7 @@
       }
 
       /* mono chrome kicker */
-      #04-microbios-kicker {
+      [id="04-microbios-kicker"] {
         position: absolute;
         top: 150px;
         left: 0;
@@ -44,7 +44,7 @@
       }
 
       /* the 24h dial */
-      #04-microbios-dial {
+      [id="04-microbios-dial"] {
         position: absolute;
         top: 230px;
         left: 190px;
@@ -52,7 +52,7 @@
         height: 700px;
       }
 
-      .04-microbios-mono-label {
+      [class~="04-microbios-mono-label"] {
         font-family: "IBM Plex Mono", monospace;
         font-weight: 500;
         font-size: 21px;
@@ -60,7 +60,7 @@
         fill: #505048;
       }
 
-      .04-microbios-dot {
+      [class~="04-microbios-dot"] {
         fill: #F0ECE5;
         transform-box: fill-box;
         transform-origin: center;
@@ -68,7 +68,7 @@
       }
 
       /* the two staccato negations, hard-cut in the same spot */
-      .04-microbios-neg {
+      [class~="04-microbios-neg"] {
         position: absolute;
         left: 0;
         right: 0;
@@ -82,7 +82,7 @@
         color: #F0ECE5;
         text-transform: lowercase;
       }
-      .04-microbios-neg span {
+      [class~="04-microbios-neg"] span {
         display: inline-block;
         opacity: 0;
         white-space: pre;
@@ -147,7 +147,7 @@
         var byId = function (id) { return document.getElementById(id); };
         var disc = byId("04-microbios-disc");
         var ticks = byId("04-microbios-ticks");
-        var labels = document.querySelectorAll("#04-microbios-dial .04-microbios-mono-label");
+        var labels = document.querySelectorAll('[id="04-microbios-dial"] [class~="04-microbios-mono-label"]');
         var dots = document.querySelectorAll('[id^="04-microbios-dot"]');
         var arc = byId("04-microbios-arc");
         var pointer = byId("04-microbios-pointer");
@@ -156,8 +156,8 @@
         var animaisWords = byId("04-microbios-animais").querySelectorAll("span");
 
         // Scene 1 - dial builds in the upper third
-        tl.fromTo(disc, { opacity: 0, scale: 0.9, transformOrigin: "350px 350px" },
-                        { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" }, 0);
+        tl.fromTo(disc, { opacity: 0, scale: 0.9, svgOrigin: "350 350" },
+                        { opacity: 1, scale: 1, svgOrigin: "350 350", duration: 0.35, ease: "power2.out" }, 0);
         tl.fromTo(ticks, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.15);
         tl.fromTo(labels, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out" }, 0.2);
         tl.fromTo(kicker, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.1);

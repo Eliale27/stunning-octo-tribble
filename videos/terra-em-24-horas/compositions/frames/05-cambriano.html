@@ -1,0 +1,249 @@
+<template>
+  <style>
+    /* 05-cambriano — VISUAL PEAK, inverted register: fire-orange ground / ink-black ink.
+       Class & id names are prefixed 05-cambriano-* (start with a digit, so CSS uses
+       attribute selectors and JS uses getElementById to avoid identifier-escaping bugs). */
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Barlow", "Arial Black", system-ui, sans-serif;
+    }
+    [class~="05-cambriano-bg"] {
+      position: absolute;
+      inset: 0;
+      background: #E85D26; /* fire-orange ground — the inverted register */
+    }
+    [class~="05-cambriano-stage"] {
+      position: absolute;
+      inset: 0;
+    }
+    /* clock — thin ink-black line, centered ~46% */
+    [id="05-cambriano-clock"] {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      width: 600px;
+      height: 600px;
+      z-index: 1;
+    }
+    [id="05-cambriano-dial"] {
+      position: absolute;
+      inset: 0;
+      width: 600px;
+      height: 600px;
+      overflow: visible;
+    }
+    [id="05-cambriano-hand"] {
+      position: absolute;
+      left: calc(50% - 2px);
+      top: calc(50% - 252px);
+      width: 4px;
+      height: 252px;
+      background: #111111;
+      border-radius: 2px;
+    }
+    [id="05-cambriano-hub"] {
+      position: absolute;
+      left: calc(50% - 9px);
+      top: calc(50% - 9px);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #111111;
+    }
+    [id="05-cambriano-label"] {
+      position: absolute;
+      left: 44px;
+      top: 92px;
+      font-family: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+      font-weight: 500;
+      font-size: 2.2cqw;
+      letter-spacing: 0.14em;
+      color: #111111;
+    }
+    /* life silhouettes swarm */
+    [class~="05-cambriano-swarm"] {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+    [class~="05-cambriano-sil"] {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      line-height: 0;
+    }
+    [class~="05-cambriano-sil"] svg {
+      display: block;
+    }
+    /* payoff word */
+    [id="05-cambriano-vida"] {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      z-index: 3;
+      font-family: "Barlow", "Arial Black", system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 16cqw;
+      line-height: 0.88;
+      letter-spacing: -0.04em;
+      color: #111111;
+      white-space: nowrap;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="05-cambriano"
+    data-start="0"
+    data-duration="3.456"
+    data-width="1080"
+    data-height="1920"
+  >
+    <!-- full-bleed fire-orange ground on its own clip layer (not #root) -->
+    <div class="clip 05-cambriano-bg" data-start="0" data-duration="3.456" data-track-index="0"></div>
+
+    <!-- content stage -->
+    <div class="clip 05-cambriano-stage" data-start="0" data-duration="3.456" data-track-index="1">
+      <div id="05-cambriano-clock">
+        <svg id="05-cambriano-dial" viewBox="0 0 600 600">
+          <circle cx="300" cy="300" r="290" fill="none" stroke="#111111" stroke-width="2" />
+          <g id="05-cambriano-ticks"></g>
+        </svg>
+        <div id="05-cambriano-hand"></div>
+        <div id="05-cambriano-hub"></div>
+        <div id="05-cambriano-label">21:00</div>
+      </div>
+
+      <div class="05-cambriano-swarm"></div>
+
+      <div id="05-cambriano-vida">vida</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+    (function () {
+      var FRAME = "05-cambriano";
+
+      // ---- clock ticks: 24h dial, thin ink-black, cardinals longer ----
+      var ticks = document.getElementById("05-cambriano-ticks");
+      if (ticks) {
+        var svgNS = "http://www.w3.org/2000/svg";
+        var mk = "";
+        for (var k = 0; k < 24; k++) {
+          var th = (k * 15) * Math.PI / 180;         // clockwise from top
+          var cardinal = (k % 6 === 0);
+          var rOut = 290;
+          var rIn = cardinal ? 262 : 276;
+          var x1 = 300 + Math.sin(th) * rOut;
+          var y1 = 300 - Math.cos(th) * rOut;
+          var x2 = 300 + Math.sin(th) * rIn;
+          var y2 = 300 - Math.cos(th) * rIn;
+          mk += '<line x1="' + x1.toFixed(2) + '" y1="' + y1.toFixed(2) +
+                '" x2="' + x2.toFixed(2) + '" y2="' + y2.toFixed(2) +
+                '" stroke="#111111" stroke-width="' + (cardinal ? 3 : 1.5) +
+                '" stroke-opacity="' + (cardinal ? 1 : 0.5) + '" />';
+        }
+        ticks.innerHTML = mk;
+      }
+
+      // ---- ink-black life silhouettes (simple SVG shapes) ----
+      var SHAPES = {
+        trilobite:
+          '<svg width="60" height="88" viewBox="0 0 70 100">' +
+          '<path d="M35 4 C52 4 60 22 60 40 C60 74 48 96 35 96 C22 96 10 74 10 40 C10 22 18 4 35 4 Z" fill="#111111"/>' +
+          '<g stroke="#E85D26" stroke-width="3" stroke-linecap="round">' +
+          '<line x1="35" y1="10" x2="35" y2="92"/>' +
+          '<line x1="15" y1="40" x2="55" y2="40"/><line x1="12" y1="54" x2="58" y2="54"/>' +
+          '<line x1="14" y1="68" x2="56" y2="68"/><line x1="18" y1="82" x2="52" y2="82"/></g></svg>',
+        fish:
+          '<svg width="90" height="54" viewBox="0 0 100 60">' +
+          '<path d="M6 30 C20 8 55 8 74 26 L94 8 L88 30 L94 52 L74 34 C55 52 20 52 6 30 Z" fill="#111111"/>' +
+          '<circle cx="26" cy="26" r="4" fill="#E85D26"/></svg>',
+        leaf:
+          '<svg width="58" height="86" viewBox="0 0 70 100">' +
+          '<path d="M35 4 C60 28 60 64 35 96 C10 64 10 28 35 4 Z" fill="#111111"/>' +
+          '<g stroke="#E85D26" stroke-width="3" stroke-linecap="round">' +
+          '<line x1="35" y1="12" x2="35" y2="90"/>' +
+          '<line x1="35" y1="34" x2="50" y2="26"/><line x1="35" y1="34" x2="20" y2="26"/>' +
+          '<line x1="35" y1="56" x2="52" y2="48"/><line x1="35" y1="56" x2="18" y2="48"/></g></svg>',
+        shell:
+          '<svg width="86" height="76" viewBox="0 0 100 90">' +
+          '<path d="M50 86 L8 34 A44 44 0 0 1 92 34 Z" fill="#111111"/>' +
+          '<g stroke="#E85D26" stroke-width="3" stroke-linecap="round">' +
+          '<line x1="50" y1="86" x2="16" y2="40"/><line x1="50" y1="86" x2="33" y2="30"/>' +
+          '<line x1="50" y1="86" x2="50" y2="26"/><line x1="50" y1="86" x2="67" y2="30"/>' +
+          '<line x1="50" y1="86" x2="84" y2="40"/></g></svg>'
+      };
+      var ORDER = ["trilobite", "fish", "leaf", "shell"];
+
+      // ---- deterministic radial scatter targets (golden angle, no Math.random) ----
+      var N = 10;
+      var GOLDEN = Math.PI * (3 - Math.sqrt(5)); // ~2.39943 rad
+      var swarm = document.querySelector('[class~="05-cambriano-swarm"]');
+      var sils = [];
+      var targets = [];
+      for (var i = 0; i < N; i++) {
+        var a = i * GOLDEN;
+        var R = 250 + (i % 4) * 52;                 // 250, 302, 354, 406 — rings, in frame
+        targets.push({ x: Math.cos(a) * R, y: Math.sin(a) * R });
+        var el = document.createElement("div");
+        el.className = "05-cambriano-sil";
+        el.innerHTML = SHAPES[ORDER[i % ORDER.length]];
+        if (swarm) swarm.appendChild(el);
+        sils.push(el);
+      }
+
+      // ---- single paused timeline ----
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      var clock = document.getElementById("05-cambriano-clock");
+      var hub = document.getElementById("05-cambriano-hub");
+      var label = document.getElementById("05-cambriano-label");
+      var hand = document.getElementById("05-cambriano-hand");
+      var vida = document.getElementById("05-cambriano-vida");
+
+      // Scene 1 (~0.0-1.1s): inverted clock zooms in; pointer jumps to 21h; "21:00" label.
+      tl.fromTo(clock,
+        { xPercent: -50, yPercent: -50, scale: 1.28, opacity: 0, filter: "blur(20px)" },
+        { xPercent: -50, yPercent: -50, scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.55, ease: "power3.out" },
+        0);
+      tl.fromTo(hub,
+        { opacity: 0, scale: 0 },
+        { opacity: 1, scale: 1, duration: 0.32, ease: "back.out(2)" },
+        0.34);
+      tl.fromTo(label,
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: 0.36, ease: "power2.out" },
+        0.42);
+      tl.fromTo(hand,
+        { rotation: 205, transformOrigin: "50% 100%" },
+        { rotation: 315, transformOrigin: "50% 100%", duration: 0.5, ease: "back.out(1.7)" },
+        0.56); // 315deg = 21h on a 24h dial (upper-left)
+
+      // Scene 2 (~1.2-2.4s): on "de repente" the life forms explode radially, staggered,
+      // with a short motion-blur streak; back.out seats them (the micro-settle).
+      sils.forEach(function (el, idx) {
+        var t = targets[idx];
+        tl.fromTo(el,
+          { xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 0.35, opacity: 0, filter: "blur(14px)" },
+          { xPercent: -50, yPercent: -50, x: t.x, y: t.y, scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.72, ease: "back.out(1.5)" },
+          1.2 + idx * 0.05);
+      });
+
+      // Scene 3 (~2.45-3.15s, holds): "vida" spring-pops center and holds.
+      tl.fromTo(vida,
+        { xPercent: -50, yPercent: -50, scale: 0, opacity: 0 },
+        { xPercent: -50, yPercent: -50, scale: 1, opacity: 1, duration: 0.7, ease: "elastic.out(1, 0.55)" },
+        2.45);
+
+      window.__timelines[FRAME] = tl;
+    })();
+  </script>
+</template>
