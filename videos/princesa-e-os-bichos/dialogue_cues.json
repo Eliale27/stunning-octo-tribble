@@ -1,0 +1,236 @@
+[
+  {
+    "scene": 1,
+    "title": "Abertura (título)",
+    "lines": [
+      {
+        "character": "NARRADOR",
+        "text": "Era uma vez um reino onde a água vinha cantando da montanha.",
+        "start_s": 0.12,
+        "end_s": 3.533
+      }
+    ]
+  },
+  {
+    "scene": 2,
+    "title": "O rio parou",
+    "lines": [
+      {
+        "character": "NARRADOR",
+        "text": "Até que, numa manhã, o rio simplesmente parou.",
+        "start_s": 0.12,
+        "end_s": 2.787
+      },
+      {
+        "character": "LIA",
+        "text": "O rio sumiu. E ninguém no castelo sabe por quê.",
+        "start_s": 3.087,
+        "end_s": 5.796
+      }
+    ]
+  },
+  {
+    "scene": 3,
+    "title": "Chega o Tico",
+    "lines": [
+      {
+        "character": "TICO",
+        "text": "Princesa! Princesa! Eu vi! Lá em cima, na montanha!",
+        "start_s": 0.12,
+        "end_s": 3.188
+      },
+      {
+        "character": "LIA",
+        "text": "Calma, Tico. Respira. O que você viu?",
+        "start_s": 3.488,
+        "end_s": 5.792
+      },
+      {
+        "character": "TICO",
+        "text": "A água tá presa! Presa atrás de alguma coisa!",
+        "start_s": 6.092,
+        "end_s": 8.884
+      }
+    ]
+  },
+  {
+    "scene": 4,
+    "title": "Gaspar reclama",
+    "lines": [
+      {
+        "character": "GASPAR",
+        "text": "Presa? Ótimo. Meu brejo virou uma poça de lama.",
+        "start_s": 0.12,
+        "end_s": 3.105
+      },
+      {
+        "character": "LIA",
+        "text": "Então vem comigo, Gaspar. Vamos ver de perto.",
+        "start_s": 3.405,
+        "end_s": 6.285
+      },
+      {
+        "character": "GASPAR",
+        "text": "Eu? Andando? Essa história tá ficando cara.",
+        "start_s": 6.585,
+        "end_s": 9.048
+      }
+    ]
+  },
+  {
+    "scene": 5,
+    "title": "Subindo a montanha",
+    "lines": [
+      {
+        "character": "NARRADOR",
+        "text": "E lá foram os três, trilha acima, seguindo o leito seco.",
+        "start_s": 0.12,
+        "end_s": 3.256
+      }
+    ]
+  },
+  {
+    "scene": 6,
+    "title": "O urso",
+    "lines": [
+      {
+        "character": "BRUNO",
+        "text": "Quem anda pisando no meu bosque?",
+        "start_s": 0.12,
+        "end_s": 2.067
+      },
+      {
+        "character": "LIA",
+        "text": "Sou eu, Lia. A gente procura a água.",
+        "start_s": 2.367,
+        "end_s": 4.586
+      },
+      {
+        "character": "BRUNO",
+        "text": "A água... eu também procuro. Faz três dias que eu não bebo.",
+        "start_s": 4.886,
+        "end_s": 8.582
+      }
+    ]
+  },
+  {
+    "scene": 7,
+    "title": "A descoberta",
+    "lines": [
+      {
+        "character": "TICO",
+        "text": "Ali! Olha ali embaixo!",
+        "start_s": 0.12,
+        "end_s": 1.61
+      },
+      {
+        "character": "NARRADOR",
+        "text": "A tempestade tinha derrubado um tronco enorme. Pedras e galhos entupiram a passagem.",
+        "start_s": 1.91,
+        "end_s": 7.072
+      }
+    ]
+  },
+  {
+    "scene": 8,
+    "title": "Ninguém sozinho",
+    "lines": [
+      {
+        "character": "BRUNO",
+        "text": "Sozinho eu empurro o tronco. Mas não enxergo o buraco.",
+        "start_s": 0.12,
+        "end_s": 3.475
+      },
+      {
+        "character": "TICO",
+        "text": "Eu enxergo tudo! Mas eu não empurro nada.",
+        "start_s": 3.775,
+        "end_s": 6.309
+      },
+      {
+        "character": "GASPAR",
+        "text": "E eu caibo em qualquer fresta. Só isso.",
+        "start_s": 6.609,
+        "end_s": 8.966
+      },
+      {
+        "character": "LIA",
+        "text": "Então cada um faz a sua parte. Juntos.",
+        "start_s": 9.266,
+        "end_s": 11.677
+      }
+    ]
+  },
+  {
+    "scene": 9,
+    "title": "Trabalhando juntos",
+    "lines": [
+      {
+        "character": "LIA",
+        "text": "Tico, de cima! Gaspar, na fresta! Bruno, agora!",
+        "start_s": 0.12,
+        "end_s": 3.0
+      },
+      {
+        "character": "TICO",
+        "text": "Mais pra esquerda! Isso!",
+        "start_s": 3.3,
+        "end_s": 4.853
+      },
+      {
+        "character": "BRUNO",
+        "text": "Segura... firme...",
+        "start_s": 5.153,
+        "end_s": 6.412
+      }
+    ]
+  },
+  {
+    "scene": 10,
+    "title": "A água volta",
+    "lines": [
+      {
+        "character": "NARRADOR",
+        "text": "O tronco cedeu. E a montanha voltou a cantar.",
+        "start_s": 0.12,
+        "end_s": 2.851
+      },
+      {
+        "character": "GASPAR",
+        "text": "Ah... Isso sim é um brejo decente.",
+        "start_s": 3.151,
+        "end_s": 5.055
+      }
+    ]
+  },
+  {
+    "scene": 11,
+    "title": "O reino agradece",
+    "lines": [
+      {
+        "character": "NARRADOR",
+        "text": "A água desceu correndo até o castelo, e o reino inteiro veio ver.",
+        "start_s": 0.12,
+        "end_s": 4.024
+      },
+      {
+        "character": "LIA",
+        "text": "Não fui eu que achei o caminho. Foi quem ninguém escuta.",
+        "start_s": 4.324,
+        "end_s": 7.417
+      }
+    ]
+  },
+  {
+    "scene": 12,
+    "title": "Moral (fecho)",
+    "lines": [
+      {
+        "character": "NARRADOR",
+        "text": "Quem escuta os pequenos, encontra o que os grandes não veem.",
+        "start_s": 0.12,
+        "end_s": 3.789
+      }
+    ]
+  }
+]
