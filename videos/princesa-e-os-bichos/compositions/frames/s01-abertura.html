@@ -1,0 +1,302 @@
+<template>
+  <style>
+    @font-face{font-family:'Fredoka';font-weight:600;font-display:block;src:url("assets/fonts/fredoka-600.woff2") format("woff2")}
+    @font-face{font-family:'Quicksand';font-weight:600;font-display:block;src:url("assets/fonts/quicksand-600.woff2") format("woff2")}
+
+    #root{position:relative;width:1920px;height:1080px;overflow:hidden;container-type:size;font-family:'Quicksand',sans-serif}
+
+    .s01-abertura-layer{position:absolute;left:0;top:0;width:1920px;height:1080px}
+    .s01-abertura-layer > svg{display:block;width:1920px;height:1080px}
+    .s01-abertura-star{display:block}
+
+    /* transform boxes for SVG pieces GSAP animates */
+    .s01-abertura-pop{transform-box:fill-box;transform-origin:50% 100%}
+    .s01-abertura-pop-c{transform-box:fill-box;transform-origin:50% 50%}
+
+    /* ---- title block ---- */
+    .s01-abertura-title-wrap{position:absolute;left:120px;top:196px;width:1000px}
+
+    .s01-abertura-badge{display:inline-block;font-family:'Fredoka',sans-serif;font-weight:600;
+      font-size:1.55cqw;letter-spacing:0.02em;color:#2D2D2D;background:#FDE68A;
+      border:3px solid #2D2D2D;border-radius:50px;padding:10px 30px 12px;white-space:nowrap;
+      box-shadow:4px 4px 0 #2D2D2D;transform-origin:left center}
+
+    .s01-abertura-title{margin-top:26px}
+    .s01-abertura-line{font-family:'Fredoka',sans-serif;font-weight:600;font-size:5.4cqw;
+      line-height:1.12;letter-spacing:0.02em;color:#FFFFFF;text-shadow:6px 6px 0 #2D2D2D;
+      transform-origin:left center;white-space:nowrap}
+
+    .s01-abertura-star{position:absolute;transform-origin:50% 50%}
+    .s01-abertura-star-a{left:806px;top:150px}
+    .s01-abertura-star-b{left:52px;top:520px}
+  </style>
+
+  <div id="root" data-composition-id="s01-abertura" data-start="0" data-duration="8" data-width="1920" data-height="1080">
+
+    <!-- ============ track 0 · full-bleed kingdom valley ============ -->
+    <div class="clip s01-abertura-layer s01-abertura-scene" data-start="0" data-duration="8" data-track-index="0">
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- sky (full-bleed ground) -->
+        <rect id="s01-abertura-sky" x="0" y="0" width="1920" height="1080" fill="#A8D8F0"/>
+
+        <!-- sun ornament (behind the mountains) -->
+        <g transform="translate(0,0)">
+          <g id="s01-abertura-sun" class="s01-abertura-pop-c">
+            <g stroke="#2D2D2D" stroke-width="3" stroke-linecap="round">
+              <line x1="1768" y1="170" x2="1790" y2="170"/>
+              <line x1="1745" y1="115" x2="1761" y2="99"/>
+              <line x1="1690" y1="92" x2="1690" y2="70"/>
+              <line x1="1635" y1="115" x2="1619" y2="99"/>
+              <line x1="1612" y1="170" x2="1590" y2="170"/>
+              <line x1="1635" y1="225" x2="1619" y2="241"/>
+              <line x1="1690" y1="248" x2="1690" y2="270"/>
+              <line x1="1745" y1="225" x2="1761" y2="241"/>
+            </g>
+            <circle cx="1690" cy="170" r="64" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+        </g>
+
+        <!-- back ridge, no outline -->
+        <path id="s01-abertura-ridge" d="M520 1080 L900 520 L1300 1080 Z" fill="#DCE5EE"/>
+
+        <!-- two背 mountains, no outline -->
+        <g id="s01-abertura-mtn-a">
+          <path d="M-120 1080 L470 250 L1060 1080 Z" fill="#B9C7D6"/>
+          <path d="M470 250 L566 385 Q512 356 470 378 Q428 356 374 385 Z" fill="#F5F0E6"/>
+        </g>
+        <g id="s01-abertura-mtn-b">
+          <path d="M720 1080 L1180 360 L1680 1080 Z" fill="#CBD6E2"/>
+          <path d="M1180 360 L1258 482 Q1218 458 1180 474 Q1142 458 1102 482 Z" fill="#F5F0E6"/>
+        </g>
+
+        <!-- mint hill (slides up) -->
+        <path id="s01-abertura-hill" d="M-100 1080 Q480 690 1180 770 Q1620 818 2020 740 L2020 1080 L-100 1080 Z"
+              fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+
+        <!-- turquoise river — stroke draw, mountain → frame base -->
+        <path id="s01-abertura-river-outline" fill="none" stroke="#2D2D2D" stroke-width="50" stroke-linecap="round"
+              d="M905 545 C946 655 852 706 884 802 C916 898 758 946 802 1030 C826 1075 818 1092 812 1120"/>
+        <path id="s01-abertura-river-water" fill="none" stroke="#7ECDC0" stroke-width="40" stroke-linecap="round"
+              d="M905 545 C946 655 852 706 884 802 C916 898 758 946 802 1030 C826 1075 818 1092 812 1120"/>
+
+        <!-- water ripples -->
+        <g transform="translate(884,706)"><g class="s01-abertura-ripple s01-abertura-pop-c">
+          <path d="M-24 0 Q-10 -11 4 0 Q18 11 32 0" fill="none" stroke="#F5F0E6" stroke-width="6" stroke-linecap="round"/>
+        </g></g>
+        <g transform="translate(858,838)"><g class="s01-abertura-ripple s01-abertura-pop-c">
+          <path d="M-26 0 Q-11 -11 4 0 Q19 11 34 0" fill="none" stroke="#F5F0E6" stroke-width="6" stroke-linecap="round"/>
+        </g></g>
+        <g transform="translate(806,962)"><g class="s01-abertura-ripple s01-abertura-pop-c">
+          <path d="M-26 0 Q-11 -12 4 0 Q19 12 34 0" fill="none" stroke="#F5F0E6" stroke-width="6" stroke-linecap="round"/>
+        </g></g>
+
+        <!-- trees -->
+        <g transform="translate(300,800)"><g class="s01-abertura-tree s01-abertura-pop">
+          <rect x="-11" y="0" width="22" height="80" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          <circle cx="0" cy="-26" r="52" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        </g></g>
+        <g transform="translate(560,722)"><g class="s01-abertura-tree s01-abertura-pop">
+          <rect x="-11" y="0" width="22" height="80" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          <circle cx="0" cy="-26" r="52" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+        </g></g>
+        <g transform="translate(1712,702)"><g class="s01-abertura-tree s01-abertura-pop">
+          <rect x="-11" y="0" width="22" height="80" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          <circle cx="0" cy="-26" r="52" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        </g></g>
+
+        <!-- daisy ornaments on the hill -->
+        <g transform="translate(676,852)"><g class="s01-abertura-daisy s01-abertura-pop-c">
+          <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3">
+            <ellipse cx="0" cy="-19" rx="9" ry="14"/><ellipse cx="19" cy="0" rx="14" ry="9"/>
+            <ellipse cx="0" cy="19" rx="9" ry="14"/><ellipse cx="-19" cy="0" rx="14" ry="9"/>
+          </g>
+          <circle cx="0" cy="0" r="9" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3"/>
+        </g></g>
+        <g transform="translate(1156,824)"><g class="s01-abertura-daisy s01-abertura-pop-c">
+          <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3">
+            <ellipse cx="0" cy="-17" rx="8" ry="13"/><ellipse cx="17" cy="0" rx="13" ry="8"/>
+            <ellipse cx="0" cy="17" rx="8" ry="13"/><ellipse cx="-17" cy="0" rx="13" ry="8"/>
+          </g>
+          <circle cx="0" cy="0" r="8" fill="#F8635F" stroke="#2D2D2D" stroke-width="3"/>
+        </g></g>
+
+        <!-- butter castle with coral roofs (right third) -->
+        <g transform="translate(1230,526)"><g id="s01-abertura-castle" class="s01-abertura-pop">
+          <!-- hard offset shadow -->
+          <g fill="#2D2D2D">
+            <rect x="13" y="41" width="86" height="226"/>
+            <rect x="95" y="93" width="176" height="174"/>
+            <rect x="265" y="61" width="86" height="206"/>
+            <path d="M1 41 L56 -27 L111 41 Z"/>
+            <path d="M83 93 L183 33 L283 93 Z"/>
+            <path d="M253 61 L308 -1 L363 61 Z"/>
+          </g>
+          <!-- towers + keep -->
+          <rect x="6" y="34" width="86" height="226" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3"/>
+          <rect x="88" y="86" width="176" height="174" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3"/>
+          <rect x="258" y="54" width="86" height="206" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3"/>
+          <!-- coral roofs -->
+          <path d="M-6 34 L49 -34 L104 34 Z" fill="#F8635F" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M76 86 L176 26 L276 86 Z" fill="#F8635F" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M246 54 L301 -8 L356 54 Z" fill="#F8635F" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+          <!-- windows -->
+          <rect x="36" y="94" width="26" height="36" rx="13" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="3"/>
+          <rect x="288" y="112" width="26" height="36" rx="13" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="3"/>
+          <rect x="112" y="122" width="26" height="34" rx="13" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="3"/>
+          <rect x="214" y="122" width="26" height="34" rx="13" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="3"/>
+          <!-- gate -->
+          <path d="M148 260 L148 200 Q176 170 204 200 L204 260 Z" fill="#2D2D2D"/>
+          <!-- flag -->
+          <line x1="176" y1="26" x2="176" y2="-38" stroke="#2D2D2D" stroke-width="4" stroke-linecap="round"/>
+          <path d="M176 -36 L224 -22 L176 -8 Z" fill="#F8635F" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g></g>
+
+      </svg>
+    </div>
+
+    <!-- ============ track 1 · drifting cream clouds ============ -->
+    <div class="clip s01-abertura-layer s01-abertura-clouds" data-start="4.4" data-duration="3.6" data-track-index="1">
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(1168,206) scale(1.25)"><g class="s01-abertura-cloud s01-abertura-pop-c">
+          <path d="M8 34 Q-10 34 -10 20 Q-10 2 12 6 Q18 -18 46 -15 Q64 -34 86 -16 Q112 -22 116 4 Q138 2 138 20 Q138 34 118 34 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g></g>
+        <g transform="translate(1520,404) scale(0.95)"><g class="s01-abertura-cloud s01-abertura-pop-c">
+          <path d="M8 34 Q-10 34 -10 20 Q-10 2 12 6 Q18 -18 46 -15 Q64 -34 86 -16 Q112 -22 116 4 Q138 2 138 20 Q138 34 118 34 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g></g>
+        <g transform="translate(150,646) scale(1.1)"><g class="s01-abertura-cloud s01-abertura-pop-c">
+          <path d="M8 34 Q-10 34 -10 20 Q-10 2 12 6 Q18 -18 46 -15 Q64 -34 86 -16 Q112 -22 116 4 Q138 2 138 20 Q138 34 118 34 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g></g>
+      </svg>
+    </div>
+
+    <!-- ============ track 2 · title card ============ -->
+    <div class="clip s01-abertura-layer s01-abertura-titles" data-start="4.4" data-duration="3.6" data-track-index="2">
+      <div class="s01-abertura-title-wrap">
+        <div class="s01-abertura-badge">Uma historinha</div>
+        <div class="s01-abertura-title">
+          <div class="s01-abertura-line">A Princesa</div>
+          <div class="s01-abertura-line">e o Rio</div>
+          <div class="s01-abertura-line">que Parou</div>
+        </div>
+        <svg class="s01-abertura-star s01-abertura-star-a" width="70" height="70" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+          <path d="M35 6 L43 27 L64 35 L43 43 L35 64 L27 43 L6 35 L27 27 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+        <svg class="s01-abertura-star s01-abertura-star-b" width="56" height="56" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+          <path d="M35 6 L43 27 L64 35 L43 43 L35 64 L27 43 L6 35 L27 27 Z" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var root = document.querySelector('[data-composition-id="s01-abertura"]');
+      if (!root) { return; }
+      var q = function (sel) { return root.querySelector(sel); };
+      var qa = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---------- Scene 1 (0.0–2.0s) — sky, mountains, hill, castle ---------- */
+      tl.fromTo(q('#s01-abertura-mtn-a'),
+        { y: 70, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.75, ease: 'power2.out' }, 0.0);
+
+      tl.fromTo(q('#s01-abertura-mtn-b'),
+        { y: 70, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.75, ease: 'power2.out' }, 0.14);
+
+      tl.fromTo(q('#s01-abertura-ridge'),
+        { y: 60, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 0.28);
+
+      tl.fromTo(q('#s01-abertura-sun'),
+        { scale: 0.3, rotation: -40, opacity: 0 },
+        { scale: 1, rotation: 0, opacity: 1, duration: 0.9, ease: 'back.out(1.9)' }, 0.42);
+
+      /* mint hill slides up */
+      tl.fromTo(q('#s01-abertura-hill'),
+        { y: 340 },
+        { y: 0, duration: 1.15, ease: 'power3.out' }, 0.55);
+
+      /* trees rooted on the hill */
+      tl.fromTo(qa('.s01-abertura-tree'),
+        { scaleY: 0.05, scaleX: 0.6, opacity: 0 },
+        { scaleY: 1, scaleX: 1, opacity: 1, duration: 0.62, ease: 'back.out(2)', stagger: 0.13 }, 1.02);
+
+      /* butter castle rises on the right third */
+      tl.fromTo(q('#s01-abertura-castle'),
+        { y: 150, scaleY: 0.82, opacity: 0 },
+        { y: 0, scaleY: 1, opacity: 1, duration: 0.9, ease: 'back.out(1.5)' }, 1.22);
+
+      /* ---------- Scene 2 (2.0–4.5s) — the river draws itself ---------- */
+      var outline = q('#s01-abertura-river-outline');
+      var water = q('#s01-abertura-river-water');
+      var rawLen = (outline && outline.getTotalLength) ? outline.getTotalLength() : 0;
+      var len = (rawLen > 1) ? Math.ceil(rawLen) + 4 : 780;
+      gsap.set([outline, water], { strokeDasharray: len });
+
+      tl.fromTo(outline,
+        { strokeDashoffset: len },
+        { strokeDashoffset: 0, duration: 2.15, ease: 'power1.inOut' }, 2.0);
+      tl.fromTo(water,
+        { strokeDashoffset: len },
+        { strokeDashoffset: 0, duration: 2.15, ease: 'power1.inOut' }, 2.14);
+
+      /* daisies pop on the hill while the water runs */
+      tl.fromTo(qa('.s01-abertura-daisy'),
+        { scale: 0, rotation: -60, opacity: 0 },
+        { scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: 'back.out(2.6)', stagger: 0.22 }, 2.55);
+
+      /* ripples catch the light on the drawn water */
+      tl.fromTo(qa('.s01-abertura-ripple'),
+        { scale: 0.2, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(2.2)', stagger: 0.26 }, 3.95);
+
+      /* ---------- Scene 3 (4.5–8.0s) — title spring-pop + clouds, held read ---------- */
+      tl.fromTo(q('.s01-abertura-badge'),
+        { scale: 0.45, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.55, ease: 'back.out(2.8)' }, 4.42);
+
+      tl.fromTo(qa('.s01-abertura-line'),
+        { scale: 0.6, y: 30, opacity: 0 },
+        { scale: 1, y: 0, opacity: 1, duration: 0.68, ease: 'back.out(2.2)', stagger: 0.12 }, 4.56);
+
+      /* three cream clouds drift slowly across the sky */
+      var clouds = qa('.s01-abertura-cloud');
+      tl.fromTo(clouds[0], { x: -70, opacity: 0 }, { x: -24, opacity: 1, duration: 0.95, ease: 'power2.out' }, 4.5);
+      tl.to(clouds[0], { x: 44, duration: 2.5, ease: 'none' }, 5.45);
+
+      tl.fromTo(clouds[1], { x: 66, opacity: 0 }, { x: 26, opacity: 1, duration: 0.95, ease: 'power2.out' }, 4.82);
+      tl.to(clouds[1], { x: -30, duration: 2.2, ease: 'none' }, 5.77);
+
+      tl.fromTo(clouds[2], { x: -58, opacity: 0 }, { x: -18, opacity: 1, duration: 0.95, ease: 'power2.out' }, 5.14);
+      tl.to(clouds[2], { x: 34, duration: 1.9, ease: 'none' }, 6.09);
+
+      /* water keeps running under the held title */
+      tl.to(qa('.s01-abertura-ripple')[0], { x: -10, y: 34, duration: 2.6, ease: 'none' }, 5.3);
+      tl.to(qa('.s01-abertura-ripple')[1], { x: -14, y: 30, duration: 2.6, ease: 'none' }, 5.5);
+      tl.to(qa('.s01-abertura-ripple')[2], { x: -6, y: 26, duration: 2.6, ease: 'none' }, 5.7);
+
+      /* two sparkle stars land last */
+      tl.fromTo(q('.s01-abertura-star-a'),
+        { scale: 0, rotation: -90, opacity: 0 },
+        { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: 'back.out(3)' }, 5.62);
+      tl.fromTo(q('.s01-abertura-star-b'),
+        { scale: 0, rotation: 90, opacity: 0 },
+        { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: 'back.out(3)' }, 6.05);
+
+      /* hold the read to the end of the frame */
+      tl.set(q('#s01-abertura-sky'), { opacity: 1 }, 8);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s01-abertura"] = tl;
+    })();
+  </script>
+</template>
