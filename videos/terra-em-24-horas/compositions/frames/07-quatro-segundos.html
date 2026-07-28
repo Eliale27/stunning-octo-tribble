@@ -1,0 +1,197 @@
+<template>
+  <style>
+    /* ===== 07-quatro-segundos — payoff / held frame =====
+       No font files ship with this project (no assets/fonts/, no Barlow/IBM Plex Mono .woff2),
+       so we use generic families only — never name a font that has no file. */
+
+    [data-composition-id="07-quatro-segundos"] {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: transparent;
+      font-family: sans-serif;
+    }
+
+    /* full-bleed ground on a clip layer (never on #root) */
+    [id="07-quatro-segundos-ground"] {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      background: #111111;
+    }
+
+    /* background clock dial (23h59) — dimmed ~40% */
+    [id="07-quatro-segundos-dial"] {
+      position: absolute;
+      left: 110px;
+      top: 470px;
+      width: 860px;
+      height: 860px;
+      opacity: 0.42;
+      transform-origin: 50% 50%;
+    }
+    [id="07-quatro-segundos-dial"] svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* "e nós?" — cream display, centered upper */
+    [id="07-quatro-segundos-enos"] {
+      position: absolute;
+      top: 360px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: #F0ECE5;
+      font-family: sans-serif;
+      font-weight: 900;
+      font-size: 168px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    /* countdown row — big fire-orange clock + tiny "humanos" */
+    [id="07-quatro-segundos-countrow"] {
+      position: absolute;
+      top: 730px;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 26px;
+    }
+
+    [id="07-quatro-segundos-countdown"] {
+      color: #E85D26;
+      font-family: sans-serif;
+      font-weight: 900;
+      font-size: 244px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      transform-origin: 50% 60%;
+      white-space: nowrap;
+    }
+
+    /* seconds-units digit slot — all digits stacked in one cell (tabular, no shift) */
+    [id="07-quatro-segundos-slot"] {
+      display: inline-grid;
+      text-align: center;
+    }
+    [id="07-quatro-segundos-slot"] > span {
+      grid-area: 1 / 1;
+      text-align: center;
+    }
+    [id="07-quatro-segundos-d3"],
+    [id="07-quatro-segundos-d2"],
+    [id="07-quatro-segundos-d1"],
+    [id="07-quatro-segundos-d0"] {
+      opacity: 0;
+    }
+
+    /* "humanos" — tiny, ~6:1 scale contrast against the countdown */
+    [id="07-quatro-segundos-humanos"] {
+      color: #888880;
+      font-family: sans-serif;
+      font-weight: 500;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      text-transform: lowercase;
+    }
+  </style>
+
+  <div id="root" data-composition-id="07-quatro-segundos" data-start="0" data-duration="3.179" data-width="1080" data-height="1920">
+
+    <!-- track 0: full-bleed ground + dimmed 23h59 dial (callback to the hook) -->
+    <div id="07-quatro-segundos-ground" class="clip" data-start="0" data-duration="3.179" data-track-index="0">
+      <div id="07-quatro-segundos-dial">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <circle cx="200" cy="200" r="190" stroke="#888880" stroke-width="2"/>
+          <!-- 12 hour ticks -->
+          <g stroke="#888880" stroke-width="3">
+            <line x1="200" y1="15"    x2="200" y2="35"/>
+            <line x1="292.5" y1="39.8" x2="282.5" y2="57.1"/>
+            <line x1="360.2" y1="107.5" x2="342.9" y2="117.5"/>
+            <line x1="385" y1="200"   x2="365" y2="200"/>
+            <line x1="360.2" y1="292.5" x2="342.9" y2="282.5"/>
+            <line x1="292.5" y1="360.2" x2="282.5" y2="342.9"/>
+            <line x1="200" y1="385"   x2="200" y2="365"/>
+            <line x1="107.5" y1="360.2" x2="117.5" y2="342.9"/>
+            <line x1="39.8" y1="292.5" x2="57.1" y2="282.5"/>
+            <line x1="15" y1="200"    x2="35" y2="200"/>
+            <line x1="39.8" y1="107.5" x2="57.1" y2="117.5"/>
+            <line x1="107.5" y1="39.8" x2="117.5" y2="57.1"/>
+          </g>
+          <!-- hands at 23:59 (both near 12) -->
+          <line x1="200" y1="200" x2="196" y2="95"  stroke="#F0ECE5" stroke-width="8" stroke-linecap="round"/>
+          <line x1="200" y1="200" x2="184" y2="51"  stroke="#F0ECE5" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="200" cy="200" r="8" fill="#F0ECE5"/>
+          <text x="200" y="300" text-anchor="middle" font-family="monospace" font-size="30" letter-spacing="3" fill="#888880">23:59</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- track 1: "e nós?" -->
+    <div id="07-quatro-segundos-enos" class="clip" data-start="0" data-duration="3.179" data-track-index="1">e nós?</div>
+
+    <!-- track 2 + 3: countdown + tiny humanos -->
+    <div id="07-quatro-segundos-countrow" class="clip" data-start="0" data-duration="3.179" data-track-index="2">
+      <span id="07-quatro-segundos-countdown">0:0<span id="07-quatro-segundos-slot"><span id="07-quatro-segundos-d4">4</span><span id="07-quatro-segundos-d3">3</span><span id="07-quatro-segundos-d2">2</span><span id="07-quatro-segundos-d1">1</span><span id="07-quatro-segundos-d0">0</span></span></span>
+      <span id="07-quatro-segundos-humanos" class="clip" data-start="0" data-duration="3.179" data-track-index="3">humanos</span>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      var $ = function (id) { return document.getElementById(id); };
+      var dial      = $("07-quatro-segundos-dial");
+      var enos      = $("07-quatro-segundos-enos");
+      var countdown = $("07-quatro-segundos-countdown");
+      var humanos   = $("07-quatro-segundos-humanos");
+      var d4 = $("07-quatro-segundos-d4");
+      var d3 = $("07-quatro-segundos-d3");
+      var d2 = $("07-quatro-segundos-d2");
+      var d1 = $("07-quatro-segundos-d1");
+      var d0 = $("07-quatro-segundos-d0");
+
+      // Scene 1 — push-in closes on the 23h59 dial (runs underneath the whole shot)
+      tl.fromTo(dial, { scale: 1.0 }, { scale: 1.14, duration: 3.179, ease: "none" }, 0);
+
+      // Scene 1 — "e nós?" enters, cream display, centered
+      tl.fromTo(enos,
+        { opacity: 0, y: 46 },
+        { opacity: 1, y: 0, duration: 0.46, ease: "power3.out" }, 0.05);
+
+      // Scene 2 — big fire-orange countdown "0:04" surges in
+      tl.fromTo(countdown,
+        { opacity: 0, scale: 0.62 },
+        { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(1.5)" }, 0.66);
+
+      // Scene 3 — tiny "humanos" appears beside the countdown (~6:1 scale contrast)
+      tl.fromTo(humanos,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.40, ease: "power2.out" }, 1.30);
+
+      // Countdown 4 -> 3 -> 2 -> 1 -> 0, one digit per tick (deterministic discrete swaps)
+      tl.set(d4, { opacity: 0 }, 1.15).set(d3, { opacity: 1 }, 1.15);
+      tl.set(d3, { opacity: 0 }, 1.45).set(d2, { opacity: 1 }, 1.45);
+      tl.set(d2, { opacity: 0 }, 1.75).set(d1, { opacity: 1 }, 1.75);
+      tl.set(d1, { opacity: 0 }, 2.05).set(d0, { opacity: 1 }, 2.05);
+      // stops at 0:00 — everything holds, still, to the end of the shot
+
+      window.__timelines["07-quatro-segundos"] = tl;
+    })();
+  </script>
+</template>
