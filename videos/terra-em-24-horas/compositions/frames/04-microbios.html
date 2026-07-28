@@ -1,0 +1,199 @@
+<template>
+  <div id="root" data-composition-id="04-microbios">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap');
+
+      #root {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        font-family: "Barlow", sans-serif;
+      }
+
+      /* full-bleed ground painted on a clip layer, not on #root */
+      .04-microbios-bg {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        background: #111111;
+      }
+      /* faint vignette so the dark ground has depth */
+      .04-microbios-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(120% 80% at 50% 30%, rgba(26,26,24,0.9) 0%, rgba(17,17,17,1) 70%);
+      }
+
+      /* mono chrome kicker */
+      #04-microbios-kicker {
+        position: absolute;
+        top: 150px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 500;
+        font-size: 22px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #E85D26;
+      }
+
+      /* the 24h dial */
+      #04-microbios-dial {
+        position: absolute;
+        top: 230px;
+        left: 190px;
+        width: 700px;
+        height: 700px;
+      }
+
+      .04-microbios-mono-label {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 500;
+        font-size: 21px;
+        letter-spacing: 0.1em;
+        fill: #505048;
+      }
+
+      .04-microbios-dot {
+        fill: #F0ECE5;
+        transform-box: fill-box;
+        transform-origin: center;
+        opacity: 0;
+      }
+
+      /* the two staccato negations, hard-cut in the same spot */
+      .04-microbios-neg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1160px;
+        text-align: center;
+        font-family: "Barlow", sans-serif;
+        font-weight: 900;
+        font-size: 132px;
+        line-height: 1.0;
+        letter-spacing: -0.04em;
+        color: #F0ECE5;
+        text-transform: lowercase;
+      }
+      .04-microbios-neg span {
+        display: inline-block;
+        opacity: 0;
+        white-space: pre;
+      }
+    </style>
+
+    <!-- full-bleed background ground -->
+    <div class="clip 04-microbios-bg" data-start="0" data-duration="4.011" data-track-index="0"></div>
+
+    <!-- mono kicker chrome -->
+    <div id="04-microbios-kicker" class="clip" data-start="0" data-duration="4.011" data-track-index="1">
+      1 dia &middot; 24 horas
+    </div>
+
+    <!-- the 24h dial: sweeping pointer draws a fire-orange arc 00h -> 18h -->
+    <svg id="04-microbios-dial" class="clip" data-start="0" data-duration="4.011" data-track-index="1"
+         viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
+      <!-- disc face -->
+      <circle id="04-microbios-disc" cx="350" cy="350" r="300" fill="#1A1A18" stroke="#282826" stroke-width="1.5"/>
+      <!-- inner hairline ring -->
+      <circle cx="350" cy="350" r="255" fill="none" stroke="#282826" stroke-width="1"/>
+      <!-- 24 tick marks as a dashed ring -->
+      <circle id="04-microbios-ticks" cx="350" cy="350" r="285" fill="none"
+              stroke="#505048" stroke-width="2" stroke-dasharray="2.5 72.1"/>
+
+      <!-- quadrant hour labels -->
+      <text class="04-microbios-mono-label" x="350" y="132" text-anchor="middle">00h</text>
+      <text class="04-microbios-mono-label" x="578" y="358" text-anchor="middle">06h</text>
+      <text class="04-microbios-mono-label" x="350" y="588" text-anchor="middle">12h</text>
+      <text class="04-microbios-mono-label" x="122" y="358" text-anchor="middle">18h</text>
+
+      <!-- faint microbe dots inside the disc -->
+      <circle id="04-microbios-dot1" class="04-microbios-dot" cx="300" cy="300" r="7"/>
+      <circle id="04-microbios-dot2" class="04-microbios-dot" cx="415" cy="315" r="6"/>
+      <circle id="04-microbios-dot3" class="04-microbios-dot" cx="345" cy="412" r="8"/>
+      <circle id="04-microbios-dot4" class="04-microbios-dot" cx="285" cy="378" r="6"/>
+      <circle id="04-microbios-dot5" class="04-microbios-dot" cx="402" cy="396" r="7"/>
+      <circle id="04-microbios-dot6" class="04-microbios-dot" cx="362" cy="272" r="6"/>
+
+      <!-- the swept fire-orange arc (00h -> 18h, clockwise 270deg), drawn by dashoffset -->
+      <path id="04-microbios-arc" d="M350 50 A300 300 0 1 1 50 350"
+            fill="none" stroke="#E85D26" stroke-width="5" stroke-linecap="round"
+            pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+
+      <!-- sweeping pointer -->
+      <line id="04-microbios-pointer" x1="350" y1="350" x2="350" y2="62"
+            stroke="#E85D26" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="350" cy="350" r="9" fill="#E85D26"/>
+      <circle cx="350" cy="350" r="3" fill="#1A1A18"/>
+    </svg>
+
+    <!-- staccato negations (back half) -->
+    <div id="04-microbios-plantas" class="clip 04-microbios-neg" data-start="2.4" data-duration="0.88" data-track-index="2"><span>sem&nbsp;</span><span>plantas.</span></div>
+    <div id="04-microbios-animais" class="clip 04-microbios-neg" data-start="3.3" data-duration="0.711" data-track-index="3"><span>sem&nbsp;</span><span>animais.</span></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        var tl = gsap.timeline({ paused: true });
+
+        var byId = function (id) { return document.getElementById(id); };
+        var disc = byId("04-microbios-disc");
+        var ticks = byId("04-microbios-ticks");
+        var labels = document.querySelectorAll("#04-microbios-dial .04-microbios-mono-label");
+        var dots = document.querySelectorAll('[id^="04-microbios-dot"]');
+        var arc = byId("04-microbios-arc");
+        var pointer = byId("04-microbios-pointer");
+        var kicker = byId("04-microbios-kicker");
+        var plantasWords = byId("04-microbios-plantas").querySelectorAll("span");
+        var animaisWords = byId("04-microbios-animais").querySelectorAll("span");
+
+        // Scene 1 - dial builds in the upper third
+        tl.fromTo(disc, { opacity: 0, scale: 0.9, transformOrigin: "350px 350px" },
+                        { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" }, 0);
+        tl.fromTo(ticks, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.15);
+        tl.fromTo(labels, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out" }, 0.2);
+        tl.fromTo(kicker, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.1);
+
+        // pointer sweeps 00h -> 18h (270deg CW) and the arc draws behind it, locked together
+        tl.fromTo(pointer, { rotation: 0, svgOrigin: "350 350" },
+                           { rotation: 270, svgOrigin: "350 350", duration: 1.55, ease: "none" }, 0.25);
+        tl.fromTo(arc, { strokeDashoffset: 1000 },
+                       { strokeDashoffset: 0, duration: 1.55, ease: "none" }, 0.25);
+
+        // microbe dots: enter faint, then a deterministic keyframed pulse
+        // with one synchronized bright beat on the "so microbios" cue
+        tl.fromTo(dots, { opacity: 0, scale: 0.6 },
+                        { opacity: 0.4, scale: 1, duration: 0.4, ease: "power1.out" }, 0.3);
+        tl.to(dots, {
+          keyframes: [
+            { opacity: 0.5, scale: 1.2, duration: 0.5, ease: "sine.inOut" },
+            { opacity: 0.28, scale: 0.95, duration: 0.4, ease: "sine.inOut" },
+            { opacity: 0.8, scale: 1.55, duration: 0.45, ease: "sine.out" },
+            { opacity: 0.35, scale: 1.0, duration: 0.5, ease: "sine.inOut" },
+            { opacity: 0.5, scale: 1.15, duration: 0.55, ease: "sine.inOut" },
+            { opacity: 0.4, scale: 1.0, duration: 0.85, ease: "sine.inOut" }
+          ]
+        }, 0.8);
+
+        // Scene 3 - "sem plantas." per-word reveal, then it fades before the next
+        tl.fromTo(plantasWords, { opacity: 0, y: 34 },
+                                { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", stagger: 0.07 }, 2.45);
+        tl.to(plantasWords, { opacity: 0, duration: 0.18, ease: "power1.in" }, 3.05);
+
+        // "sem animais." hard-cuts in and holds to the end (no exit - not the final frame)
+        tl.fromTo(animaisWords, { opacity: 0, y: 34 },
+                                { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", stagger: 0.07 }, 3.35);
+
+        window.__timelines["04-microbios"] = tl;
+      })();
+    </script>
+  </div>
+</template>

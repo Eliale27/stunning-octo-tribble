@@ -1,0 +1,239 @@
+<template data-composition-id="01-gancho">
+  <style>
+    /* Barlow ships as the project display face; canonical project font path with a
+       generic fallback so the clean render machine always paints deterministically. */
+    @font-face {
+      font-family: "Barlow";
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("../../assets/fonts/Barlow-Bold.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Barlow";
+      font-style: normal;
+      font-weight: 900;
+      font-display: swap;
+      src: url("../../assets/fonts/Barlow-Black.woff2") format("woff2");
+    }
+
+    /* frame root — styled via #root, never a class */
+    #root {
+      position: relative;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      container-type: size;
+      background: transparent;
+      font-family: "Barlow", "Arial Narrow", sans-serif;
+      color: #F0ECE5;
+    }
+
+    /* full-bleed ink-black ground on a dedicated clip layer (never on #root) */
+    .g01-gancho-ground {
+      position: absolute;
+      inset: 0;
+      background: #111111;
+    }
+
+    /* ghost 24h dial — hairline, faint, upper third, behind the type */
+    .g01-gancho-clock {
+      position: absolute;
+      top: 150px;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .g01-gancho-clock svg {
+      display: inline-block;
+      width: 700px;
+      height: 700px;
+      opacity: 0;
+    }
+    .g01-gancho-tick {
+      stroke: #282826;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+    .g01-gancho-tick.is-major {
+      stroke: #3a3a36;
+    }
+    .g01-gancho-ring {
+      fill: none;
+      stroke: #282826;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* the question — per-word reveal, lowercase Barlow, cream */
+    .g01-gancho-question {
+      position: absolute;
+      top: 720px;
+      left: 0;
+      width: 1080px;
+      padding: 0 56px;
+      text-align: center;
+    }
+    .g01-gancho-line {
+      font-weight: 700;
+      line-height: 1.14;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      font-size: 84px;
+    }
+    .g01-gancho-line-b {
+      margin-top: 4px;
+    }
+    .g01-gancho-word {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .g01-gancho-word + .g01-gancho-word {
+      margin-left: 0.28em;
+    }
+
+    /* focal payoff — "24h" spring-pop in fire-orange over the dial */
+    .g01-gancho-payoff {
+      position: absolute;
+      top: 1010px;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .g01-gancho-24h {
+      position: relative;
+      display: inline-block;
+      font-weight: 900;
+      font-size: 300px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: #E85D26;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    /* short glow bloom on the payoff (motion accent only) */
+    .g01-gancho-glow {
+      position: absolute;
+      top: 1010px;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      pointer-events: none;
+    }
+    .g01-gancho-glow span {
+      display: inline-block;
+      font-weight: 900;
+      font-size: 300px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: #E85D26;
+      filter: blur(26px);
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-gancho"
+       data-width="1080" data-height="1920">
+
+    <!-- full-bleed ground -->
+    <div class="clip g01-gancho-ground"
+         data-start="0" data-duration="2.859" data-track-index="0"></div>
+
+    <!-- ghost 24h dial -->
+    <div class="clip g01-gancho-clock"
+         data-start="0" data-duration="2.859" data-track-index="1">
+      <svg id="g01-gancho-dial" viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="g01-gancho-ring" cx="100" cy="100" r="92"></circle>
+        <g id="g01-gancho-ticks"></g>
+      </svg>
+    </div>
+
+    <!-- glow bloom layer (behind the payoff word) -->
+    <div class="clip g01-gancho-glow"
+         data-start="0" data-duration="2.859" data-track-index="2">
+      <span>24h</span>
+    </div>
+
+    <!-- the question -->
+    <div class="clip g01-gancho-question"
+         data-start="0" data-duration="2.859" data-track-index="3">
+      <div class="g01-gancho-line g01-gancho-line-a">
+        <span class="g01-gancho-word">e</span><span class="g01-gancho-word">se</span><span class="g01-gancho-word">toda</span><span class="g01-gancho-word">a</span><span class="g01-gancho-word">história</span><span class="g01-gancho-word">da</span><span class="g01-gancho-word">terra</span>
+      </div>
+      <div class="g01-gancho-line g01-gancho-line-b">
+        <span class="g01-gancho-word">fosse</span><span class="g01-gancho-word">um</span><span class="g01-gancho-word">único</span>
+      </div>
+    </div>
+
+    <!-- focal payoff -->
+    <div class="clip g01-gancho-payoff"
+         data-start="0" data-duration="2.859" data-track-index="4">
+      <span class="g01-gancho-24h">24h</span>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+    (function () {
+      // deterministic ghost-dial ticks (24h markings)
+      var ticks = document.getElementById("g01-gancho-ticks");
+      if (ticks && !ticks.childNodes.length) {
+        var ns = "http://www.w3.org/2000/svg";
+        for (var i = 0; i < 24; i++) {
+          var a = (i / 24) * Math.PI * 2;
+          var major = i % 6 === 0;
+          var rOuter = 92;
+          var rInner = major ? 80 : 86;
+          var line = document.createElementNS(ns, "line");
+          line.setAttribute("x1", (100 + rOuter * Math.sin(a)).toFixed(2));
+          line.setAttribute("y1", (100 - rOuter * Math.cos(a)).toFixed(2));
+          line.setAttribute("x2", (100 + rInner * Math.sin(a)).toFixed(2));
+          line.setAttribute("y2", (100 - rInner * Math.cos(a)).toFixed(2));
+          line.setAttribute("class", "g01-gancho-tick" + (major ? " is-major" : ""));
+          ticks.appendChild(line);
+        }
+      }
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      var svg = document.getElementById("g01-gancho-dial");
+      var lineA = document.querySelectorAll(".g01-gancho-line-a .g01-gancho-word");
+      var lineB = document.querySelectorAll(".g01-gancho-line-b .g01-gancho-word");
+      var hero = document.querySelector(".g01-gancho-24h");
+      var glow = document.querySelector(".g01-gancho-glow span");
+
+      // ghost dial fades up faint and holds (single deterministic pulse)
+      tl.fromTo(svg,
+        { opacity: 0, scale: 0.95, transformOrigin: "50% 50%" },
+        { opacity: 0.24, scale: 1, duration: 0.7, ease: "power2.out" }, 0.0);
+
+      // Scene 1 — "e se toda a história da terra" per-word reveal
+      tl.fromTo(lineA,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", stagger: 0.1 }, 0.15);
+
+      // Scene 2 — "fosse um único" completes below, same column
+      tl.fromTo(lineB,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", stagger: 0.12 }, 1.2);
+
+      // Scene 3 — "24h" spring-pop in fire-orange + dial brightens (glow bloom, held)
+      tl.fromTo(hero,
+        { opacity: 0, scale: 0.55, transformOrigin: "50% 60%" },
+        { opacity: 1, scale: 1, duration: 0.46, ease: "back.out(1.5)" }, 1.95);
+      tl.fromTo(svg,
+        { opacity: 0.24 },
+        { opacity: 0.5, duration: 0.4, ease: "power2.out" }, 1.95);
+      tl.fromTo(glow,
+        { opacity: 0, scale: 0.8, transformOrigin: "50% 60%" },
+        { opacity: 0.55, scale: 1, duration: 0.42, ease: "power2.out" }, 2.0);
+
+      // brief settle of the bloom (no exit — this is the opening frame, held to the cut)
+      tl.to(glow, { opacity: 0.32, duration: 0.55, ease: "power1.inOut" }, 2.42);
+
+      window.__timelines["01-gancho"] = tl;
+    })();
+  </script>
+</template>
