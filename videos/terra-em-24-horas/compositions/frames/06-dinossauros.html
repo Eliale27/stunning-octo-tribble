@@ -1,8 +1,19 @@
-<template data-composition-id="06-dinossauros">
+<template>
   <style>
-    /* Broadside — dark register. Fonts ship no .woff2 in this project, so
-       generic families are used deliberately (named Barlow/IBM Plex Mono would
-       silently fall back on the clean render machine and trip font_family_without_font_face). */
+/* --- normalized local fonts (Barlow + IBM Plex Mono), deterministic render --- */
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 400; font-display: block; src: url("assets/fonts/barlow-400.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 600; font-display: block; src: url("assets/fonts/barlow-600.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 700; font-display: block; src: url("assets/fonts/barlow-700.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 800; font-display: block; src: url("assets/fonts/barlow-800.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 900; font-display: block; src: url("assets/fonts/barlow-900.woff2") format("woff2"); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: block; src: url("assets/fonts/ibmplexmono-500.woff2") format("woff2"); }
+
+    /* Broadside — dark register. This project ships no .woff2, so generic
+       families are used deliberately: naming Barlow / IBM Plex Mono without a
+       font file would silently fall back on the clean render machine and trip
+       font_family_without_font_face. Frame-scoped names start with the frame_id
+       ("06-…") so they are targeted via attribute selectors — a class/id
+       selector can't begin with a digit. */
     #root {
       position: absolute;
       inset: 0;
@@ -10,13 +21,13 @@
       height: 1920px;
       overflow: hidden;
       background: transparent;
-      font-family: sans-serif;
+      font-family: "Barlow", sans-serif;
       color: #F0ECE5;
     }
     #root .clip { position: absolute; }
 
     /* full-bleed ground (lowest track) */
-    .06-dinossauros-bg {
+    [class~="06-dinossauros-bg"] {
       inset: 0;
       width: 1080px;
       height: 1920px;
@@ -24,7 +35,7 @@
     }
 
     /* tension darken overlay */
-    .06-dinossauros-darken {
+    [class~="06-dinossauros-darken"] {
       inset: 0;
       width: 1080px;
       height: 1920px;
@@ -34,17 +45,17 @@
     }
 
     /* chrome */
-    .06-dinossauros-kicker {
+    [class~="06-dinossauros-kicker"] {
       left: 60px;
       top: 92px;
-      font-family: monospace;
+      font-family: "IBM Plex Mono", monospace;
       font-size: 26px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: #888880;
     }
-    .06-dinossauros-kicker .accent { color: #E85D26; }
-    .06-dinossauros-rule {
+    [class~="06-dinossauros-kicker"] .accent { color: #E85D26; }
+    [class~="06-dinossauros-rule"] {
       left: 62px;
       top: 138px;
       width: 44px;
@@ -54,14 +65,14 @@
     }
 
     /* clock dial stage — upper third, centered at (540,560) */
-    .06-dinossauros-dialstage {
+    [class~="06-dinossauros-dialstage"] {
       left: 190px;
       top: 210px;
       width: 700px;
       height: 700px;
     }
-    .06-dinossauros-dialstage svg { width: 700px; height: 700px; display: block; }
-    .06-dinossauros-pointer {
+    [class~="06-dinossauros-dialstage"] svg { width: 700px; height: 700px; display: block; }
+    [class~="06-dinossauros-pointer"] {
       position: absolute;
       left: 346px;
       top: 108px;
@@ -73,30 +84,30 @@
     }
 
     /* mono time labels — between dial and silhouettes */
-    .06-dinossauros-timelabel {
+    [class~="06-dinossauros-timelabel"] {
       left: 0;
       top: 902px;
       width: 1080px;
       text-align: center;
-      font-family: monospace;
+      font-family: "IBM Plex Mono", monospace;
       font-size: 132px;
       font-weight: 700;
       letter-spacing: 0.04em;
       line-height: 1;
     }
-    .06-dinossauros-t2230 { color: #F0ECE5; }
-    .06-dinossauros-t2340 { color: #E85D26; }
+    [class~="06-dinossauros-t2230"] { color: #F0ECE5; }
+    [class~="06-dinossauros-t2340"] { color: #E85D26; }
 
     /* silhouettes ground */
-    .06-dinossauros-ground { inset: 0; width: 1080px; height: 1920px; }
-    .06-dinossauros-dino { position: absolute; }
-    .06-dinossauros-dino svg { display: block; width: 100%; height: 100%; }
-    .06-dinossauros-sauropod { left: 44px; top: 1050px; width: 560px; height: 300px; }
-    .06-dinossauros-theropod { left: 660px; top: 1080px; width: 372px; height: 262px; }
+    [class~="06-dinossauros-ground"] { inset: 0; width: 1080px; height: 1920px; }
+    [class~="06-dinossauros-dino"] { position: absolute; }
+    [class~="06-dinossauros-dino"] svg { display: block; width: 100%; height: 100%; }
+    [class~="06-dinossauros-sauropod"] { left: 44px; top: 1050px; width: 560px; height: 300px; }
+    [class~="06-dinossauros-theropod"] { left: 660px; top: 1080px; width: 372px; height: 262px; }
 
     /* asteroid impact layer (back half) */
-    .06-dinossauros-impact { inset: 0; width: 1080px; height: 1920px; pointer-events: none; }
-    .06-dinossauros-streakwrap {
+    [class~="06-dinossauros-impact"] { inset: 0; width: 1080px; height: 1920px; pointer-events: none; }
+    [class~="06-dinossauros-streakwrap"] {
       position: absolute;
       left: 540px;
       top: 560px;
@@ -104,7 +115,7 @@
       height: 0;
       transform: rotate(-34deg);
     }
-    .06-dinossauros-streak {
+    [class~="06-dinossauros-streak"] {
       position: absolute;
       left: -760px;
       top: -5px;
@@ -115,7 +126,7 @@
       opacity: 0;
       filter: url(#06-dinossauros-streakfilter);
     }
-    .06-dinossauros-flash {
+    [class~="06-dinossauros-flash"] {
       position: absolute;
       left: 540px;
       top: 560px;
@@ -130,27 +141,22 @@
     }
   </style>
 
-  <div id="root"
-       data-composition-id="06-dinossauros"
-       data-start="0"
-       data-duration="5.184"
-       data-width="1080"
-       data-height="1920">
+  <div id="root" data-composition-id="06-dinossauros" data-start="0" data-duration="5.684" data-width="1080" data-height="1920">
 
     <!-- full-bleed ground -->
-    <div class="clip 06-dinossauros-bg" data-start="0" data-duration="5.184" data-track-index="0"></div>
+    <div class="clip 06-dinossauros-bg" data-start="0" data-duration="5.684" data-track-index="0"></div>
 
     <!-- tension darken -->
-    <div class="clip 06-dinossauros-darken" id="06-dinossauros-darken" data-start="0" data-duration="5.184" data-track-index="1"></div>
+    <div class="clip 06-dinossauros-darken" id="06-dinossauros-darken" data-start="0" data-duration="5.684" data-track-index="1"></div>
 
     <!-- chrome -->
-    <div class="clip 06-dinossauros-kicker" id="06-dinossauros-kicker" data-start="0" data-duration="5.184" data-track-index="2">
+    <div class="clip 06-dinossauros-kicker" id="06-dinossauros-kicker" data-start="0" data-duration="5.684" data-track-index="2">
       no.06 &nbsp;·&nbsp; <span class="accent">cretáceo</span>
     </div>
-    <div class="clip 06-dinossauros-rule" id="06-dinossauros-rule" data-start="0" data-duration="5.184" data-track-index="2"></div>
+    <div class="clip 06-dinossauros-rule" id="06-dinossauros-rule" data-start="0" data-duration="5.684" data-track-index="3"></div>
 
     <!-- clock dial -->
-    <div class="clip 06-dinossauros-dialstage" id="06-dinossauros-dialstage" data-start="0" data-duration="5.184" data-track-index="3">
+    <div class="clip 06-dinossauros-dialstage" id="06-dinossauros-dialstage" data-start="0" data-duration="5.684" data-track-index="4">
       <svg viewBox="0 0 700 700" aria-hidden="true">
         <circle cx="350" cy="350" r="300" fill="none" stroke="#282826" stroke-width="2"></circle>
         <circle cx="350" cy="350" r="300" fill="none" stroke="#505048" stroke-width="1" opacity="0.6"></circle>
@@ -162,11 +168,11 @@
     </div>
 
     <!-- time readouts -->
-    <div class="clip 06-dinossauros-timelabel 06-dinossauros-t2230" id="06-dinossauros-t2230" data-start="0" data-duration="5.184" data-track-index="4">22:30</div>
-    <div class="clip 06-dinossauros-timelabel 06-dinossauros-t2340" id="06-dinossauros-t2340" data-start="0" data-duration="5.184" data-track-index="5">23:40</div>
+    <div class="clip 06-dinossauros-timelabel 06-dinossauros-t2230" id="06-dinossauros-t2230" data-start="0" data-duration="5.684" data-track-index="5" data-layout-allow-overlap>22:30</div>
+    <div class="clip 06-dinossauros-timelabel 06-dinossauros-t2340" id="06-dinossauros-t2340" data-start="0" data-duration="5.684" data-track-index="6" data-layout-allow-overlap>23:40</div>
 
     <!-- silhouettes -->
-    <div class="clip 06-dinossauros-ground" data-start="0" data-duration="5.184" data-track-index="6">
+    <div class="clip 06-dinossauros-ground" data-start="0" data-duration="5.684" data-track-index="7">
       <div class="06-dinossauros-dino 06-dinossauros-sauropod" id="06-dinossauros-sauropod">
         <svg viewBox="0 0 320 172" aria-hidden="true">
           <g fill="#F0ECE5">
@@ -196,7 +202,7 @@
     </div>
 
     <!-- asteroid streak + flash (back half) -->
-    <div class="clip 06-dinossauros-impact" data-start="0" data-duration="5.184" data-track-index="7">
+    <div class="clip 06-dinossauros-impact" data-start="0" data-duration="5.684" data-track-index="8">
       <svg width="0" height="0" aria-hidden="true" style="position:absolute">
         <filter id="06-dinossauros-streakfilter" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur id="06-dinossauros-blur" in="SourceGraphic" stdDeviation="0 0"></feGaussianBlur>
@@ -209,32 +215,45 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="assets/vendor/gsap.min.js"></script>
   <script>
     (function () {
+      var byId = function (id) { return document.getElementById(id); };
+
       // deterministic dial ticks — 24h face, 00 at top
-      var g = document.getElementById("06-dinossauros-ticks");
+      var g = byId("06-dinossauros-ticks");
       if (g) {
         for (var i = 0; i < 24; i++) {
           var ang = (i * 15) * Math.PI / 180;
           var major = (i % 6 === 0);
           var rOut = 300;
           var rIn = major ? 262 : 280;
-          var x1 = 350 + rIn * Math.sin(ang);
-          var y1 = 350 - rIn * Math.cos(ang);
-          var x2 = 350 + rOut * Math.sin(ang);
-          var y2 = 350 - rOut * Math.cos(ang);
           var ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          ln.setAttribute("x1", x1); ln.setAttribute("y1", y1);
-          ln.setAttribute("x2", x2); ln.setAttribute("y2", y2);
+          ln.setAttribute("x1", 350 + rIn * Math.sin(ang));
+          ln.setAttribute("y1", 350 - rIn * Math.cos(ang));
+          ln.setAttribute("x2", 350 + rOut * Math.sin(ang));
+          ln.setAttribute("y2", 350 - rOut * Math.cos(ang));
           ln.setAttribute("stroke", i === 0 ? "#E85D26" : "#505048");
           ln.setAttribute("stroke-width", major ? 4 : 2);
           g.appendChild(ln);
         }
       }
 
+      // element handles (getElementById tolerates the digit-leading ids)
+      var darken   = byId("06-dinossauros-darken");
+      var kicker   = byId("06-dinossauros-kicker");
+      var rule     = byId("06-dinossauros-rule");
+      var dial     = byId("06-dinossauros-dialstage");
+      var pointer  = byId("06-dinossauros-pointer");
+      var t2230    = byId("06-dinossauros-t2230");
+      var t2340    = byId("06-dinossauros-t2340");
+      var sauropod = byId("06-dinossauros-sauropod");
+      var theropod = byId("06-dinossauros-theropod");
+      var streak   = byId("06-dinossauros-streak");
+      var flash    = byId("06-dinossauros-flash");
+
       // directional motion-blur proxy for the asteroid streak
-      var blurNode = document.getElementById("06-dinossauros-blur");
+      var blurNode = byId("06-dinossauros-blur");
       var blurProxy = { v: 26 };
       function writeBlur() { blurNode.setAttribute("stdDeviation", blurProxy.v + " 0"); }
       writeBlur(); // seed frame 0
@@ -243,52 +262,47 @@
       var tl = gsap.timeline({ paused: true });
 
       // ---- Scene 1 (0.0–2.0): dark register, dial + pointer at ~22:30, silhouettes rise ----
-      tl.fromTo("#06-dinossauros-dialstage", { opacity: 0, scale: 0.92 },
+      tl.fromTo(dial, { opacity: 0, scale: 0.92 },
         { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out", transformOrigin: "50% 50%" }, 0.0);
-      tl.fromTo("#06-dinossauros-kicker", { opacity: 0, y: -14 },
+      tl.fromTo(kicker, { opacity: 0, y: -14 },
         { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.2);
-      tl.fromTo("#06-dinossauros-rule", { scaleX: 0, opacity: 0 },
+      tl.fromTo(rule, { scaleX: 0, opacity: 0 },
         { scaleX: 1, opacity: 1, duration: 0.5, ease: "power2.out" }, 0.32);
-      tl.fromTo("#06-dinossauros-pointer", { rotation: 300 },
+      tl.fromTo(pointer, { rotation: 300 },
         { rotation: 337.5, duration: 0.95, ease: "power3.out", transformOrigin: "50% 100%" }, 0.15);
-      tl.fromTo("#06-dinossauros-sauropod", { opacity: 0, y: 190 },
+      tl.fromTo(sauropod, { opacity: 0, y: 190 },
         { opacity: 1, y: 0, duration: 0.75, ease: "power3.out" }, 0.6);
-      tl.fromTo("#06-dinossauros-theropod", { opacity: 0, y: 210 },
+      tl.fromTo(theropod, { opacity: 0, y: 210 },
         { opacity: 1, y: 0, duration: 0.75, ease: "power3.out" }, 0.95);
-      tl.fromTo("#06-dinossauros-t2230", { opacity: 0, y: 34 },
+      tl.fromTo(t2230, { opacity: 0, y: 34 },
         { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.1);
 
       // ---- Scene 2 (2.0–3.5): pointer advances to 23:40, orange label lights, ground darkens ----
-      tl.to("#06-dinossauros-pointer",
-        { rotation: 355, duration: 0.95, ease: "power2.inOut" }, 2.0);
-      tl.to("#06-dinossauros-t2230",
-        { opacity: 0.22, y: -18, duration: 0.5, ease: "power2.in" }, 2.15); // text-to-text handoff (in place, not an exit)
-      tl.fromTo("#06-dinossauros-t2340", { opacity: 0, y: 36 },
+      tl.to(pointer, { rotation: 355, duration: 0.95, ease: "power2.inOut" }, 2.0);
+      // text-to-text handoff (dims in place — not an off-frame exit)
+      tl.to(t2230, { opacity: 0.22, y: -18, duration: 0.5, ease: "power2.in" }, 2.15);
+      tl.fromTo(t2340, { opacity: 0, y: 36 },
         { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 2.35);
-      tl.to("#06-dinossauros-darken",
-        { opacity: 0.3, duration: 1.0, ease: "power1.inOut" }, 2.2);
+      tl.to(darken, { opacity: 0.3, duration: 1.0, ease: "power1.inOut" }, 2.2);
 
       // ---- Scene 3 (3.5–5.184): asteroid streak cuts the dial, bursts, silhouettes gone, held quiet ----
-      tl.fromTo("#06-dinossauros-streak", { x: -1080, opacity: 0 },
+      tl.fromTo(streak, { x: -1080, opacity: 0 },
         { x: 60, opacity: 1, duration: 0.42, ease: "power4.out" }, 3.55);
       tl.to(blurProxy, { v: 0, duration: 0.42, ease: "power4.out", onUpdate: writeBlur }, 3.55);
 
       // flash — deterministic keyframed opacity burst
-      tl.fromTo("#06-dinossauros-flash", { opacity: 0, scale: 0.28 },
+      tl.fromTo(flash, { opacity: 0, scale: 0.28 },
         { opacity: 1, scale: 1.0, duration: 0.09, ease: "power2.out", transformOrigin: "50% 50%" }, 3.95);
-      tl.to("#06-dinossauros-flash",
-        { scale: 1.4, duration: 0.5, ease: "power2.out" }, 4.04);
-      tl.to("#06-dinossauros-flash",
-        { opacity: 0, duration: 0.42, ease: "power2.in" }, 4.06);
+      tl.to(flash, { scale: 1.4, duration: 0.5, ease: "power2.out" }, 4.04);
+      tl.to(flash, { opacity: 0, duration: 0.42, ease: "power2.in" }, 4.06);
 
       // hard cut: silhouettes vanish at the flash peak (instant, masked by the burst — not an exit tween)
-      tl.set(["#06-dinossauros-sauropod", "#06-dinossauros-theropod"], { opacity: 0 }, 4.02);
+      tl.set([sauropod, theropod], { opacity: 0 }, 4.02);
 
-      // the disc goes quiet — dim in place, faint scar remains
-      tl.to("#06-dinossauros-dialstage", { opacity: 0.5, duration: 0.4, ease: "power2.out" }, 4.08);
-      tl.to("#06-dinossauros-streak", { opacity: 0.22, duration: 0.4, ease: "power2.out" }, 4.1);
-      tl.to("#06-dinossauros-t2340", { opacity: 0.6, duration: 0.4, ease: "power2.out" }, 4.1);
-      // held beat of inevitability to 5.184 (no exit — this is a hard cut)
+      // the disc goes quiet — dim in place, faint scar remains (held beat of inevitability to 5.184)
+      tl.to(dial, { opacity: 0.5, duration: 0.4, ease: "power2.out" }, 4.08);
+      tl.to(streak, { opacity: 0.22, duration: 0.4, ease: "power2.out" }, 4.1);
+      tl.to(t2340, { opacity: 0.6, duration: 0.4, ease: "power2.out" }, 4.1);
 
       window.__timelines["06-dinossauros"] = tl;
     })();

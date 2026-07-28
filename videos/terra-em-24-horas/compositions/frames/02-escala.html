@@ -1,5 +1,13 @@
 <template>
   <style>
+/* --- normalized local fonts (Barlow + IBM Plex Mono), deterministic render --- */
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 400; font-display: block; src: url("assets/fonts/barlow-400.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 600; font-display: block; src: url("assets/fonts/barlow-600.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 700; font-display: block; src: url("assets/fonts/barlow-700.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 800; font-display: block; src: url("assets/fonts/barlow-800.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 900; font-display: block; src: url("assets/fonts/barlow-900.woff2") format("woff2"); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: block; src: url("assets/fonts/ibmplexmono-500.woff2") format("woff2"); }
+
     /* Frame 02 — A escala. Broadside dark register: ink-black ground, cream text,
        fire-orange the lone accent. NOTE: frame.md's display face is Barlow + IBM Plex
        Mono, but no .woff2 for either ships with this project, so per the "never name a
@@ -13,7 +21,7 @@
       overflow: hidden;
       container-type: size;
       background: transparent;
-      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-family: "Barlow", "Helvetica Neue", Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
     #root svg { overflow: visible; display: block; }
@@ -22,6 +30,8 @@
   <div
     id="root"
     data-composition-id="02-escala"
+    data-start="0"
+    data-duration="4.404"
     data-width="1080"
     data-height="1920"
   >
@@ -29,7 +39,7 @@
     <div
       class="clip 02-escala-bg"
       data-start="0"
-      data-duration="3.904"
+      data-duration="4.404"
       data-track-index="0"
       style="position:absolute; inset:0; background:#111111;"
     ></div>
@@ -38,7 +48,7 @@
     <div
       class="clip 02-escala-numlayer"
       data-start="0"
-      data-duration="3.904"
+      data-duration="4.404"
       data-track-index="1"
       style="position:absolute; inset:0;"
     >
@@ -46,7 +56,7 @@
         id="02-escala-kicker"
         style="position:absolute; left:0; right:0; top:472px; text-align:center;
                font-size:22px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase;
-               color:#E85D26; font-family:'Courier New',ui-monospace,monospace;"
+               color:#E85D26; font-family: "IBM Plex Mono", 'Courier New',ui-monospace,monospace;"
       >idade da terra&nbsp;&middot;&nbsp;anos</div>
 
       <div
@@ -68,7 +78,7 @@
     <div
       class="clip 02-escala-diallayer"
       data-start="0"
-      data-duration="3.904"
+      data-duration="4.404"
       data-track-index="2"
       style="position:absolute; inset:0;"
     >
@@ -99,7 +109,7 @@
     <div
       class="clip 02-escala-legendlayer"
       data-start="0"
-      data-duration="3.904"
+      data-duration="4.404"
       data-track-index="3"
       style="position:absolute; inset:0;"
     >
@@ -112,7 +122,7 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="assets/vendor/gsap.min.js"></script>
   <script>
     (function () {
       var CX = 300, CY = 300, R = 250;
@@ -180,6 +190,14 @@
         wordEls.push(w);
       }
 
+      // --- element refs (ids begin with a digit → invalid as CSS selectors,
+      //     so GSAP is fed element objects, never selector strings) ---
+      var kickerEl = document.getElementById("02-escala-kicker");
+      var numWrapEl = document.getElementById("02-escala-numwrap");
+      var dialEl = document.getElementById("02-escala-dial");
+      var hubEl = document.getElementById("02-escala-hub");
+      var handEl = document.getElementById("02-escala-hand");
+
       // --- number formatter: dotted thousands, pt-BR style ---
       var numEl = document.getElementById("02-escala-num");
       function fmt(n) {
@@ -198,15 +216,15 @@
       var tl = gsap.timeline({ paused: true });
 
       // SCENE 1 — count-up + slow push-in from below (0.0–~1.9s)
-      tl.fromTo("#02-escala-kicker",
+      tl.fromTo(kickerEl,
         { opacity: 0, y: 12 },
         { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0);
 
-      tl.fromTo("#02-escala-numwrap",
+      tl.fromTo(numWrapEl,
         { y: 74 },
         { y: 0, duration: 1.35, ease: "power2.out" }, 0);
 
-      tl.fromTo("#02-escala-num",
+      tl.fromTo(numEl,
         { scale: 0.55 },
         { scale: 1, duration: 1.7, ease: "power3.out" }, 0);
 
@@ -215,13 +233,13 @@
           onUpdate: function () { numEl.textContent = fmt(counter.v); } }, 0);
 
       // SCENE 2 — on "espremidos", the number squeezes / collapses into the dial (~1.85s)
-      tl.to("#02-escala-numwrap",
+      tl.to(numWrapEl,
         { scale: 0.12, opacity: 0, duration: 0.55, ease: "power2.in" }, 1.85);
-      tl.to("#02-escala-kicker",
+      tl.to(kickerEl,
         { scale: 0.6, opacity: 0, duration: 0.4, ease: "power2.in" }, 1.85);
 
       // the dial forms as the number collapses in
-      tl.fromTo("#02-escala-dial",
+      tl.fromTo(dialEl,
         { scale: 0.62, opacity: 0 },
         { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" }, 1.95);
 
@@ -239,10 +257,10 @@
         { opacity: 1, duration: 0.4, ease: "power1.out", stagger: 0.03 }, 2.5);
 
       // hub + hand: the pointer sweeps to 00h (top / midnight)
-      tl.fromTo("#02-escala-hub",
+      tl.fromTo(hubEl,
         { opacity: 0, scale: 0, svgOrigin: "300 300" },
         { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 2.55);
-      tl.fromTo("#02-escala-hand",
+      tl.fromTo(handEl,
         { rotation: -58, opacity: 0, svgOrigin: "300 300" },
         { rotation: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 2.78);
 

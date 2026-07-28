@@ -1,21 +1,17 @@
-<template data-composition-id="01-gancho">
+<template>
   <style>
+/* --- normalized local fonts (Barlow + IBM Plex Mono), deterministic render --- */
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 400; font-display: block; src: url("assets/fonts/barlow-400.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 600; font-display: block; src: url("assets/fonts/barlow-600.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 700; font-display: block; src: url("assets/fonts/barlow-700.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 800; font-display: block; src: url("assets/fonts/barlow-800.woff2") format("woff2"); }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 900; font-display: block; src: url("assets/fonts/barlow-900.woff2") format("woff2"); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: block; src: url("assets/fonts/ibmplexmono-500.woff2") format("woff2"); }
+
     /* Barlow ships as the project display face; canonical project font path with a
        generic fallback so the clean render machine always paints deterministically. */
-    @font-face {
-      font-family: "Barlow";
-      font-style: normal;
-      font-weight: 700;
-      font-display: swap;
-      src: url("../../assets/fonts/Barlow-Bold.woff2") format("woff2");
-    }
-    @font-face {
-      font-family: "Barlow";
-      font-style: normal;
-      font-weight: 900;
-      font-display: swap;
-      src: url("../../assets/fonts/Barlow-Black.woff2") format("woff2");
-    }
+    
+    
 
     /* frame root — styled via #root, never a class */
     #root {
@@ -25,7 +21,7 @@
       overflow: hidden;
       container-type: size;
       background: transparent;
-      font-family: "Barlow", "Arial Narrow", sans-serif;
+      font-family: "Barlow", sans-serif;
       color: #F0ECE5;
     }
 
@@ -133,16 +129,15 @@
     }
   </style>
 
-  <div id="root" data-composition-id="01-gancho"
-       data-width="1080" data-height="1920">
+  <div id="root" data-composition-id="01-gancho" data-width="1080" data-height="1920" data-start="0" data-duration="3.359">
 
     <!-- full-bleed ground -->
     <div class="clip g01-gancho-ground"
-         data-start="0" data-duration="2.859" data-track-index="0"></div>
+         data-start="0" data-duration="3.359" data-track-index="0"></div>
 
     <!-- ghost 24h dial -->
     <div class="clip g01-gancho-clock"
-         data-start="0" data-duration="2.859" data-track-index="1">
+         data-start="0" data-duration="3.359" data-track-index="1">
       <svg id="g01-gancho-dial" viewBox="0 0 200 200" aria-hidden="true">
         <circle class="g01-gancho-ring" cx="100" cy="100" r="92"></circle>
         <g id="g01-gancho-ticks"></g>
@@ -150,14 +145,14 @@
     </div>
 
     <!-- glow bloom layer (behind the payoff word) -->
-    <div class="clip g01-gancho-glow"
-         data-start="0" data-duration="2.859" data-track-index="2">
+    <div class="clip g01-gancho-glow" data-layout-allow-overlap
+         data-start="0" data-duration="3.359" data-track-index="2">
       <span>24h</span>
     </div>
 
     <!-- the question -->
     <div class="clip g01-gancho-question"
-         data-start="0" data-duration="2.859" data-track-index="3">
+         data-start="0" data-duration="3.359" data-track-index="3">
       <div class="g01-gancho-line g01-gancho-line-a">
         <span class="g01-gancho-word">e</span><span class="g01-gancho-word">se</span><span class="g01-gancho-word">toda</span><span class="g01-gancho-word">a</span><span class="g01-gancho-word">história</span><span class="g01-gancho-word">da</span><span class="g01-gancho-word">terra</span>
       </div>
@@ -167,13 +162,13 @@
     </div>
 
     <!-- focal payoff -->
-    <div class="clip g01-gancho-payoff"
-         data-start="0" data-duration="2.859" data-track-index="4">
+    <div class="clip g01-gancho-payoff" data-layout-allow-overlap
+         data-start="0" data-duration="3.359" data-track-index="4">
       <span class="g01-gancho-24h">24h</span>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="assets/vendor/gsap.min.js"></script>
   <script>
     (function () {
       // deterministic ghost-dial ticks (24h markings)
