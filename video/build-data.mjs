@@ -48,6 +48,7 @@ const scenes = scenesJson.scenes.map((scene, i) => {
     audio,
     durationInFrames: Math.round(seconds * FPS),
     visual: {caption: scene.caption, icon: scene.icon, palette: scene.palette},
+    meta: scene.meta ?? null,
   };
 });
 

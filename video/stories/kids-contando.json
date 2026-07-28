@@ -1,0 +1,50 @@
+{
+  "title": "Vamos Contar com os Bichinhos!",
+  "subtitle": "Números de 1 a 5",
+  "voice": "Leda",
+  "basePrompt": "Fale em português do Brasil com voz alegre, animada e carinhosa de apresentadora de programa infantil, com muita energia e entusiasmo, como se falasse com crianças pequenas.",
+  "scenes": [
+    {
+      "id": 1,
+      "text": "Olá, amiguinhos! Tudo bem com vocês? Hoje nós vamos contar até cinco com os bichinhos mais fofos da fazenda! Vem comigo!",
+      "meta": {"kind": "intro"},
+      "padAfter": 0.6
+    },
+    {
+      "id": 2,
+      "text": "Número um! Olha só: um patinho amarelo nadando na lagoa. O patinho faz: quá, quá! Vamos contar juntos: uum patinho!",
+      "meta": {"kind": "count", "count": 1, "animal": "duck", "bg": ["#7ec8f7", "#bfe8ff"], "numColor": "#ff6b6b"},
+      "padAfter": 0.6
+    },
+    {
+      "id": 3,
+      "text": "Número dois! Agora chegaram dois gatinhos fofinhos. Os gatinhos fazem: miau, miau! Conta comigo: um, dois gatinhos!",
+      "meta": {"kind": "count", "count": 2, "animal": "cat", "bg": ["#ffb3d9", "#ffe0f0"], "numColor": "#7c4dff"},
+      "padAfter": 0.6
+    },
+    {
+      "id": 4,
+      "text": "Número três! Uau, três cachorrinhos brincalhões! Os cachorrinhos fazem: au, au! Vamos contar: um, dois, três cachorrinhos!",
+      "meta": {"kind": "count", "count": 3, "animal": "dog", "bg": ["#ffd93b", "#ffeda3"], "numColor": "#00b8a9"},
+      "padAfter": 0.6
+    },
+    {
+      "id": 5,
+      "text": "Número quatro! Pula, pula! Quatro sapinhos verdes no lago. Os sapinhos fazem: ribit, ribit! Conta comigo: um, dois, três, quatro sapinhos!",
+      "meta": {"kind": "count", "count": 4, "animal": "frog", "bg": ["#7ed957", "#c9f2a7"], "numColor": "#ff8c42"},
+      "padAfter": 0.6
+    },
+    {
+      "id": 6,
+      "text": "Número cinco! Que lindos! Cinco pintinhos amarelinhos correndo atrás da mamãe galinha. Os pintinhos fazem: piu, piu! Vamos contar: um, dois, três, quatro, cinco pintinhos!",
+      "meta": {"kind": "count", "count": 5, "animal": "chick", "bg": ["#a7d8ff", "#e0f2ff"], "numColor": "#e91e63"},
+      "padAfter": 0.6
+    },
+    {
+      "id": 7,
+      "text": "Muito bem! Você contou até cinco! Um, dois, três, quatro, cinco! Palmas para você, você é demais! Tchau, tchau, amiguinhos, até a próxima aventura!",
+      "meta": {"kind": "finale"},
+      "padAfter": 1.5
+    }
+  ]
+}
