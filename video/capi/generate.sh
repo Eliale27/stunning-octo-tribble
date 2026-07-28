@@ -6,26 +6,29 @@
 set -u
 cd "$(dirname "$0")"
 MODEL="${MODEL:-veo-3.1-fast-generate-preview}"
+SCENES="${SCENES:-scenes.json}"
+OUTDIR="${OUTDIR:-out}"
+RES="${RES:-1080p}"
 API="https://generativelanguage.googleapis.com/v1beta"
 ONLY="${1:-}"
-mkdir -p out
+mkdir -p "$OUTDIR"
 
-N=$(python3 -c "import json; print(len(json.load(open('scenes.json'))['scenes']))")
+N=$(SCENES="$SCENES" python3 -c "import json,os; print(len(json.load(open(os.environ['SCENES']))['scenes']))")
 FAILED=0
 
 for i in $(seq 1 "$N"); do
   [ -n "$ONLY" ] && [ "$i" != "$ONLY" ] && continue
-  MP4="out/cena_$(printf '%02d' "$i").mp4"
+  MP4="$OUTDIR/cena_$(printf '%02d' "$i").mp4"
   [ -s "$MP4" ] && { echo "cena $i já existe, pulando"; continue; }
 
-  python3 - "$i" <<'PY' > /tmp/veo_payload.json
-import json, sys
-d = json.load(open('scenes.json'))
+  SCENES="$SCENES" RES="$RES" python3 - "$i" <<'PY' > /tmp/veo_payload.json
+import json, sys, os
+d = json.load(open(os.environ['SCENES']))
 s = d['scenes'][int(sys.argv[1]) - 1]
 prompt = d['style'] + ''.join(d['characters'][c] for c in s['chars']) + s['action']
 print(json.dumps({
   "instances": [{"prompt": prompt}],
-  "parameters": {"aspectRatio": "16:9", "resolution": "1080p"}
+  "parameters": {"aspectRatio": "16:9", "resolution": os.environ.get("RES", "1080p")}
 }))
 PY
 

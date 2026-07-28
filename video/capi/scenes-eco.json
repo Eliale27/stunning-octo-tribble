@@ -1,0 +1,22 @@
+{
+  "title": "Detetive Capi e o Mistério do Bolo Desaparecido (versão econômica, 10 cenas)",
+  "style": "Cute 3D animated cartoon for toddlers, preschool TV show style, soft Pixar-like rendering, bright saturated candy colors, rounded chubby shapes, big expressive glossy eyes, gentle warm lighting, smooth simple animation, cheerful atmosphere. No text on screen. ",
+  "characters": {
+    "CAPI": "CAPI: a chubby brown capybara detective, small tan detective hat, brown vest, holds a round magnifying glass, calm half-lidded eyes, gentle knowing smile. ",
+    "TUCA": "TUCA: a cheerful female toucan baker, large glossy orange-and-yellow beak, black feathers with white chest, pink apron with cupcake pattern. ",
+    "ZECA": "ZECA: a tiny golden lion tamarin monkey kid, fluffy orange fur, small green cap worn backwards, huge curious sparkling eyes. ",
+    "ANTS": "ANTS: three tiny cute cartoon ants with big friendly eyes and little red helmets. "
+  },
+  "scenes": [
+    {"chars": [], "action": "Establishing shot: a colorful cartoon jungle village at sunrise, round mushroom-shaped houses in pastel colors, a cute bakery with a big pink cupcake-shaped roof. Camera slowly pushes in toward the bakery window where a three-layer strawberry cake with pink frosting sits on the windowsill. Cheerful playful ukulele music, birds chirping."},
+    {"chars": ["TUCA"], "action": "Inside the cute bakery, TUCA walks to the open window carrying a tray, sees the empty windowsill, gasps dramatically, drops the tray, flaps her wings in panic and shouts in Brazilian Portuguese: 'Meu bolo! Meu bolo de morango sumiu!' Dramatic comedic zoom to her shocked face."},
+    {"chars": ["CAPI", "ZECA"], "action": "CAPI walks calmly down the village path holding his magnifying glass, ZECA runs excitedly around him. CAPI says slowly in Brazilian Portuguese: 'Calma, Tuca. O Detetive Capi está no caso.' ZECA jumps and says fast in Brazilian Portuguese: 'E eu sou o ajudante!' Light jazzy detective music."},
+    {"chars": ["CAPI"], "action": "In front of the bakery, CAPI inspects the empty windowsill, then his magnifying glass hovers over the ground revealing a trail of sparkling cake crumbs on the cobblestone path, magnified comically through the lens. CAPI says slowly in Brazilian Portuguese: 'Hmm... interessante! Uma trilha de migalhas.' Gentle mystery music with pizzicato strings."},
+    {"chars": ["ZECA", "ANTS", "CAPI"], "action": "ZECA spots three ANTS marching in a line carrying tiny crumbs, points dramatically and shouts in Brazilian Portuguese: 'As formigas! Prendam elas!' The ants freeze, and the lead ant holds up her tiny hands saying in a squeaky little voice in Brazilian Portuguese: 'Nós só pegamos as migalhinhas do chão!' CAPI nods kindly. Comedic sting then soft sweet music."},
+    {"chars": ["CAPI", "ZECA"], "action": "CAPI points along the crumb trail with his magnifying glass and says thoughtfully in Brazilian Portuguese: 'Olhe, Zeca... as migalhas vão para lá!' Camera follows the trail winding toward the jungle. ZECA gasps in amazement. Rising curious music, sense of discovery."},
+    {"chars": ["CAPI", "ZECA"], "action": "Side tracking shot: CAPI and ZECA tiptoe along the crumb trail through the colorful jungle, past giant flowers. They stop as bushes rustle and colorful balloons peek from behind a large bush. CAPI raises his paw and whispers in Brazilian Portuguese: 'Shhh... tem alguém ali!' Sneaky tiptoe music with xylophone building suspense."},
+    {"chars": ["TUCA", "CAPI", "ZECA"], "action": "Wide shot of the village square: many cute jungle animals (sloth, jaguar cub, parrot, armadillo) jump from behind bushes with balloons, streamers and the strawberry cake on a table, all shouting joyfully in Brazilian Portuguese: 'SURPRESA, TUCA!' Confetti explodes, TUCA arrives in shock. Big joyful music."},
+    {"chars": ["TUCA", "CAPI", "ZECA", "ANTS"], "action": "TUCA with teary happy eyes says emotionally in Brazilian Portuguese: 'Uma festa... pra mim?!' then blows out the candles on the strawberry cake while everyone cheers, ZECA dances with a balloon, the three ANTS share one big crumb at their own tiny table. Warm heartfelt birthday music, golden light, confetti."},
+    {"chars": ["CAPI"], "action": "Final shot: CAPI steps toward the camera holding his magnifying glass, winks at the viewer and says in Brazilian Portuguese: 'Mais um mistério resolvido!' Behind him the party continues with confetti. Camera pulls back, iris-out transition closing on his smiling face. Happy ending theme."}
+  ]
+}
