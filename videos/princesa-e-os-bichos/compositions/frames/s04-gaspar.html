@@ -1,0 +1,549 @@
+<template>
+  <style>
+    @font-face{font-family:'Quicksand';font-weight:600;font-display:block;src:url("assets/fonts/quicksand-600.woff2") format("woff2")}
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+
+    .s04-gaspar-layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .s04-gaspar-layer svg { display: block; }
+
+    .s04-gaspar-bub { position: absolute; width: 432px; height: 182px; }
+    .s04-gaspar-bub svg { display: block; overflow: visible; }
+    .s04-gaspar-bub text { font-family: 'Quicksand', sans-serif; font-weight: 600; fill: #2D2D2D; }
+
+    #s04-gaspar-b1 { left: 370px;  top: 540px; }
+    #s04-gaspar-b2 { left: 1270px; top: 200px; }
+    #s04-gaspar-b3 { left: 780px;  top: 445px; }
+  </style>
+
+  <div id="root" data-composition-id="s04-gaspar" data-start="0" data-duration="11" data-width="1920" data-height="1080">
+
+    <!-- ============ TRACK 0 — fundo full-bleed: o brejo do Gaspar ============ -->
+    <div class="clip s04-gaspar-layer" data-start="0" data-duration="11" data-track-index="0">
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <!-- céu -->
+        <rect x="0" y="0" width="1920" height="1080" fill="#A8D8F0"/>
+
+        <!-- sol (ornamento, canto superior esquerdo cortando a borda) -->
+        <g id="s04-gaspar-sun">
+          <circle cx="130" cy="108" r="86" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+          <path d="M130 -12 L130 -46 M244 108 L282 108 M214 24 L240 -2 M214 192 L240 218 M46 24 L20 -2"
+                stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- montanhas ao fundo (SEM contorno — profundidade por camada) -->
+        <path d="M-120 800 L240 330 L620 800 Z" fill="#B9C7D6"/>
+        <path d="M880 800 L1480 168 L2060 800 Z" fill="#CBD6E2"/>
+        <path d="M1480 168 L1372 288 Q1436 256 1482 274 Q1530 254 1590 288 Z" fill="#F5F0E6"/>
+
+        <!-- nuvens (ornamentos) -->
+        <g id="s04-gaspar-cloudA" opacity="0.95">
+          <path d="M628 152 Q602 150 604 126 Q606 104 630 106 Q636 76 670 80 Q690 56 716 72 Q746 64 754 96 Q782 98 782 124 Q784 152 754 152 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1" stroke-linejoin="round"/>
+        </g>
+        <g id="s04-gaspar-cloudB" opacity="0.95">
+          <path d="M1174 280 Q1154 278 1156 260 Q1158 242 1176 244 Q1182 220 1208 224 Q1224 204 1246 218 Q1270 212 1276 238 Q1298 240 1298 260 Q1300 282 1276 282 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1" stroke-linejoin="round"/>
+        </g>
+
+        <!-- colina média (sem contorno) -->
+        <path d="M-100 940 Q400 782 900 892 Q1400 806 2020 918 L2020 1080 L-100 1080 Z" fill="#7ECDC0"/>
+
+        <!-- árvore direita (cortando a borda) -->
+        <g transform="translate(1848,792) scale(1.3)">
+          <rect x="-11" y="0" width="22" height="80" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          <circle cx="0" cy="-26" r="52" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        </g>
+
+        <!-- chão de primeiro plano -->
+        <path d="M-40 1080 L-40 884 Q460 846 980 884 Q1470 916 1960 886 L1960 1080 Z"
+              fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+
+        <!-- rachaduras de seca perto do brejo -->
+        <path d="M800 966 L864 992 M900 958 L862 1002 M1560 940 L1618 968 M1200 990 L1264 1016"
+              stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round" fill="none" opacity="0.5"/>
+
+        <!-- juncos mint atrás da poça (dois tufos, balanço suave) -->
+        <g id="s04-gaspar-reedsL">
+          <g transform="translate(224,916)">
+            <rect x="-4" y="-158" width="8" height="158" rx="4" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+            <rect x="-9" y="-162" width="18" height="44" rx="9" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+          <g transform="translate(268,920)">
+            <rect x="-4" y="-120" width="8" height="120" rx="4" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+            <rect x="-9" y="-124" width="18" height="40" rx="9" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+          <g transform="translate(308,914)">
+            <rect x="-4" y="-186" width="8" height="186" rx="4" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+            <rect x="-9" y="-190" width="18" height="46" rx="9" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+        </g>
+        <g id="s04-gaspar-reedsR">
+          <g transform="translate(596,918)">
+            <rect x="-4" y="-170" width="8" height="170" rx="4" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+            <rect x="-9" y="-174" width="18" height="44" rx="9" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+          <g transform="translate(642,922)">
+            <rect x="-4" y="-132" width="8" height="132" rx="4" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+            <rect x="-9" y="-136" width="18" height="40" rx="9" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+        </g>
+
+        <!-- poça de lama (parte de trás) — terço inferior-esquerdo -->
+        <path d="M160 950 Q170 898 262 888 Q344 870 452 878 Q582 868 652 898 Q722 922 702 966 Q690 1010 560 1022 Q430 1038 300 1026 Q180 1014 160 950 Z"
+              fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+
+        <!-- margaridas (ornamentos) -->
+        <g transform="translate(1080,918)">
+          <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1">
+            <ellipse cx="0" cy="-20" rx="9" ry="16"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(300)"/>
+          </g>
+          <circle cx="0" cy="0" r="9" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+        </g>
+        <g transform="translate(1832,940) scale(0.9)">
+          <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1">
+            <ellipse cx="0" cy="-20" rx="9" ry="16"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(300)"/>
+          </g>
+          <circle cx="0" cy="0" r="9" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 1 — palco: Gaspar na poça, Lia + Tico ============ -->
+    <div class="clip s04-gaspar-layer" data-start="0" data-duration="11" data-track-index="1">
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- ---------- Gaspar (afundado na poça; depois pula para fora) ---------- -->
+        <g id="s04-gaspar-hop">
+          <g transform="translate(300,740) scale(1.7)">
+            <g id="s04-gaspar-frog">
+<g class="char-gaspar">
+  <!-- patas -->
+  <ellipse cx="40" cy="126" rx="22" ry="11" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+  <ellipse cx="136" cy="126" rx="22" ry="11" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- corpo -->
+  <ellipse class="body" cx="88" cy="94" rx="62" ry="42" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- barriga -->
+  <ellipse cx="88" cy="106" rx="38" ry="22" fill="#D8F5E6" stroke="none"/>
+  <!-- olhos (bolhas em cima) -->
+  <g class="eyes">
+    <circle cx="62" cy="52" r="19" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+    <circle cx="114" cy="52" r="19" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+    <circle cx="62" cy="54" r="7" fill="#2D2D2D"/>
+    <circle cx="114" cy="54" r="7" fill="#2D2D2D"/>
+  </g>
+  <!-- bocas -->
+  <path class="mouth-closed" d="M52 100 Q88 114 124 100" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <path class="mouth-open" d="M54 96 Q88 132 122 96 Q88 108 54 96 Z" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round" opacity="0"/>
+</g>
+            </g>
+          </g>
+        </g>
+
+        <!-- borda frontal da poça (cobre as patas — o corpo afundado) -->
+        <path d="M170 946 Q300 986 450 984 Q600 982 704 942 L706 962 Q690 1012 560 1024 Q430 1040 300 1028 Q182 1016 170 946 Z"
+              fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M250 1000 Q320 1012 400 1010 M480 1008 Q540 1006 596 996"
+              stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round" fill="none" opacity="0.4"/>
+
+        <!-- bolhas de lama (blub blub) -->
+        <circle id="s04-gaspar-blub1" cx="380" cy="925" r="10" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="2.1"/>
+        <circle id="s04-gaspar-blub2" cx="545" cy="940" r="7" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="2.1"/>
+
+        <!-- respingos do pulo -->
+        <circle id="s04-gaspar-spl1" cx="470" cy="930" r="8" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="2.1"/>
+        <circle id="s04-gaspar-spl2" cx="500" cy="925" r="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="2.1"/>
+        <circle id="s04-gaspar-spl3" cx="440" cy="935" r="5" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="2.1"/>
+
+        <!-- ---------- Lia (com Tico no ombro) — entra pela direita ---------- -->
+        <g id="s04-gaspar-liawalk">
+          <g id="s04-gaspar-crouch">
+            <g transform="translate(1150,374) scale(1.6)">
+<g class="char-lia">
+  <!-- saia -->
+  <path class="body" d="M110 176 L56 296 Q110 310 164 296 Z" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- braços (saem do ombro, sobrepondo o torso) -->
+  <rect class="arm-l" x="66" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <rect class="arm-r" x="138" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- faixa na cintura -->
+  <rect x="80" y="170" width="60" height="14" rx="7" fill="#F8635F" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- torso -->
+  <path d="M110 122 Q86 130 84 176 Q110 186 136 176 Q134 130 110 122 Z" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- cabelo (atrás) -->
+  <path d="M110 34 Q62 34 60 92 Q58 138 74 156 L86 120 Q78 74 110 70 Q142 74 134 120 L146 156 Q162 138 160 92 Q158 34 110 34 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- rosto -->
+  <circle cx="110" cy="86" r="38" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- franja -->
+  <path d="M74 76 Q80 46 110 46 Q140 46 146 76 Q128 62 110 64 Q92 62 74 76 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- coroa -->
+  <path d="M86 38 L94 16 L110 32 L126 16 L134 38 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- olhos -->
+  <g class="eyes">
+    <circle cx="97" cy="86" r="4.5" fill="#2D2D2D"/>
+    <circle cx="123" cy="86" r="4.5" fill="#2D2D2D"/>
+  </g>
+  <!-- bochechas -->
+  <circle cx="86" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+  <circle cx="134" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+  <!-- bocas -->
+  <path class="mouth-closed" d="M102 103 Q110 109 118 103" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <ellipse class="mouth-open" cx="110" cy="105" rx="7" ry="6" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" opacity="0"/>
+</g>
+            </g>
+
+            <!-- Tico no ombro esquerdo da Lia -->
+            <g id="s04-gaspar-ticofly">
+              <g transform="translate(1210,472) scale(1.05)">
+                <g id="s04-gaspar-tico">
+<g class="char-tico">
+  <!-- cauda -->
+  <path d="M28 66 L4 54 L8 78 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- corpo -->
+  <ellipse class="body" cx="70" cy="66" rx="42" ry="34" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- asa -->
+  <path class="wing" d="M62 56 Q86 46 96 68 Q76 80 62 56 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- pés -->
+  <path d="M62 98 L58 112 M78 98 L82 112" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <!-- olho -->
+  <g class="eyes"><circle cx="88" cy="54" r="4.5" fill="#2D2D2D"/></g>
+  <!-- bicos -->
+  <path class="mouth-closed" d="M108 62 L128 66 L108 70 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <g class="mouth-open" opacity="0">
+    <path d="M108 62 L130 56 L110 66 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M110 68 L130 76 L108 72 Z" fill="#E8B84B" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+</g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 2 — balão Gaspar #1 ============ -->
+    <div id="s04-gaspar-b1" class="clip s04-gaspar-bub" data-start="0.12" data-duration="2.95" data-track-index="2">
+      <svg width="432" height="182" viewBox="0 0 432 182" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(6,6)">
+          <rect x="0" y="0" width="420" height="130" rx="26" fill="#2D2D2D"/>
+          <path d="M56 128 L48 170 L104 128 Z" fill="#2D2D2D"/>
+        </g>
+        <rect x="0" y="0" width="420" height="130" rx="26" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3"/>
+        <path d="M56 128 L48 170 L104 128 Z" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="58" y="122" width="44" height="9" fill="#FFFFFF"/>
+        <text x="210" y="80" text-anchor="middle" font-size="44">virou lama.</text>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 3 — balão Lia ============ -->
+    <div id="s04-gaspar-b2" class="clip s04-gaspar-bub" data-start="3.405" data-duration="2.88" data-track-index="3">
+      <svg width="432" height="182" viewBox="0 0 432 182" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(6,6)">
+          <rect x="0" y="0" width="420" height="130" rx="26" fill="#2D2D2D"/>
+          <path d="M56 128 L48 170 L104 128 Z" fill="#2D2D2D"/>
+        </g>
+        <rect x="0" y="0" width="420" height="130" rx="26" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3"/>
+        <path d="M56 128 L48 170 L104 128 Z" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="58" y="122" width="44" height="9" fill="#FFFFFF"/>
+        <text x="210" y="58" text-anchor="middle" font-size="40">vem comigo,</text>
+        <text x="210" y="104" text-anchor="middle" font-size="40">gaspar.</text>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 4 — balão Gaspar #2 ============ -->
+    <div id="s04-gaspar-b3" class="clip s04-gaspar-bub" data-start="6.585" data-duration="2.60" data-track-index="4">
+      <svg width="432" height="182" viewBox="0 0 432 182" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(6,6)">
+          <rect x="0" y="0" width="420" height="130" rx="26" fill="#2D2D2D"/>
+          <path d="M56 128 L48 170 L104 128 Z" fill="#2D2D2D"/>
+        </g>
+        <rect x="0" y="0" width="420" height="130" rx="26" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3"/>
+        <path d="M56 128 L48 170 L104 128 Z" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="58" y="122" width="44" height="9" fill="#FFFFFF"/>
+        <text x="210" y="58" text-anchor="middle" font-size="40">essa história</text>
+        <text x="210" y="104" text-anchor="middle" font-size="40">tá cara.</text>
+      </svg>
+    </div>
+
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var hop        = document.querySelector("#s04-gaspar-hop");
+      var frog       = document.querySelector("#s04-gaspar-frog");
+      var frogEyesG  = document.querySelector("#s04-gaspar-frog .eyes");
+      var frogEyeCs  = frogEyesG.querySelectorAll("circle");
+      var frogPupils = [frogEyeCs[2], frogEyeCs[3]];
+      var frogOpen   = document.querySelector("#s04-gaspar-frog .mouth-open");
+      var frogClosed = document.querySelector("#s04-gaspar-frog .mouth-closed");
+
+      var liaWalk    = document.querySelector("#s04-gaspar-liawalk");
+      var crouch     = document.querySelector("#s04-gaspar-crouch");
+      var liaEyes    = document.querySelector("#s04-gaspar-crouch .char-lia .eyes");
+      var liaOpen    = document.querySelector("#s04-gaspar-crouch .char-lia .mouth-open");
+      var liaClosed  = document.querySelector("#s04-gaspar-crouch .char-lia .mouth-closed");
+      var armL       = document.querySelector("#s04-gaspar-crouch .char-lia .arm-l");
+      var armR       = document.querySelector("#s04-gaspar-crouch .char-lia .arm-r");
+
+      var ticoFly    = document.querySelector("#s04-gaspar-ticofly");
+      var tico       = document.querySelector("#s04-gaspar-tico");
+      var wing       = document.querySelector("#s04-gaspar-tico .wing");
+      var ticoEyes   = document.querySelector("#s04-gaspar-tico .eyes");
+      var ticoOpen   = document.querySelector("#s04-gaspar-tico .mouth-open");
+      var ticoClosed = document.querySelector("#s04-gaspar-tico .mouth-closed");
+
+      var reedsL = document.querySelector("#s04-gaspar-reedsL");
+      var reedsR = document.querySelector("#s04-gaspar-reedsR");
+      var cloudA = document.querySelector("#s04-gaspar-cloudA");
+      var cloudB = document.querySelector("#s04-gaspar-cloudB");
+      var blub1  = document.querySelector("#s04-gaspar-blub1");
+      var blub2  = document.querySelector("#s04-gaspar-blub2");
+      var spl1   = document.querySelector("#s04-gaspar-spl1");
+      var spl2   = document.querySelector("#s04-gaspar-spl2");
+      var spl3   = document.querySelector("#s04-gaspar-spl3");
+
+      var b1 = document.querySelector("#s04-gaspar-b1");
+      var b2 = document.querySelector("#s04-gaspar-b2");
+      var b3 = document.querySelector("#s04-gaspar-b3");
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---------- estado inicial (t = 0) ---------- */
+      tl.set(hop,        { x: 0, y: 0 }, 0);
+      tl.set(frog,       { y: 0, scaleY: 1, svgOrigin: "88 137" }, 0);
+      tl.set(frogPupils, { x: 0, scaleY: 1 }, 0);
+      tl.set(frogOpen,   { opacity: 0 }, 0);
+      tl.set(frogClosed, { opacity: 1 }, 0);
+
+      tl.set(liaWalk,   { x: 760, y: 0 }, 0);
+      tl.set(crouch,    { scaleY: 1, rotation: 0, svgOrigin: "1326 872" }, 0);
+      tl.set(liaEyes,   { x: 0, scaleY: 1 }, 0);
+      tl.set(liaOpen,   { opacity: 0 }, 0);
+      tl.set(liaClosed, { opacity: 1 }, 0);
+      tl.set(armL,      { rotation: 0, svgOrigin: "74 142" }, 0);
+      tl.set(armR,      { rotation: 0, svgOrigin: "146 142" }, 0);
+
+      tl.set(ticoFly,    { x: 0, y: 0 }, 0);
+      tl.set(tico,       { scaleX: -1, svgOrigin: "70 66" }, 0);
+      tl.set(wing,       { rotation: 0, svgOrigin: "64 57" }, 0);
+      tl.set(ticoEyes,   { x: 0, scaleY: 1 }, 0);
+      tl.set(ticoOpen,   { opacity: 0 }, 0);
+      tl.set(ticoClosed, { opacity: 1 }, 0);
+
+      tl.set([b1, b3], { opacity: 0, scale: 0.5, x: 0, y: 0, transformOrigin: "48px 170px" }, 0);
+      tl.set(b2,       { opacity: 0, scale: 0.5, x: 340, y: 0, transformOrigin: "48px 170px" }, 0);
+      tl.set(blub1, { opacity: 0, scale: 0.3, svgOrigin: "380 925" }, 0);
+      tl.set(blub2, { opacity: 0, scale: 0.3, svgOrigin: "545 940" }, 0);
+      tl.set([spl1, spl2, spl3], { opacity: 0, x: 0, y: 0 }, 0);
+      tl.set(reedsL, { rotation: 0, svgOrigin: "266 918" }, 0);
+      tl.set(reedsR, { rotation: 0, svgOrigin: "620 920" }, 0);
+      tl.set(cloudA, { x: 0 }, 0);
+      tl.set(cloudB, { x: 0 }, 0);
+
+      /* ---------- receita de lip flap (8 Hz, determinística) ---------- */
+      function speak(openEl, closedEl, start, end) {
+        var t = start, on = true, FLAP = 0.0625;
+        while (t < end - 0.001) {
+          tl.set(openEl,   { opacity: on ? 1 : 0 }, t);
+          tl.set(closedEl, { opacity: on ? 0 : 1 }, t);
+          on = !on;
+          t += FLAP;
+        }
+        tl.set(openEl,   { opacity: 0 }, end);
+        tl.set(closedEl, { opacity: 1 }, end);
+      }
+
+      /* =========================================================
+         CENA 1 (0.0–3.1s) — Gaspar afundado na poça, emburrado.
+         ========================================================= */
+
+      speak(frogOpen, frogClosed, 0.12, 3.105);
+      tl.fromTo(b1, { opacity: 0, scale: 0.5 },
+                    { opacity: 1, scale: 1, duration: 0.30, ease: "back.out(2.4)" }, 0.12);
+      tl.to(b1, { y: -8, duration: 0.80, ease: "sine.inOut" }, 0.90);
+      tl.to(b1, { y:  0, duration: 0.90, ease: "sine.inOut" }, 1.70);
+      tl.to(b1, { opacity: 0, scale: 0.55, duration: 0.16, ease: "power2.in" }, 2.86);
+
+      /* corpo afunda um dedinho na lama e volta — bicho atolado */
+      tl.to(frog, { y: 5, duration: 0.90, ease: "sine.inOut" }, 0.40);
+      tl.to(frog, { y: 0, duration: 0.90, ease: "sine.inOut" }, 1.50);
+
+      /* blub blub na lama */
+      tl.fromTo(blub1, { opacity: 0, scale: 0.3 },
+                       { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, 1.05);
+      tl.to(blub1, { opacity: 0, scale: 1.2, duration: 0.18, ease: "power1.in" }, 1.40);
+      tl.fromTo(blub2, { opacity: 0, scale: 0.3 },
+                       { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, 2.30);
+      tl.to(blub2, { opacity: 0, scale: 1.2, duration: 0.18, ease: "power1.in" }, 2.65);
+
+      /* piscada do Gaspar (só as pupilas) */
+      tl.to(frogPupils, { scaleY: 0.1, duration: 0.06 }, 1.60);
+      tl.to(frogPupils, { scaleY: 1,   duration: 0.06 }, 1.66);
+
+      /* =========================================================
+         CENA 2 (3.1–6.3s) — Lia entra pela direita com Tico no
+         ombro e se agacha até a altura do sapo.
+         ========================================================= */
+
+      tl.to(liaWalk, { x: 80, duration: 1.30, ease: "none" },      2.70);
+      tl.to(liaWalk, { x:  0, duration: 0.35, ease: "power2.out" }, 4.00);
+      (function () {
+        var t = 2.70, i;
+        for (i = 0; i < 8; i++) {
+          tl.to(liaWalk, { y: -7, duration: 0.10, ease: "sine.out" }, t);
+          tl.to(liaWalk, { y:  0, duration: 0.10, ease: "sine.in" },  t + 0.10);
+          t += 0.20;
+        }
+      })();
+
+      /* Gaspar olha para quem chega */
+      tl.to(frogPupils, { x: 4, duration: 0.30, ease: "power2.out" }, 3.30);
+
+      /* fala da Lia + balão (acompanha a chegada dela) */
+      speak(liaOpen, liaClosed, 3.405, 6.285);
+      tl.fromTo(b2, { opacity: 0, scale: 0.5 },
+                    { opacity: 1, scale: 1, duration: 0.30, ease: "back.out(2.4)" }, 3.41);
+      tl.to(b2, { x: 150, duration: 0.40, ease: "power1.out" }, 3.45);
+      tl.to(b2, { x:   0, duration: 0.45, ease: "power2.out" }, 3.90);
+      tl.to(b2, { y: -8, duration: 0.80, ease: "sine.inOut" }, 4.60);
+      tl.to(b2, { y:  0, duration: 0.70, ease: "sine.inOut" }, 5.40);
+      tl.to(b2, { opacity: 0, scale: 0.55, duration: 0.16, ease: "power2.in" }, 6.10);
+
+      /* agachamento até a altura do sapo + olhar para baixo-esquerda */
+      tl.to(crouch, { scaleY: 0.84, rotation: -3, duration: 0.50, ease: "power2.inOut" }, 4.55);
+      tl.to(liaEyes, { x: -4, duration: 0.30, ease: "power2.out" }, 4.40);
+      tl.to(liaEyes, { scaleY: 0.1, duration: 0.06 }, 4.85);
+      tl.to(liaEyes, { scaleY: 1,   duration: 0.06 }, 4.91);
+
+      /* mão estendida — "vem comigo" */
+      tl.to(armL, { rotation: 60, duration: 0.50, ease: "power2.out" }, 4.90);
+
+      /* Tico se equilibra no ombro durante o agachamento */
+      tl.to(wing, { rotation: -30, duration: 0.10, ease: "sine.inOut" }, 4.55);
+      tl.to(wing, { rotation:  15, duration: 0.10, ease: "sine.inOut" }, 4.65);
+      tl.to(wing, { rotation: -30, duration: 0.10, ease: "sine.inOut" }, 4.75);
+      tl.to(wing, { rotation:   0, duration: 0.15, ease: "sine.out" },   4.85);
+      tl.to(ticoEyes, { scaleY: 0.1, duration: 0.06 }, 5.35);
+      tl.to(ticoEyes, { scaleY: 1,   duration: 0.06 }, 5.41);
+
+      /* =========================================================
+         CENA 3 (6.3–9.1s) — o hop para fora da poça; aterrissa
+         e reclama.
+         ========================================================= */
+
+      /* antecipação → salto em arco → aterrissagem com squash */
+      tl.to(frog, { scaleY: 0.85, duration: 0.12, ease: "power2.in" },  6.28);
+      tl.to(frog, { scaleY: 1.12, duration: 0.20, ease: "power2.out" }, 6.40);
+      tl.to(hop,  { x: 190, duration: 0.26, ease: "none" },       6.40);
+      tl.to(hop,  { y: -150, duration: 0.26, ease: "power2.out" }, 6.40);
+      tl.to(frog, { scaleY: 1.0, duration: 0.20, ease: "power1.inOut" }, 6.66);
+      tl.to(hop,  { x: 380, duration: 0.26, ease: "none" },      6.66);
+      tl.to(hop,  { y: 32, duration: 0.26, ease: "power2.in" },  6.66);
+      tl.to(frog, { scaleY: 0.78, duration: 0.09, ease: "power2.out" }, 6.92);
+      tl.to(frog, { scaleY: 1,    duration: 0.28, ease: "back.out(2)" }, 7.01);
+
+      /* respingos de lama no impulso */
+      tl.set([spl1, spl2, spl3], { opacity: 1 }, 6.42);
+      tl.to(spl1, { x: -70, duration: 0.34, ease: "none" }, 6.42);
+      tl.to(spl1, { y: -80, duration: 0.16, ease: "power2.out" }, 6.42);
+      tl.to(spl1, { y: -30, duration: 0.18, ease: "power2.in" },  6.58);
+      tl.to(spl2, { x: 34, duration: 0.30, ease: "none" }, 6.44);
+      tl.to(spl2, { y: -100, duration: 0.15, ease: "power2.out" }, 6.44);
+      tl.to(spl2, { y: -50,  duration: 0.15, ease: "power2.in" },  6.59);
+      tl.to(spl3, { x: -104, duration: 0.28, ease: "none" }, 6.43);
+      tl.to(spl3, { y: -56, duration: 0.14, ease: "power2.out" }, 6.43);
+      tl.to(spl3, { y: -16, duration: 0.14, ease: "power2.in" },  6.57);
+      tl.to([spl1, spl2, spl3], { opacity: 0, duration: 0.12, ease: "power1.in" }, 6.68);
+
+      /* juncos chacoalham com o impulso */
+      tl.to(reedsR, { rotation: -3,  duration: 0.12, ease: "sine.inOut" }, 6.45);
+      tl.to(reedsR, { rotation: 2.2, duration: 0.14, ease: "sine.inOut" }, 6.57);
+      tl.to(reedsR, { rotation: 0,   duration: 0.25, ease: "sine.out" },   6.71);
+
+      /* fala do Gaspar + balão */
+      speak(frogOpen, frogClosed, 6.585, 9.048);
+      tl.fromTo(b3, { opacity: 0, scale: 0.5 },
+                    { opacity: 1, scale: 1, duration: 0.30, ease: "back.out(2.4)" }, 6.70);
+      tl.to(b3, { y: -8, duration: 0.80, ease: "sine.inOut" }, 7.30);
+      tl.to(b3, { y:  0, duration: 0.70, ease: "sine.inOut" }, 8.10);
+      tl.to(b3, { opacity: 0, scale: 0.55, duration: 0.15, ease: "power2.in" }, 8.95);
+
+      /* Lia se levanta; braço recolhe */
+      tl.to(crouch, { scaleY: 1, rotation: 0, duration: 0.50, ease: "power2.inOut" }, 6.90);
+      tl.to(armL, { rotation: 0, duration: 0.50, ease: "power2.inOut" }, 7.35);
+      tl.to(liaEyes, { scaleY: 0.1, duration: 0.06 }, 7.70);
+      tl.to(liaEyes, { scaleY: 1,   duration: 0.06 }, 7.76);
+
+      /* pulinhos indignados — "Eu? Andando?" */
+      tl.to(frog, { y: -8, duration: 0.12, ease: "power2.out" }, 7.55);
+      tl.to(frog, { y:  0, duration: 0.14, ease: "power2.in" },  7.67);
+      tl.to(frog, { y: -6, duration: 0.11, ease: "power2.out" }, 8.30);
+      tl.to(frog, { y:  0, duration: 0.13, ease: "power2.in" },  8.41);
+      tl.to(frogPupils, { scaleY: 0.1, duration: 0.06 }, 8.10);
+      tl.to(frogPupils, { scaleY: 1,   duration: 0.06 }, 8.16);
+
+      /* =========================================================
+         CENA 4 (9.1–11.0s) — os três se viram para a montanha à
+         direita; Tico levanta voo. Batida de partida.
+         ========================================================= */
+
+      tl.to(liaEyes, { x: 6, duration: 0.45, ease: "power2.out" }, 9.15);
+      tl.to(crouch, { rotation: 3, duration: 0.60, ease: "power2.inOut" }, 9.30);
+      tl.to(frogPupils, { x: 6, duration: 0.35, ease: "power2.out" }, 9.20);
+
+      /* Lia aponta o caminho da montanha */
+      tl.to(armR, { rotation: -55, duration: 0.50, ease: "back.out(1.7)" }, 9.35);
+
+      /* Tico dá meia-volta e levanta voo rumo à montanha */
+      tl.to(tico, { scaleX: 1, duration: 0.20, ease: "power2.inOut" }, 9.30);
+      (function () {
+        var t = 9.40, up = true;
+        while (t < 10.90) {
+          tl.to(wing, { rotation: up ? -38 : 20, duration: 0.105, ease: "sine.inOut" }, t);
+          up = !up;
+          t += 0.105;
+        }
+      })();
+      tl.to(ticoFly, { x:  70, y:  -90, duration: 0.40, ease: "power1.out" },   9.45);
+      tl.to(ticoFly, { x: 180, y: -180, duration: 0.50, ease: "power1.inOut" }, 9.85);
+      tl.to(ticoFly, { x: 300, y: -250, duration: 0.60, ease: "power1.inOut" }, 10.35);
+
+      /* Lia dá o primeiro passo; Gaspar dá um pulinho atrás */
+      tl.to(liaWalk, { x: 24, duration: 0.60, ease: "power1.inOut" }, 10.20);
+      tl.to(hop, { x: 440, duration: 0.30, ease: "none" },      10.35);
+      tl.to(hop, { y:   2, duration: 0.14, ease: "power2.out" }, 10.35);
+      tl.to(hop, { y:  32, duration: 0.16, ease: "power2.in" },  10.49);
+
+      /* juncos — balanço de fundo ao longo da cena */
+      tl.to(reedsL, { rotation: 1.8, duration: 1.60, ease: "sine.inOut" }, 0.30);
+      tl.to(reedsL, { rotation: 0,   duration: 1.60, ease: "sine.inOut" }, 1.90);
+      tl.to(reedsL, { rotation: 1.5, duration: 1.50, ease: "sine.inOut" }, 5.20);
+      tl.to(reedsL, { rotation: 0,   duration: 1.50, ease: "sine.inOut" }, 6.70);
+      tl.to(reedsL, { rotation: 1.8, duration: 1.00, ease: "sine.inOut" }, 9.00);
+      tl.to(reedsL, { rotation: 0.8, duration: 0.90, ease: "sine.inOut" }, 10.00);
+      tl.to(reedsR, { rotation: -1.5, duration: 1.50, ease: "sine.inOut" }, 0.90);
+      tl.to(reedsR, { rotation: 0,    duration: 1.50, ease: "sine.inOut" }, 2.40);
+      tl.to(reedsR, { rotation: -1.8, duration: 1.00, ease: "sine.inOut" }, 4.40);
+      tl.to(reedsR, { rotation: 0,    duration: 1.00, ease: "sine.inOut" }, 5.40);
+      tl.to(reedsR, { rotation: -1.2, duration: 1.20, ease: "sine.inOut" }, 9.60);
+
+      /* nuvens à deriva — o brejo nunca congela */
+      tl.to(cloudA, { x: 88, duration: 11, ease: "none" }, 0);
+      tl.to(cloudB, { x: 60, duration: 11, ease: "none" }, 0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s04-gaspar"] = tl;
+    })();
+  </script>
+</template>

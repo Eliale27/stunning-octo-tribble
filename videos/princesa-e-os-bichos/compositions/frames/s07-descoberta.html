@@ -1,0 +1,602 @@
+<template>
+  <style>
+    @font-face{font-family:'Quicksand';font-weight:600;font-display:block;src:url("assets/fonts/quicksand-600.woff2") format("woff2")}
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+
+    .s07-descoberta-layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .s07-descoberta-layer svg { display: block; }
+
+    .s07-descoberta-bub { position: absolute; width: 352px; height: 156px; }
+    .s07-descoberta-bub svg { display: block; overflow: visible; }
+    .s07-descoberta-bub text { font-family: 'Quicksand', sans-serif; font-weight: 600; fill: #2D2D2D; }
+
+    #s07-descoberta-b1 { left: 348px; top: 64px; }
+  </style>
+
+  <div id="root" data-composition-id="s07-descoberta" data-start="0" data-duration="10" data-width="1920" data-height="1080">
+
+    <!-- ============ TRACK 0 — fundo full-bleed: céu do alto ============ -->
+    <div class="clip s07-descoberta-layer" data-start="0" data-duration="10" data-track-index="0">
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <!-- céu -->
+        <rect x="0" y="0" width="1920" height="1080" fill="#A8D8F0"/>
+
+        <!-- sol (ornamento, canto superior direito cortando a borda) -->
+        <g id="s07-descoberta-sun">
+          <circle cx="1798" cy="92" r="82" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+          <path d="M1798 -30 L1798 -62 M1690 92 L1652 92 M1712 8 L1686 -18 M1712 176 L1686 202 M1884 8 L1910 -18"
+                stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- picos distantes vistos do alto (SEM contorno) -->
+        <path d="M540 580 L830 296 L1120 580 Z" fill="#CBD6E2"/>
+        <path d="M830 296 L764 366 Q806 348 832 358 Q862 344 898 366 Z" fill="#F5F0E6"/>
+        <path d="M920 580 L1180 356 L1440 580 Z" fill="#B9C7D6"/>
+
+        <!-- nuvens (ornamentos) — altura -->
+        <g id="s07-descoberta-cloudA" opacity="0.95">
+          <path d="M448 208 Q422 206 424 182 Q426 160 450 162 Q456 132 490 136 Q510 112 536 128 Q566 120 574 152 Q602 154 602 180 Q604 208 574 208 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1" stroke-linejoin="round"/>
+        </g>
+        <g id="s07-descoberta-cloudB" opacity="0.95">
+          <path d="M1214 260 Q1194 258 1196 240 Q1198 222 1216 224 Q1222 200 1248 204 Q1264 184 1286 198 Q1310 192 1316 218 Q1338 220 1338 240 Q1340 262 1316 262 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1" stroke-linejoin="round"/>
+        </g>
+        <!-- banco de nuvens baixo — estamos bem alto -->
+        <g id="s07-descoberta-cloudC" opacity="0.92">
+          <path d="M240 1010 Q192 1006 196 962 Q200 922 244 926 Q254 872 316 880 Q352 836 400 866 Q454 850 468 908 Q518 912 518 958 Q522 1010 466 1010 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1" stroke-linejoin="round"/>
+        </g>
+        <g id="s07-descoberta-cloudD" opacity="0.92">
+          <path d="M1520 1050 Q1478 1046 1482 1008 Q1486 974 1524 978 Q1532 932 1586 938 Q1618 900 1660 926 Q1706 912 1718 962 Q1762 966 1762 1006 Q1766 1050 1716 1050 Z"
+                fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1" stroke-linejoin="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 1 — a garganta: paredes, água, tronco, pedras, galhos ============ -->
+    <div class="clip s07-descoberta-layer" data-start="1.5" data-duration="8.5" data-track-index="1">
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <g id="s07-descoberta-shake">
+
+          <!-- massa de água represada (atrás do tronco) -->
+          <g id="s07-descoberta-water">
+            <path d="M560 360 Q660 330 760 356 Q870 332 960 354 Q1060 330 1160 352 Q1270 334 1360 358 L1360 1010 L560 1010 Z"
+                  fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="680" y="452" width="240" height="26" rx="13" fill="#A8D8F0" opacity="0.65"/>
+            <rect x="1020" y="520" width="200" height="24" rx="12" fill="#A8D8F0" opacity="0.65"/>
+            <g id="s07-descoberta-crests">
+              <circle cx="712" cy="350" r="13" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1"/>
+              <circle cx="928" cy="344" r="11" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1"/>
+              <circle cx="1146" cy="346" r="12" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1"/>
+              <path d="M780 352 Q820 338 860 352 M1000 348 Q1040 334 1080 348"
+                    stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none"/>
+            </g>
+          </g>
+
+          <!-- parede de rocha esquerda (SEM contorno — profundidade por camada) -->
+          <g id="s07-descoberta-lwall">
+            <path d="M-40 1080 L-40 -40 L500 -40 L560 200 L660 420 L620 660 L700 900 L660 1080 Z" fill="#CBD6E2"/>
+            <path d="M-40 1080 L-40 60 L300 100 L420 300 L520 480 L500 680 L600 880 L560 1080 Z" fill="#B9C7D6"/>
+          </g>
+
+          <!-- parede de rocha direita -->
+          <g id="s07-descoberta-rwall">
+            <path d="M1960 1080 L1960 -40 L1420 -40 L1360 200 L1260 420 L1300 660 L1220 900 L1260 1080 Z" fill="#CBD6E2"/>
+            <path d="M1960 1080 L1960 60 L1620 100 L1500 300 L1400 480 L1420 680 L1320 880 L1360 1080 Z" fill="#B9C7D6"/>
+          </g>
+
+          <!-- chão / leito seco a jusante -->
+          <g id="s07-descoberta-floor">
+            <path d="M-60 1080 L-60 950 Q400 918 960 944 Q1500 968 1980 940 L1980 1080 Z"
+                  fill="#C9B79C" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M300 1006 L360 1034 M1120 1018 L1188 1046 M1230 1010 L1192 1054"
+                  stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round" fill="none" opacity="0.5"/>
+            <ellipse cx="668" cy="920" rx="46" ry="22" fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+            <ellipse cx="1420" cy="985" rx="38" ry="18" fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+            <!-- margaridas (ornamentos) nos cantos -->
+            <g transform="translate(96,1006)">
+              <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1">
+                <ellipse cx="0" cy="-20" rx="9" ry="16"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(60)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(120)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(180)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(240)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(300)"/>
+              </g>
+              <circle cx="0" cy="0" r="9" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+            </g>
+            <g transform="translate(1836,1014) scale(0.85)">
+              <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1">
+                <ellipse cx="0" cy="-20" rx="9" ry="16"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(60)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(120)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(180)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(240)"/>
+                <ellipse cx="0" cy="-20" rx="9" ry="16" transform="rotate(300)"/>
+              </g>
+              <circle cx="0" cy="0" r="9" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+            </g>
+          </g>
+
+          <!-- o tronco enorme atravessado -->
+          <g transform="translate(960,635)">
+            <g id="s07-descoberta-log">
+              <rect x="-430" y="-75" width="860" height="150" rx="60" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+              <path d="M-360 -32 Q-180 -16 -10 -32 Q160 -44 350 -30 M-330 22 Q-140 38 60 24 Q240 12 380 26"
+                    stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round" fill="none" opacity="0.35"/>
+              <circle cx="-130" cy="8" r="17" fill="none" stroke="#2D2D2D" stroke-width="2.1" opacity="0.45"/>
+              <circle cx="-130" cy="8" r="6" fill="#2D2D2D" opacity="0.4"/>
+              <circle cx="190" cy="-24" r="13" fill="none" stroke="#2D2D2D" stroke-width="2.1" opacity="0.45"/>
+            </g>
+          </g>
+
+          <!-- pedras encaixadas -->
+          <ellipse id="s07-descoberta-s1" cx="940" cy="850" rx="130" ry="95"  fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+          <ellipse id="s07-descoberta-s2" cx="740" cy="890" rx="95"  ry="70"  fill="#CBD6E2" stroke="#2D2D2D" stroke-width="3"/>
+          <ellipse id="s07-descoberta-s3" cx="1160" cy="880" rx="100" ry="75" fill="#CBD6E2" stroke="#2D2D2D" stroke-width="3"/>
+          <ellipse id="s07-descoberta-s4" cx="1046" cy="762" rx="62"  ry="46" fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+          <ellipse id="s07-descoberta-s5" cx="822" cy="770" rx="56"  ry="42"  fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+
+          <!-- galhos -->
+          <g transform="translate(690,575) rotate(-38)">
+            <g id="s07-descoberta-g1">
+              <rect x="-8" y="-130" width="16" height="132" rx="8" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+              <circle cx="0" cy="-142" r="24" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+            </g>
+          </g>
+          <g transform="translate(1225,585) rotate(32)">
+            <g id="s07-descoberta-g2">
+              <rect x="-8" y="-140" width="16" height="142" rx="8" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+              <circle cx="0" cy="-152" r="26" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+            </g>
+          </g>
+          <g transform="translate(872,742) rotate(-64)">
+            <g id="s07-descoberta-g3">
+              <rect x="-6" y="-92" width="12" height="94" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+            </g>
+          </g>
+
+          <!-- espuma do pulso da água contra a barreira -->
+          <circle id="s07-descoberta-f1" cx="720"  cy="548" r="16" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1"/>
+          <circle id="s07-descoberta-f2" cx="965"  cy="532" r="20" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1"/>
+          <circle id="s07-descoberta-f3" cx="1205" cy="550" r="14" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1"/>
+
+        </g>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 2 — o grupo chega, pequeno diante do obstáculo ============ -->
+    <div class="clip s07-descoberta-layer" data-start="6.9" data-duration="3.1" data-track-index="2">
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- ---------- Bruno (pequeno) ---------- -->
+        <g id="s07-descoberta-brunoW">
+          <g transform="translate(140,800) scale(0.58)">
+            <g id="s07-descoberta-brunoCh">
+<g class="char-bruno">
+  <!-- pernas -->
+  <rect x="60" y="228" width="42" height="56" rx="18" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <rect x="132" y="228" width="42" height="56" rx="18" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- corpo -->
+  <ellipse class="body" cx="117" cy="188" rx="76" ry="66" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <ellipse cx="117" cy="200" rx="46" ry="44" fill="#EBD9C4" stroke="none"/>
+  <!-- braços -->
+  <rect class="arm-l" x="26" y="150" width="34" height="76" rx="17" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <rect class="arm-r" x="174" y="150" width="34" height="76" rx="17" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- orelhas -->
+  <circle cx="72" cy="52" r="24" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <circle cx="162" cy="52" r="24" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <circle cx="72" cy="52" r="11" fill="#EBD9C4"/>
+  <circle cx="162" cy="52" r="11" fill="#EBD9C4"/>
+  <!-- cabeça -->
+  <circle cx="117" cy="84" r="56" fill="#C89B72" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- focinho -->
+  <ellipse cx="117" cy="104" rx="34" ry="26" fill="#EBD9C4" stroke="#2D2D2D" stroke-width="3"/>
+  <path d="M117 92 L106 100 Q117 108 128 100 Z" fill="#2D2D2D"/>
+  <!-- olhos -->
+  <g class="eyes">
+    <circle cx="97" cy="70" r="5.5" fill="#2D2D2D"/>
+    <circle cx="137" cy="70" r="5.5" fill="#2D2D2D"/>
+  </g>
+  <!-- bocas -->
+  <path class="mouth-closed" d="M104 114 Q117 122 130 114" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <ellipse class="mouth-open" cx="117" cy="116" rx="13" ry="10" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" opacity="0"/>
+</g>
+            </g>
+          </g>
+        </g>
+
+        <!-- ---------- Gaspar (pequeno) ---------- -->
+        <g id="s07-descoberta-gasparW">
+          <g transform="translate(452,878) scale(0.58)">
+            <g id="s07-descoberta-gasparCh">
+<g class="char-gaspar">
+  <!-- patas -->
+  <ellipse cx="40" cy="126" rx="22" ry="11" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+  <ellipse cx="136" cy="126" rx="22" ry="11" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- corpo -->
+  <ellipse class="body" cx="88" cy="94" rx="62" ry="42" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- barriga -->
+  <ellipse cx="88" cy="106" rx="38" ry="22" fill="#D8F5E6" stroke="none"/>
+  <!-- olhos (bolhas em cima) -->
+  <g class="eyes">
+    <circle cx="62" cy="52" r="19" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+    <circle cx="114" cy="52" r="19" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+    <circle cx="62" cy="54" r="7" fill="#2D2D2D"/>
+    <circle cx="114" cy="54" r="7" fill="#2D2D2D"/>
+  </g>
+  <!-- bocas -->
+  <path class="mouth-closed" d="M52 100 Q88 114 124 100" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <path class="mouth-open" d="M54 96 Q88 132 122 96 Q88 108 54 96 Z" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round" opacity="0"/>
+</g>
+            </g>
+          </g>
+        </g>
+
+        <!-- ---------- Princesa Lia (pequena) ---------- -->
+        <g id="s07-descoberta-liaW">
+          <g transform="translate(300,782) scale(0.58)">
+            <g id="s07-descoberta-liaCh">
+<g class="char-lia">
+  <!-- saia -->
+  <path class="body" d="M110 176 L56 296 Q110 310 164 296 Z" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- braços (saem do ombro, sobrepondo o torso) -->
+  <rect class="arm-l" x="66" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <rect class="arm-r" x="138" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- faixa na cintura -->
+  <rect x="80" y="170" width="60" height="14" rx="7" fill="#F8635F" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- torso -->
+  <path d="M110 122 Q86 130 84 176 Q110 186 136 176 Q134 130 110 122 Z" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- cabelo (atrás) -->
+  <path d="M110 34 Q62 34 60 92 Q58 138 74 156 L86 120 Q78 74 110 70 Q142 74 134 120 L146 156 Q162 138 160 92 Q158 34 110 34 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- rosto -->
+  <circle cx="110" cy="86" r="38" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- franja -->
+  <path d="M74 76 Q80 46 110 46 Q140 46 146 76 Q128 62 110 64 Q92 62 74 76 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- coroa -->
+  <path d="M86 38 L94 16 L110 32 L126 16 L134 38 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- olhos -->
+  <g class="eyes">
+    <circle cx="97" cy="86" r="4.5" fill="#2D2D2D"/>
+    <circle cx="123" cy="86" r="4.5" fill="#2D2D2D"/>
+  </g>
+  <!-- bochechas -->
+  <circle cx="86" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+  <circle cx="134" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+  <!-- bocas -->
+  <path class="mouth-closed" d="M102 103 Q110 109 118 103" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <ellipse class="mouth-open" cx="110" cy="105" rx="7" ry="6" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" opacity="0"/>
+</g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 3 — Tico no alto ============ -->
+    <div class="clip s07-descoberta-layer" data-start="0" data-duration="10" data-track-index="3">
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <g id="s07-descoberta-fly">
+          <g transform="translate(170,110) scale(1.15)">
+            <g id="s07-descoberta-tilt">
+              <g id="s07-descoberta-bird">
+<g class="char-tico">
+  <!-- cauda -->
+  <path d="M28 66 L4 54 L8 78 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- corpo -->
+  <ellipse class="body" cx="70" cy="66" rx="42" ry="34" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- asa -->
+  <path class="wing" d="M62 56 Q86 46 96 68 Q76 80 62 56 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- pés -->
+  <path d="M62 98 L58 112 M78 98 L82 112" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <!-- olho -->
+  <g class="eyes"><circle cx="88" cy="54" r="4.5" fill="#2D2D2D"/></g>
+  <!-- bicos -->
+  <path class="mouth-closed" d="M108 62 L128 66 L108 70 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <g class="mouth-open" opacity="0">
+    <path d="M108 62 L130 56 L110 66 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M110 68 L130 76 L108 72 Z" fill="#E8B84B" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+</g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ============ TRACK 4 — balão do Tico ============ -->
+    <div id="s07-descoberta-b1" class="clip s07-descoberta-bub" data-start="0.12" data-duration="1.55" data-track-index="4">
+      <svg width="352" height="156" viewBox="0 0 352 156" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(6,6)">
+          <rect x="0" y="0" width="320" height="92" rx="26" fill="#2D2D2D"/>
+          <path d="M52 90 L44 128 L96 90 Z" fill="#2D2D2D"/>
+        </g>
+        <rect x="0" y="0" width="320" height="92" rx="26" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3"/>
+        <path d="M52 90 L44 128 L96 90 Z" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="54" y="86" width="40" height="8" fill="#FFFFFF"/>
+        <text x="160" y="60" text-anchor="middle" font-size="40">ali embaixo!</text>
+      </svg>
+    </div>
+
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var shake  = document.querySelector("#s07-descoberta-shake");
+      var water  = document.querySelector("#s07-descoberta-water");
+      var crests = document.querySelector("#s07-descoberta-crests");
+      var lwall  = document.querySelector("#s07-descoberta-lwall");
+      var rwall  = document.querySelector("#s07-descoberta-rwall");
+      var floor  = document.querySelector("#s07-descoberta-floor");
+      var log    = document.querySelector("#s07-descoberta-log");
+      var s1 = document.querySelector("#s07-descoberta-s1");
+      var s2 = document.querySelector("#s07-descoberta-s2");
+      var s3 = document.querySelector("#s07-descoberta-s3");
+      var s4 = document.querySelector("#s07-descoberta-s4");
+      var s5 = document.querySelector("#s07-descoberta-s5");
+      var g1 = document.querySelector("#s07-descoberta-g1");
+      var g2 = document.querySelector("#s07-descoberta-g2");
+      var g3 = document.querySelector("#s07-descoberta-g3");
+      var f1 = document.querySelector("#s07-descoberta-f1");
+      var f2 = document.querySelector("#s07-descoberta-f2");
+      var f3 = document.querySelector("#s07-descoberta-f3");
+
+      var fly        = document.querySelector("#s07-descoberta-fly");
+      var tilt       = document.querySelector("#s07-descoberta-tilt");
+      var wing       = document.querySelector("#s07-descoberta-bird .wing");
+      var ticoEyes   = document.querySelector("#s07-descoberta-bird .eyes");
+      var ticoOpen   = document.querySelector("#s07-descoberta-bird .mouth-open");
+      var ticoClosed = document.querySelector("#s07-descoberta-bird .mouth-closed");
+
+      var brunoW  = document.querySelector("#s07-descoberta-brunoW");
+      var brunoCh = document.querySelector("#s07-descoberta-brunoCh");
+      var brunoEyes = document.querySelector("#s07-descoberta-brunoCh .eyes");
+      var liaW    = document.querySelector("#s07-descoberta-liaW");
+      var liaCh   = document.querySelector("#s07-descoberta-liaCh");
+      var liaEyes = document.querySelector("#s07-descoberta-liaCh .eyes");
+      var gasW    = document.querySelector("#s07-descoberta-gasparW");
+      var gasCh   = document.querySelector("#s07-descoberta-gasparCh");
+      var gasEyes = document.querySelector("#s07-descoberta-gasparCh .eyes");
+
+      var b1 = document.querySelector("#s07-descoberta-b1");
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---------- estado inicial (t = 0) ---------- */
+      tl.set(shake, { x: 0, y: 0 }, 0);
+      tl.set(water, { y: 600 }, 0);
+      tl.set(crests, { x: 0 }, 0);
+      tl.set(lwall, { x: -660 }, 0);
+      tl.set(rwall, { x:  660 }, 0);
+      tl.set(floor, { y: 300 }, 0);
+      tl.set(log,   { y: -840, rotation: -8, svgOrigin: "0 0" }, 0);
+      tl.set(s1, { scale: 0, svgOrigin: "940 850" }, 0);
+      tl.set(s2, { scale: 0, svgOrigin: "740 890" }, 0);
+      tl.set(s3, { scale: 0, svgOrigin: "1160 880" }, 0);
+      tl.set(s4, { scale: 0, svgOrigin: "1046 762" }, 0);
+      tl.set(s5, { scale: 0, svgOrigin: "822 770" }, 0);
+      tl.set([g1, g2, g3], { scale: 0, rotation: -25, svgOrigin: "0 0" }, 0);
+      tl.set(f1, { opacity: 0, scale: 0.2, svgOrigin: "720 548" }, 0);
+      tl.set(f2, { opacity: 0, scale: 0.2, svgOrigin: "965 532" }, 0);
+      tl.set(f3, { opacity: 0, scale: 0.2, svgOrigin: "1205 550" }, 0);
+
+      tl.set(tilt, { rotation: 0, svgOrigin: "70 66" }, 0);
+      tl.set(wing, { rotation: 0, svgOrigin: "64 57" }, 0);
+      tl.set(ticoEyes,   { scaleY: 1, x: 0, y: 0 }, 0);
+      tl.set(ticoOpen,   { opacity: 0 }, 0);
+      tl.set(ticoClosed, { opacity: 1 }, 0);
+
+      tl.set(brunoW, { x: -560, y: 0 }, 0);
+      tl.set(liaW,   { x: -560, y: 0 }, 0);
+      tl.set(gasW,   { x: -560, y: 0 }, 0);
+      tl.set(brunoCh, { rotation: 0, svgOrigin: "117 284" }, 0);
+      tl.set(liaCh,   { rotation: 0, svgOrigin: "110 300" }, 0);
+      tl.set(gasCh,   { rotation: 0, svgOrigin: "88 137" }, 0);
+      tl.set([brunoEyes, liaEyes, gasEyes], { scaleY: 1, y: 0 }, 0);
+
+      tl.set(b1, { opacity: 0, scale: 0.5, transformOrigin: "44px 128px" }, 0);
+
+      /* ---------- receitas ---------- */
+      function speak(openEl, closedEl, start, end) {
+        var t = start, on = true, FLAP = 0.0625;
+        while (t < end - 0.001) {
+          tl.set(openEl,   { opacity: on ? 1 : 0 }, t);
+          tl.set(closedEl, { opacity: on ? 0 : 1 }, t);
+          on = !on;
+          t += FLAP;
+        }
+        tl.set(openEl,   { opacity: 0 }, end);
+        tl.set(closedEl, { opacity: 1 }, end);
+      }
+      function blink(eyes, t) {
+        tl.to(eyes, { scaleY: 0.1, duration: 0.06 }, t);
+        tl.to(eyes, { scaleY: 1,   duration: 0.06 }, t + 0.06);
+      }
+
+      /* =========================================================
+         CENA 1 (0.0–1.7s) — Tico voa alto no canto superior
+         esquerdo e aponta para baixo. "ali embaixo!"
+         ========================================================= */
+
+      tl.fromTo(fly, { x: -300, y: -70 },
+                     { x: 0, y: 0, duration: 0.45, ease: "power2.out" }, 0);
+
+      /* asa batendo — ele fica pairando quase a cena toda */
+      (function () {
+        var t = 0.00, up = true, WD = 0.11;
+        while (t < 8.75) {
+          tl.to(wing, { rotation: up ? -34 : 20, duration: WD, ease: "sine.inOut" }, t);
+          up = !up;
+          t += WD;
+        }
+      })();
+      tl.to(wing, { rotation: 0, duration: 0.22, ease: "sine.out" }, 8.75);
+
+      /* bico aponta para baixo + duas mergulhadas de ênfase */
+      tl.to(tilt, { rotation: 26, duration: 0.32, ease: "back.out(1.7)" }, 0.45);
+      tl.to(fly, { y: 16, duration: 0.16, ease: "power2.out" }, 0.85);
+      tl.to(fly, { y: 0,  duration: 0.20, ease: "power1.inOut" }, 1.01);
+      tl.to(fly, { y: 16, duration: 0.16, ease: "power2.out" }, 1.28);
+      tl.to(fly, { y: 0,  duration: 0.20, ease: "power1.inOut" }, 1.44);
+
+      speak(ticoOpen, ticoClosed, 0.12, 1.61);
+      tl.fromTo(b1, { opacity: 0, scale: 0.5 },
+                    { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)" }, 0.12);
+      tl.to(b1, { opacity: 0, scale: 0.55, duration: 0.16, ease: "power2.in" }, 1.45);
+
+      /* =========================================================
+         CENA 2 (1.7–5.0s) — revela-se a garganta: paredes,
+         depois o tronco, as pedras e os galhos (escalonados).
+         ========================================================= */
+
+      tl.to(lwall, { x: 0, duration: 0.75, ease: "power3.out" }, 1.70);
+      tl.to(rwall, { x: 0, duration: 0.70, ease: "power3.out" }, 1.84);
+      tl.to(floor, { y: 0, duration: 0.60, ease: "power3.out" }, 1.96);
+
+      /* Tico recolhe o bico e observa */
+      tl.to(tilt, { rotation: 8, duration: 0.40, ease: "power2.inOut" }, 2.05);
+      blink(ticoEyes, 2.40);
+
+      /* o TRONCO despenca e trava a passagem */
+      tl.to(log, { y: 0, duration: 0.50, ease: "power2.in" }, 2.45);
+      tl.to(log, { rotation: -3, duration: 0.35, ease: "back.out(2)" }, 2.95);
+      tl.to(log, { y: -14, duration: 0.12, ease: "power2.out" }, 2.97);
+      tl.to(log, { y: 0,   duration: 0.14, ease: "power2.in" },  3.09);
+
+      /* impacto — a garganta treme */
+      tl.to(shake, { x: 7,  y: 6, duration: 0.06, ease: "power1.out" }, 2.95);
+      tl.to(shake, { x: -5, y: 0, duration: 0.07, ease: "power1.inOut" }, 3.01);
+      tl.to(shake, { x: 3,  duration: 0.06, ease: "power1.inOut" }, 3.08);
+      tl.to(shake, { x: 0,  duration: 0.08, ease: "power1.out" }, 3.14);
+
+      /* Tico se assusta com a queda e sobe um pouco */
+      tl.to(fly, { y: -30, duration: 0.18, ease: "power2.out" }, 2.95);
+      tl.to(fly, { y: 0,   duration: 0.50, ease: "power1.inOut" }, 3.35);
+
+      /* as PEDRAS se encaixam, uma a uma */
+      tl.to(s2, { scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 3.55);
+      tl.to(s3, { scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 3.72);
+      tl.to(s1, { scale: 1, duration: 0.38, ease: "back.out(1.8)" }, 3.90);
+      tl.to(s5, { scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 4.08);
+      tl.to(s4, { scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 4.22);
+
+      /* os GALHOS brotam da barreira */
+      tl.to(g1, { scale: 1, rotation: 0, duration: 0.40, ease: "back.out(1.9)" }, 4.45);
+      tl.to(g2, { scale: 1, rotation: 0, duration: 0.40, ease: "back.out(1.9)" }, 4.62);
+      tl.to(g3, { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(1.9)" }, 4.80);
+
+      /* Tico deriva para o lado, acompanhando a barreira */
+      tl.to(fly, { x: 130, duration: 1.2, ease: "sine.inOut" }, 4.00);
+
+      /* =========================================================
+         CENA 3 (5.0–7.1s) — a água represada sobe atrás do
+         tronco e pulsa UMA vez contra a barreira.
+         ========================================================= */
+
+      tl.to(water, { y: 0, duration: 1.05, ease: "power2.out" }, 5.00);
+      tl.to(tilt, { rotation: 20, duration: 0.35, ease: "power2.out" }, 5.15);
+      tl.to(fly, { y: 12, duration: 0.65, ease: "sine.inOut" }, 5.20);
+      tl.to(fly, { y: 0,  duration: 0.65, ease: "sine.inOut" }, 5.85);
+
+      /* o pulso: a água empurra, o tronco range, espuma salta */
+      tl.to(water, { y: -16, duration: 0.22, ease: "power2.out" }, 6.25);
+      tl.to(water, { y: 0,   duration: 0.55, ease: "sine.inOut" }, 6.50);
+      tl.to(log, { x: 9, rotation: -1.6, duration: 0.18, ease: "power2.out" }, 6.28);
+      tl.to(log, { x: 0, rotation: -3,   duration: 0.45, ease: "power1.inOut" }, 6.50);
+      tl.to(s1, { x: 5, duration: 0.16, ease: "power2.out" }, 6.30);
+      tl.to(s1, { x: 0, duration: 0.35, ease: "power1.inOut" }, 6.50);
+      tl.to(s4, { rotation: 4, svgOrigin: "1046 762", duration: 0.16, ease: "power2.out" }, 6.32);
+      tl.to(s4, { rotation: 0, duration: 0.35, ease: "power1.inOut" }, 6.52);
+
+      tl.to(f1, { opacity: 1, scale: 1, duration: 0.24, ease: "back.out(2.5)" }, 6.26);
+      tl.to(f2, { opacity: 1, scale: 1, duration: 0.24, ease: "back.out(2.5)" }, 6.33);
+      tl.to(f3, { opacity: 1, scale: 1, duration: 0.24, ease: "back.out(2.5)" }, 6.40);
+      tl.to([f1, f2, f3], { opacity: 0, duration: 0.30, ease: "power1.in" }, 6.95);
+
+      /* Tico recua no susto do pulso */
+      tl.to(fly, { y: -22, duration: 0.20, ease: "power2.out" }, 6.32);
+      tl.to(fly, { y: 0,   duration: 0.50, ease: "power1.inOut" }, 6.62);
+
+      /* cristas da água inquietas até o fim */
+      tl.to(crests, { x: 22, duration: 1.3, ease: "sine.inOut" }, 6.10);
+      tl.to(crests, { x: 0,  duration: 1.3, ease: "sine.inOut" }, 7.40);
+      tl.to(crests, { x: 18, duration: 1.3, ease: "sine.inOut" }, 8.70);
+
+      /* =========================================================
+         CENA 4 (7.1–10.0s) — o grupo chega na borda inferior,
+         minúsculo diante do obstáculo, e olha para cima.
+         ========================================================= */
+
+      /* caminhada de entrada */
+      tl.to(liaW,   { x: 0, duration: 1.10, ease: "power1.inOut" }, 7.02);
+      tl.to(brunoW, { x: 0, duration: 1.20, ease: "power1.inOut" }, 7.10);
+      tl.to(gasW,   { x: 0, duration: 1.20, ease: "power1.inOut" }, 7.15);
+
+      /* bob de passo da Lia */
+      (function () {
+        var t = 7.02, up = true;
+        while (t < 7.98) {
+          tl.to(liaW, { y: up ? -7 : 0, duration: 0.14, ease: "sine.inOut" }, t);
+          up = !up;
+          t += 0.14;
+        }
+        tl.to(liaW, { y: 0, duration: 0.14, ease: "sine.out" }, 7.98);
+      })();
+      /* passo pesado do Bruno */
+      (function () {
+        var t = 7.10, up = true;
+        while (t < 8.14) {
+          tl.to(brunoW, { y: up ? -5 : 0, duration: 0.19, ease: "sine.inOut" }, t);
+          up = !up;
+          t += 0.19;
+        }
+        tl.to(brunoW, { y: 0, duration: 0.16, ease: "sine.out" }, 8.14);
+      })();
+      /* Gaspar vem aos pulos */
+      tl.to(gasW, { y: -32, duration: 0.15, ease: "power1.out" }, 7.15);
+      tl.to(gasW, { y: 0,   duration: 0.15, ease: "power1.in"  }, 7.30);
+      tl.to(gasW, { y: -32, duration: 0.15, ease: "power1.out" }, 7.46);
+      tl.to(gasW, { y: 0,   duration: 0.15, ease: "power1.in"  }, 7.61);
+      tl.to(gasW, { y: -32, duration: 0.15, ease: "power1.out" }, 7.77);
+      tl.to(gasW, { y: 0,   duration: 0.15, ease: "power1.in"  }, 7.92);
+      tl.to(gasW, { y: -26, duration: 0.14, ease: "power1.out" }, 8.08);
+      tl.to(gasW, { y: 0,   duration: 0.14, ease: "power1.in"  }, 8.22);
+
+      /* eles olham PARA CIMA — contraste de escala */
+      tl.to(liaCh,   { rotation: -5, duration: 0.50, ease: "power2.out" }, 8.42);
+      tl.to(gasCh,   { rotation: -7, duration: 0.45, ease: "power2.out" }, 8.50);
+      tl.to(brunoCh, { rotation: -4, duration: 0.55, ease: "power2.out" }, 8.58);
+      tl.to(liaEyes,   { y: -4, duration: 0.30, ease: "power2.out" }, 8.52);
+      tl.to(gasEyes,   { y: -5, duration: 0.30, ease: "power2.out" }, 8.58);
+      tl.to(brunoEyes, { y: -4, duration: 0.30, ease: "power2.out" }, 8.66);
+
+      /* Tico desce em arco e pousa na pedra ao lado do grupo */
+      tl.to(tilt, { rotation: 0, duration: 0.30, ease: "power2.inOut" }, 7.45);
+      tl.to(fly, { x: 300, y: 300, duration: 0.65, ease: "power1.in" }, 7.50);
+      tl.to(fly, { x: 452, y: 560, duration: 0.55, ease: "power1.inOut" }, 8.15);
+      tl.to(fly, { x: 420, y: 666, duration: 0.35, ease: "power2.out" }, 8.70);
+      tl.to(fly, { y: 660, duration: 0.10, ease: "power1.out" }, 9.05);
+      tl.to(fly, { y: 666, duration: 0.14, ease: "power1.in" },  9.15);
+
+      /* Tico também olha para cima */
+      tl.to(tilt, { rotation: -16, duration: 0.40, ease: "power2.out" }, 9.30);
+
+      /* piscadas dessincronizadas — o quadro nunca congela */
+      blink(liaEyes,   8.95);
+      blink(brunoEyes, 9.25);
+      blink(gasEyes,   9.50);
+      blink(ticoEyes,  9.70);
+
+      /* Gaspar dá um pulinho de espanto no fim */
+      tl.to(gasW, { y: -18, duration: 0.14, ease: "power1.out" }, 9.55);
+      tl.to(gasW, { y: 0,   duration: 0.16, ease: "power1.in" },  9.69);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s07-descoberta"] = tl;
+    })();
+  </script>
+</template>
