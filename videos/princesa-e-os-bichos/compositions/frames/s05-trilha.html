@@ -1,0 +1,344 @@
+<template>
+<style>
+@font-face{font-family:'Fredoka';font-weight:600;font-display:block;src:url("assets/fonts/fredoka-600.woff2") format("woff2")}
+@font-face{font-family:'Quicksand';font-weight:500;font-display:block;src:url("assets/fonts/quicksand-500.woff2") format("woff2")}
+@font-face{font-family:'Quicksand';font-weight:600;font-display:block;src:url("assets/fonts/quicksand-600.woff2") format("woff2")}
+@font-face{font-family:'Quicksand';font-weight:700;font-display:block;src:url("assets/fonts/quicksand-700.woff2") format("woff2")}
+
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:'Quicksand',sans-serif}
+.s05-trilha-layer{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.s05-trilha-layer svg{display:block;width:1920px;height:1080px}
+</style>
+
+<div id="root" data-composition-id="s05-trilha" data-start="0" data-duration="9" data-width="1920" data-height="1080">
+
+  <!-- ============ track 0 — fundo full-bleed: céu, montanhas, colinas, leito seco ============ -->
+  <div class="clip s05-trilha-layer" id="s05-trilha-bg" data-start="0" data-duration="9" data-track-index="0">
+    <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <!-- céu -->
+      <rect x="0" y="0" width="1920" height="1080" fill="#A8D8F0"/>
+
+      <!-- sol (ornamento) -->
+      <g>
+        <path d="M170 84 L170 112 M170 228 L170 256 M84 170 L112 170 M228 170 L256 170 M109 109 L129 129 M211 211 L231 231 M231 109 L211 129 M129 211 L109 231" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="170" cy="170" r="52" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3"/>
+      </g>
+
+      <!-- montanhas distantes (sem contorno) -->
+      <path d="M-200 900 L520 340 L1180 900 Z" fill="#CBD6E2"/>
+      <path d="M1500 900 L1900 470 L2260 900 Z" fill="#CBD6E2"/>
+      <!-- montanha principal — ocupa metade do quadro (sem contorno) -->
+      <path d="M300 920 L1300 140 L2200 920 Z" fill="#B9C7D6"/>
+      <!-- lasca de neve/rocha clara no topo -->
+      <path d="M1300 140 L1216 205 L1258 222 L1300 200 L1344 224 L1386 206 Z" fill="#CBD6E2"/>
+
+      <!-- colina média (mint, com contorno) -->
+      <path d="M-100 1080 L-100 838 Q460 776 1030 806 Q1520 832 2020 782 L2020 1080 Z" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+      <!-- arbustos sobre a colina -->
+      <circle cx="250" cy="800" r="26" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+      <circle cx="292" cy="810" r="18" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+      <circle cx="640" cy="792" r="22" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+      <circle cx="1190" cy="816" r="24" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+      <circle cx="1700" cy="800" r="21" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+
+      <!-- leito seco serpenteando da base ao alto da montanha -->
+      <path d="M-160 962 L0 944 Q160 926 305 911 Q450 896 575 878 Q700 860 811 825 Q922 789 1007 736 Q1091 682 1155 644 Q1218 605 1278 561 Q1338 517 1371 463 Q1404 408 1394 352 Q1383 296 1347 251 Q1310 206 1359 251 Q1407 296 1422 344 Q1436 392 1399 438 Q1362 483 1302 522 Q1242 561 1181 596 Q1119 630 1029 677 Q938 723 819 752 Q700 780 575 792 Q450 804 305 811 Q160 818 0 828 L-160 838 Z" fill="#C9B79C" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+      <!-- rachaduras secas no leito -->
+      <path d="M240 866 L330 878 M560 848 L620 862 M900 780 L960 796 M1210 590 L1252 606" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+      <!-- pedras no leito -->
+      <ellipse cx="470" cy="862" rx="24" ry="13" fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+      <ellipse cx="836" cy="806" rx="17" ry="10" fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+      <ellipse cx="1146" cy="636" rx="13" ry="8" fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+
+      <!-- crista de primeiro plano (turquoise, mais perto) -->
+      <path d="M-100 1080 L-100 946 Q420 902 940 962 Q1460 1022 2020 952 L2020 1080 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M60 944 L52 916 M96 940 L104 912 M420 906 L412 878 M456 908 L466 882 M1120 986 L1112 958 M1156 992 L1166 966 M1640 1004 L1632 976 M1676 1002 L1686 976" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- ============ track 1 — nuvens + pássaros distantes (deriva lenta) ============ -->
+  <div class="clip s05-trilha-layer" id="s05-trilha-sky" data-start="0" data-duration="9" data-track-index="1">
+    <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <g id="s05-trilha-cloud-a"><g transform="translate(500,168)">
+        <ellipse cx="0" cy="0" rx="72" ry="34" fill="#F5F0E6"/>
+        <ellipse cx="-54" cy="12" rx="42" ry="24" fill="#F5F0E6"/>
+        <ellipse cx="52" cy="14" rx="48" ry="24" fill="#F5F0E6"/>
+      </g></g>
+      <g id="s05-trilha-cloud-b"><g transform="translate(1560,232)">
+        <ellipse cx="0" cy="0" rx="58" ry="28" fill="#F5F0E6"/>
+        <ellipse cx="-44" cy="10" rx="34" ry="19" fill="#F5F0E6"/>
+        <ellipse cx="42" cy="12" rx="38" ry="20" fill="#F5F0E6"/>
+      </g></g>
+      <g id="s05-trilha-cloud-c"><g transform="translate(940,96)">
+        <ellipse cx="0" cy="0" rx="46" ry="22" fill="#F5F0E6"/>
+        <ellipse cx="-36" cy="8" rx="28" ry="16" fill="#F5F0E6"/>
+        <ellipse cx="34" cy="10" rx="30" ry="16" fill="#F5F0E6"/>
+      </g></g>
+      <g id="s05-trilha-birds"><g transform="translate(700,300)">
+        <path d="M0 0 Q10 -9 20 0 Q30 -9 40 0" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+        <path d="M62 34 Q71 26 80 34 Q89 26 98 34" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+        <path d="M14 62 Q22 55 30 62 Q38 55 46 62" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+      </g></g>
+    </svg>
+  </div>
+
+  <!-- ============ track 2 — sombra do bosque no flanco direito ============ -->
+  <div class="clip s05-trilha-layer" id="s05-trilha-forest-clip" data-start="5.05" data-duration="3.95" data-track-index="2">
+    <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <g id="s05-trilha-forest">
+        <!-- massa de sombra (tinta chapada, sem blur) -->
+        <path d="M1372 520 Q1560 452 1760 520 Q1900 570 1960 700 L1960 800 L1372 720 Z" fill="#2D2D2D" opacity="0.16"/>
+        <!-- troncos -->
+        <rect x="1422" y="470" width="18" height="96" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+        <rect x="1512" y="440" width="20" height="110" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+        <rect x="1607" y="470" width="18" height="104" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+        <rect x="1696" y="505" width="22" height="112" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+        <rect x="1792" y="545" width="18" height="104" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+        <rect x="1874" y="585" width="16" height="94" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+        <!-- copas -->
+        <circle cx="1431" cy="470" r="62" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        <circle cx="1522" cy="440" r="72" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        <circle cx="1616" cy="470" r="66" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        <circle cx="1707" cy="505" r="76" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        <circle cx="1801" cy="545" r="68" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+        <circle cx="1882" cy="585" r="58" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ============ track 3 — o trio (SVG canônico, wrapper reduzido) ============ -->
+  <div class="clip s05-trilha-layer" id="s05-trilha-trio-clip" data-start="0" data-duration="9" data-track-index="3">
+    <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <g id="s05-trilha-trio">
+
+        <!-- ---- Gaspar (atrás, à esquerda) ---- -->
+        <g transform="translate(-198,0)">
+          <g id="s05-trilha-gaspar-hop">
+            <g transform="translate(-88,-137)">
+<g class="char-gaspar">
+  <!-- patas -->
+  <ellipse cx="40" cy="126" rx="22" ry="11" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+  <ellipse cx="136" cy="126" rx="22" ry="11" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- corpo -->
+  <ellipse class="body" cx="88" cy="94" rx="62" ry="42" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- barriga -->
+  <ellipse cx="88" cy="106" rx="38" ry="22" fill="#D8F5E6" stroke="none"/>
+  <!-- olhos (bolhas em cima) -->
+  <g class="eyes">
+    <circle cx="62" cy="52" r="19" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+    <circle cx="114" cy="52" r="19" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3"/>
+    <circle cx="62" cy="54" r="7" fill="#2D2D2D"/>
+    <circle cx="114" cy="54" r="7" fill="#2D2D2D"/>
+  </g>
+  <!-- bocas -->
+  <path class="mouth-closed" d="M52 100 Q88 114 124 100" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <path class="mouth-open" d="M54 96 Q88 132 122 96 Q88 108 54 96 Z" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round" opacity="0"/>
+</g>
+            </g>
+          </g>
+        </g>
+
+        <!-- ---- Lia (à frente, à direita) ---- -->
+        <g transform="translate(0,0)">
+          <g id="s05-trilha-lia-bob">
+            <g transform="translate(-110,-305)">
+<g class="char-lia">
+  <!-- saia -->
+  <path class="body" d="M110 176 L56 296 Q110 310 164 296 Z" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- braços (saem do ombro, sobrepondo o torso) -->
+  <rect class="arm-l" x="66" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <rect class="arm-r" x="138" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- faixa na cintura -->
+  <rect x="80" y="170" width="60" height="14" rx="7" fill="#F8635F" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- torso -->
+  <path d="M110 122 Q86 130 84 176 Q110 186 136 176 Q134 130 110 122 Z" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- cabelo (atrás) -->
+  <path d="M110 34 Q62 34 60 92 Q58 138 74 156 L86 120 Q78 74 110 70 Q142 74 134 120 L146 156 Q162 138 160 92 Q158 34 110 34 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- rosto -->
+  <circle cx="110" cy="86" r="38" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- franja -->
+  <path d="M74 76 Q80 46 110 46 Q140 46 146 76 Q128 62 110 64 Q92 62 74 76 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- coroa -->
+  <path d="M86 38 L94 16 L110 32 L126 16 L134 38 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- olhos -->
+  <g class="eyes">
+    <circle cx="97" cy="86" r="4.5" fill="#2D2D2D"/>
+    <circle cx="123" cy="86" r="4.5" fill="#2D2D2D"/>
+  </g>
+  <!-- bochechas -->
+  <circle cx="86" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+  <circle cx="134" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+  <!-- bocas -->
+  <path class="mouth-closed" d="M102 103 Q110 109 118 103" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <ellipse class="mouth-open" cx="110" cy="105" rx="7" ry="6" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" opacity="0"/>
+</g>
+            </g>
+          </g>
+        </g>
+
+        <!-- ---- Tico (voando acima do grupo) ---- -->
+        <g transform="translate(140,-380)">
+          <g id="s05-trilha-tico-fly">
+            <g transform="translate(-66,-66)">
+<g class="char-tico">
+  <!-- cauda -->
+  <path d="M28 66 L4 54 L8 78 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- corpo -->
+  <ellipse class="body" cx="70" cy="66" rx="42" ry="34" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- asa -->
+  <path class="wing" d="M62 56 Q86 46 96 68 Q76 80 62 56 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <!-- pés -->
+  <path d="M62 98 L58 112 M78 98 L82 112" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+  <!-- olho -->
+  <g class="eyes"><circle cx="88" cy="54" r="4.5" fill="#2D2D2D"/></g>
+  <!-- bicos -->
+  <path class="mouth-closed" d="M108 62 L128 66 L108 70 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  <g class="mouth-open" opacity="0">
+    <path d="M108 62 L130 56 L110 66 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M110 68 L130 76 L108 72 Z" fill="#E8B84B" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+</g>
+            </g>
+          </g>
+        </g>
+
+      </g>
+    </svg>
+  </div>
+
+  <!-- ============ track 4 — duas árvores de primeiro plano (parallax) ============ -->
+  <div class="clip s05-trilha-layer" id="s05-trilha-fg-clip" data-start="6.4" data-duration="2.6" data-track-index="4">
+    <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <g id="s05-trilha-tree-l">
+        <g transform="translate(140,982) scale(3.6)">
+          <g class="tree">
+            <rect x="-11" y="0" width="22" height="80" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+            <circle cx="0" cy="-26" r="52" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+        </g>
+      </g>
+      <g id="s05-trilha-tree-r">
+        <g transform="translate(1808,1004) scale(3.9)">
+          <g class="tree">
+            <rect x="-11" y="0" width="22" height="80" rx="6" fill="#8B6B4A" stroke="#2D2D2D" stroke-width="3"/>
+            <circle cx="0" cy="-26" r="52" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "s05-trilha";
+  var q = function (s) { return document.querySelector(s); };
+
+  var trio    = q("#s05-trilha-trio");
+  var liaBob  = q("#s05-trilha-lia-bob");
+  var gasHop  = q("#s05-trilha-gaspar-hop");
+  var ticoFly = q("#s05-trilha-tico-fly");
+  var ticoWing = q("#s05-trilha-tico-fly .wing");
+  var liaEyes = q("#s05-trilha-lia-bob .eyes");
+  var gasEyes = q("#s05-trilha-gaspar-hop .eyes");
+  var ticoEyes = q("#s05-trilha-tico-fly .eyes");
+
+  var forest = q("#s05-trilha-forest");
+  var treeL  = q("#s05-trilha-tree-l");
+  var treeR  = q("#s05-trilha-tree-r");
+  var cloudA = q("#s05-trilha-cloud-a");
+  var cloudB = q("#s05-trilha-cloud-b");
+  var cloudC = q("#s05-trilha-cloud-c");
+  var birds  = q("#s05-trilha-birds");
+
+  var tl = gsap.timeline({ paused: true });
+
+  /* ---------- estados iniciais (herói visível em t=0) ---------- */
+  tl.set(trio,   { svgOrigin: "0 0", x: 40, y: 883, scale: 0.46 }, 0);
+  tl.set(liaBob, { y: 0, rotation: 0, transformOrigin: "50% 100%" }, 0);
+  tl.set(gasHop, { y: 0, rotation: 0, transformOrigin: "50% 100%" }, 0);
+  tl.set(ticoFly,{ x: -70, y: -20 }, 0);
+  tl.set(ticoWing, { transformOrigin: "18% 78%", rotation: 0 }, 0);
+  tl.set(forest, { opacity: 0, y: 30 }, 0);
+  tl.set(treeL,  { x: -460 }, 0);
+  tl.set(treeR,  { x: 560 }, 0);
+
+  /* ================= CENA 1 (0.0–3.3s) — plano aberto, trio entra pequeno pela esquerda =================
+     narrador 0.12–3.26s; ninguém em cena fala, então nenhuma boca se mexe.               */
+
+  /* deriva lenta do céu — vida constante atrás do plano aberto */
+  tl.to(cloudA, { x: -74, duration: 9, ease: "none" }, 0);
+  tl.to(cloudB, { x: -46, duration: 9, ease: "none" }, 0);
+  tl.to(cloudC, { x: -30, duration: 9, ease: "none" }, 0);
+  tl.to(birds,  { x: 210, y: -46, duration: 9, ease: "none" }, 0);
+
+  /* ---------- percurso do trio: sobe o leito seco, y diminui e a escala encolhe ---------- */
+  tl.to(trio, { x: 180,  y: 870, scale: 0.455, duration: 1.6, ease: "none" }, 0);
+  tl.to(trio, { x: 470,  y: 848, scale: 0.440, duration: 1.7, ease: "none" }, 1.6);
+  /* ================= CENA 2 (3.3–6.5s) — travessia esquerda → centro-direita, subindo ================= */
+  tl.to(trio, { x: 720,  y: 818, scale: 0.420, duration: 1.3, ease: "none" }, 3.3);
+  tl.to(trio, { x: 940,  y: 754, scale: 0.390, duration: 1.0, ease: "none" }, 4.6);
+  tl.to(trio, { x: 1110, y: 654, scale: 0.355, duration: 0.9, ease: "none" }, 5.6);
+  /* ================= CENA 3 (6.5–9.0s) — chegam ao terço direito, menores, e param ================= */
+  tl.to(trio, { x: 1250, y: 578, scale: 0.325, duration: 0.8, ease: "none" }, 6.5);
+  tl.to(trio, { x: 1350, y: 500, scale: 0.305, duration: 0.9, ease: "power2.out" }, 7.3);
+
+  /* ---------- bob de caminhada da Lia (keyframes explícitos, sem repeat) ---------- */
+  var STEP = 0.44, WALK_END = 8.0, t;
+  for (t = 0; t < WALK_END; t += STEP) {
+    tl.to(liaBob, { y: -11, duration: STEP * 0.5, ease: "sine.out" }, t);
+    tl.to(liaBob, { y: 0,   duration: STEP * 0.5, ease: "sine.in"  }, t + STEP * 0.5);
+  }
+
+  /* ---------- hops do Gaspar (arco de salto) ---------- */
+  var HOP = 0.62;
+  for (t = 0.12; t < 7.9; t += HOP) {
+    tl.to(gasHop, { y: -48, duration: 0.27, ease: "power2.out" }, t);
+    tl.to(gasHop, { y: 0,   duration: 0.27, ease: "power2.in"  }, t + 0.27);
+  }
+
+  /* ---------- Tico voa em arcos acima do grupo ---------- */
+  var CYC = 1.5;
+  for (t = 0; t < 7.5; t += CYC) {
+    tl.to(ticoFly, { x: 150, y: -150, duration: CYC * 0.5, ease: "sine.inOut" }, t);
+    tl.to(ticoFly, { x: -70, y: -20,  duration: CYC * 0.5, ease: "sine.inOut" }, t + CYC * 0.5);
+  }
+  /* arco final e pouso no ombro da Lia (batida de chegada) */
+  tl.to(ticoFly, { x: 120,  y: -190, duration: 0.75, ease: "sine.inOut" }, 7.5);
+  tl.to(ticoFly, { x: -166, y: 172,  duration: 0.68, ease: "power2.inOut" }, 8.25);
+
+  /* ---------- batida de asa (determinística, 2 posições alternadas) ---------- */
+  var on = true;
+  for (t = 0; t < 8.86; t += 0.14) {
+    tl.set(ticoWing, { rotation: on ? -24 : 10 }, t);
+    on = !on;
+  }
+  tl.set(ticoWing, { rotation: 0 }, 8.86);
+
+  /* ---------- piscadas (1–2 por personagem, dessincronizadas) ---------- */
+  function blink(el, at) {
+    tl.to(el, { scaleY: 0.08, duration: 0.06, ease: "power1.in",  transformOrigin: "50% 50%" }, at);
+    tl.to(el, { scaleY: 1,    duration: 0.07, ease: "power1.out", transformOrigin: "50% 50%" }, at + 0.06);
+  }
+  blink(liaEyes, 2.20);  blink(liaEyes, 6.42);
+  blink(gasEyes, 1.35);  blink(gasEyes, 5.08);
+  blink(ticoEyes, 3.72); blink(ticoEyes, 7.61);
+
+  /* ---------- sombra do bosque surge à frente deles ---------- */
+  tl.to(forest, { opacity: 1, y: 0, duration: 1.15, ease: "power2.out" }, 5.05);
+
+  /* ---------- duas árvores de primeiro plano entram pelas bordas (parallax) ---------- */
+  tl.to(treeR, { x: 0, duration: 1.55, ease: "power3.out" }, 6.40);
+  tl.to(treeL, { x: 0, duration: 1.35, ease: "power3.out" }, 6.62);
+
+  /* ---------- batida final: eles se inclinam olhando para o bosque ---------- */
+  tl.to(liaBob, { rotation: -4, duration: 0.55, ease: "power2.out" }, 8.36);
+  tl.to(gasHop, { rotation: -6, duration: 0.55, ease: "power2.out" }, 8.46);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

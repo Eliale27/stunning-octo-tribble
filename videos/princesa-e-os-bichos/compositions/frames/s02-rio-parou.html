@@ -1,0 +1,303 @@
+<template>
+  <style>
+    @font-face{font-family:'Quicksand';font-weight:600;font-display:block;src:url("assets/fonts/quicksand-600.woff2") format("woff2")}
+
+    #root{position:relative;width:1920px;height:1080px;overflow:hidden;container-type:size}
+    #root .clip{position:absolute;left:0;top:0;width:1920px;height:1080px}
+    #root .clip svg{display:block;width:1920px;height:1080px}
+
+    .s02-layer-bg{z-index:1}
+    .s02-layer-sky-orn{z-index:2}
+    .s02-layer-bed{z-index:3}
+    .s02-layer-lia{z-index:4}
+    .s02-layer-bubble{z-index:5}
+
+    .s02-bubble-text{font-family:'Quicksand';font-weight:600;font-size:48px;fill:#2D2D2D;letter-spacing:0.005em}
+  </style>
+
+  <div id="root" data-composition-id="s02-rio-parou" data-start="0" data-duration="9" data-width="1920" data-height="1080">
+
+    <!-- ===== track 0 — vale (céu, montanhas, leito na montanha, colina, castelo) ===== -->
+    <div class="clip s02-layer-bg" data-start="0" data-duration="9" data-track-index="0">
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <!-- céu -->
+        <rect x="0" y="0" width="1920" height="1080" fill="#A8D8F0"/>
+        <!-- montanhas (sem contorno — profundidade por camada) -->
+        <path d="M-160 700 L340 190 L760 700 Z" fill="#B9C7D6"/>
+        <path d="M460 700 L920 270 L1360 700 Z" fill="#CBD6E2"/>
+        <!-- leito seco descendo da montanha (o rio que parou) -->
+        <path d="M700 662 L806 502 L840 386 L866 330 L884 380 L852 500 L800 662 Z" fill="#C9B79C"/>
+        <!-- colina -->
+        <path d="M-100 1080 L-100 720 Q300 640 760 668 Q1240 700 1660 636 Q1850 604 2020 620 L2020 1080 Z" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        <!-- castelo no terço direito -->
+        <g stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round">
+          <rect x="1348" y="512" width="84" height="150" fill="#FDE68A"/>
+          <rect x="1600" y="498" width="96" height="164" fill="#FDE68A"/>
+          <rect x="1428" y="470" width="176" height="192" fill="#FDE68A"/>
+          <path d="M1338 512 L1390 442 L1442 512 Z" fill="#F8635F"/>
+          <path d="M1590 498 L1648 424 L1706 498 Z" fill="#F8635F"/>
+          <path d="M1416 470 L1516 380 L1616 470 Z" fill="#F8635F"/>
+          <path d="M1516 380 L1516 338" stroke-linecap="round"/>
+          <path d="M1516 338 L1562 350 L1516 362 Z" fill="#F8635F"/>
+          <rect x="1466" y="518" width="36" height="46" rx="18" fill="#A8D8F0"/>
+          <rect x="1530" y="518" width="36" height="46" rx="18" fill="#A8D8F0"/>
+          <rect x="1372" y="556" width="36" height="44" rx="18" fill="#A8D8F0"/>
+          <rect x="1630" y="542" width="36" height="44" rx="18" fill="#A8D8F0"/>
+          <path d="M1490 662 L1490 602 Q1516 578 1542 602 L1542 662 Z" fill="#FFFFFF"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ===== track 1 — nuvens + margaridas (ornamentos) ===== -->
+    <div class="clip s02-layer-sky-orn" data-start="0" data-duration="9" data-track-index="1">
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <g id="s02-cloud-a" transform="translate(300 176) scale(1.12)">
+          <path d="M-64 4 Q-72 -26 -44 -30 Q-40 -60 -6 -56 Q22 -66 38 -40 Q68 -38 64 -8 Q66 6 50 6 L-50 6 Q-62 6 -64 4 Z" fill="#F5F0E6" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <g id="s02-cloud-b" transform="translate(1178 148) scale(0.86)">
+          <path d="M-64 4 Q-72 -26 -44 -30 Q-40 -60 -6 -56 Q22 -66 38 -40 Q68 -38 64 -8 Q66 6 50 6 L-50 6 Q-62 6 -64 4 Z" fill="#F5F0E6" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <g id="s02-cloud-c" transform="translate(1552 296) scale(1)">
+          <path d="M-64 4 Q-72 -26 -44 -30 Q-40 -60 -6 -56 Q22 -66 38 -40 Q68 -38 64 -8 Q66 6 50 6 L-50 6 Q-62 6 -64 4 Z" fill="#F5F0E6" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+
+        <!-- margaridas na colina -->
+        <g transform="translate(186 764) scale(0.9)">
+          <path d="M0 8 L0 42" stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round"/>
+          <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1">
+            <ellipse cx="0" cy="-16" rx="7" ry="12"/><ellipse cx="16" cy="0" rx="12" ry="7"/>
+            <ellipse cx="0" cy="16" rx="7" ry="12"/><ellipse cx="-16" cy="0" rx="12" ry="7"/>
+          </g>
+          <circle cx="0" cy="0" r="7" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+        </g>
+        <g transform="translate(1748 704) scale(0.8)">
+          <path d="M0 8 L0 40" stroke="#2D2D2D" stroke-width="2.1" stroke-linecap="round"/>
+          <g fill="#FFFFFF" stroke="#2D2D2D" stroke-width="2.1">
+            <ellipse cx="0" cy="-16" rx="7" ry="12"/><ellipse cx="16" cy="0" rx="12" ry="7"/>
+            <ellipse cx="0" cy="16" rx="7" ry="12"/><ellipse cx="-16" cy="0" rx="12" ry="7"/>
+          </g>
+          <circle cx="0" cy="0" r="7" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.1"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ===== track 2 — leito seco: terra, rachaduras, duas pedras cinza, tufos ===== -->
+    <div class="clip s02-layer-bed" data-start="0" data-duration="9" data-track-index="2">
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <!-- leito seco (mesmo traçado do rio do Frame 1, agora cor de terra) -->
+        <path d="M690 662 Q560 760 330 880 Q200 960 20 1080 L1120 1080 Q960 970 880 840 Q818 740 800 662 Z" fill="#C9B79C" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+
+        <!-- rachaduras (se desenham enquanto o narrador fala) -->
+        <path id="s02-crack-1" d="M700 700 L664 748 L690 782 L648 836 L666 878" fill="none" stroke="#9E8968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path id="s02-crack-2" d="M786 706 L822 752 L800 800 L846 850" fill="none" stroke="#9E8968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- duas pedras cinza -->
+        <g>
+          <ellipse cx="760" cy="784" rx="52" ry="34" fill="#B9C7D6" stroke="#2D2D2D" stroke-width="3"/>
+          <ellipse cx="746" cy="772" rx="22" ry="12" fill="#CBD6E2"/>
+        </g>
+        <g>
+          <ellipse cx="445" cy="858" rx="37" ry="25" fill="#CBD6E2" stroke="#2D2D2D" stroke-width="3"/>
+          <ellipse cx="437" cy="850" rx="15" ry="8" fill="#E2E9F0"/>
+        </g>
+
+        <!-- tufos de mato na margem -->
+        <g transform="translate(300 828)">
+          <path d="M-16 0 Q-14 -26 -2 -34 Q-6 -14 -2 0 Z" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M-2 0 Q4 -30 18 -36 Q10 -16 12 0 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <g transform="translate(938 862) scale(0.85)">
+          <path d="M-16 0 Q-14 -26 -2 -34 Q-6 -14 -2 0 Z" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M-2 0 Q4 -30 18 -36 Q10 -16 12 0 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <g transform="translate(1152 800) scale(0.75)">
+          <path d="M-16 0 Q-14 -26 -2 -34 Q-6 -14 -2 0 Z" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M-2 0 Q4 -30 18 -36 Q10 -16 12 0 Z" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ===== track 3 — Lia ===== -->
+    <div class="clip s02-layer-lia" data-start="2.1" data-duration="6.9" data-track-index="3">
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(452.5 432.5) scale(1.25)">
+          <g id="s02-lia-walk">
+            <g id="s02-lia-bob">
+              <g id="s02-lia-tilt">
+                <g id="s02-lia-body">
+                  <g class="char-lia">
+                    <!-- saia -->
+                    <path class="body" d="M110 176 L56 296 Q110 310 164 296 Z" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- braços (saem do ombro, sobrepondo o torso) -->
+                    <rect class="arm-l" x="66" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+                    <rect class="arm-r" x="138" y="138" width="16" height="56" rx="8" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+                    <!-- faixa na cintura -->
+                    <rect x="80" y="170" width="60" height="14" rx="7" fill="#F8635F" stroke="#2D2D2D" stroke-width="3"/>
+                    <!-- torso -->
+                    <path d="M110 122 Q86 130 84 176 Q110 186 136 176 Q134 130 110 122 Z" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- cabelo (atrás) -->
+                    <path d="M110 34 Q62 34 60 92 Q58 138 74 156 L86 120 Q78 74 110 70 Q142 74 134 120 L146 156 Q162 138 160 92 Q158 34 110 34 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- rosto -->
+                    <circle cx="110" cy="86" r="38" fill="#F2C6A0" stroke="#2D2D2D" stroke-width="3"/>
+                    <!-- franja -->
+                    <path d="M74 76 Q80 46 110 46 Q140 46 146 76 Q128 62 110 64 Q92 62 74 76 Z" fill="#6B4A3A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- coroa -->
+                    <path d="M86 38 L94 16 L110 32 L126 16 L134 38 Z" fill="#FDE68A" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- olhos -->
+                    <g class="eyes">
+                      <circle cx="97" cy="86" r="4.5" fill="#2D2D2D"/>
+                      <circle cx="123" cy="86" r="4.5" fill="#2D2D2D"/>
+                    </g>
+                    <!-- bochechas -->
+                    <circle cx="86" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+                    <circle cx="134" cy="97" r="6" fill="#F7C8D4" opacity="0.85"/>
+                    <!-- bocas -->
+                    <path class="mouth-closed" d="M102 103 Q110 109 118 103" fill="none" stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+                    <ellipse class="mouth-open" cx="110" cy="105" rx="7" ry="6" fill="#8C4A46" stroke="#2D2D2D" stroke-width="3" opacity="0"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+
+        <!-- poeirinha seca no ponto em que a mão toca o chão -->
+        <g id="s02-dust" opacity="0">
+          <circle cx="640" cy="748" r="9" fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1"/>
+          <circle cx="670" cy="738" r="6" fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1"/>
+          <circle cx="654" cy="762" r="5" fill="#F5F0E6" stroke="#2D2D2D" stroke-width="2.1"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ===== track 4 — balão de fala ===== -->
+    <div class="clip s02-layer-bubble" data-start="3.02" data-duration="3" data-track-index="4">
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <g id="s02-bubble" opacity="0">
+          <rect x="640" y="290" width="440" height="130" rx="28" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3"/>
+          <path d="M696 420 L676 456 L744 420 Z" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="3" stroke-linejoin="round"/>
+          <text class="s02-bubble-text" x="860" y="372" text-anchor="middle">o rio sumiu…</text>
+        </g>
+      </svg>
+    </div>
+
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var FID = "s02-rio-parou";
+
+      var cloudA = document.getElementById("s02-cloud-a");
+      var cloudB = document.getElementById("s02-cloud-b");
+      var cloudC = document.getElementById("s02-cloud-c");
+      var crack1 = document.getElementById("s02-crack-1");
+      var crack2 = document.getElementById("s02-crack-2");
+      var walk   = document.getElementById("s02-lia-walk");
+      var bob    = document.getElementById("s02-lia-bob");
+      var tilt   = document.getElementById("s02-lia-tilt");
+      var bodyG  = document.getElementById("s02-lia-body");
+      var dust   = document.getElementById("s02-dust");
+      var bubble = document.getElementById("s02-bubble");
+
+      var armR        = bodyG.querySelector(".arm-r");
+      var eyes        = bodyG.querySelector(".eyes");
+      var mouthOpen   = bodyG.querySelector(".mouth-open");
+      var mouthClosed = bodyG.querySelector(".mouth-closed");
+
+      var FEET = "110 310";      // origem no chão, sob os pés da Lia
+      var HEAD = "110 86";       // origem na altura dos olhos
+      var SHLD = "146 138";      // ombro direito (topo do braço)
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---------- estado inicial (determinístico) ---------- */
+      tl.set(walk,  { x: -560 }, 0);
+      tl.set(bob,   { y: 0 }, 0);
+      tl.set(tilt,  { rotation: 0, svgOrigin: FEET }, 0);
+      tl.set(bodyG, { y: 0, scaleX: 1, scaleY: 1, svgOrigin: FEET }, 0);
+      tl.set(armR,  { rotation: 0, svgOrigin: SHLD }, 0);
+      tl.set(eyes,  { y: 0, scaleY: 1, svgOrigin: HEAD }, 0);
+      tl.set(mouthOpen,   { opacity: 0 }, 0);
+      tl.set(mouthClosed, { opacity: 1 }, 0);
+      tl.set(dust,   { opacity: 0 }, 0);
+      tl.set(bubble, { opacity: 0 }, 0);
+
+      /* ---------- Cena 1 (0.0–2.8s) — o vale parado, só a nuvem e o leito rachando ---------- */
+      tl.fromTo(cloudA, { x: 0 }, { x: 78, duration: 9, ease: "none" }, 0);
+      tl.fromTo(cloudB, { x: 0 }, { x: 52, duration: 9, ease: "none" }, 0);
+      tl.fromTo(cloudC, { x: 0 }, { x: 96, duration: 9, ease: "none" }, 0);
+
+      tl.set(crack1, { strokeDasharray: 240, strokeDashoffset: 240 }, 0);
+      tl.to(crack1,  { strokeDashoffset: 0, duration: 1.45, ease: "power1.out" }, 0.85);
+      tl.set(crack2, { strokeDasharray: 200, strokeDashoffset: 200 }, 0);
+      tl.to(crack2,  { strokeDashoffset: 0, duration: 1.30, ease: "power1.out" }, 1.40);
+
+      /* ---------- Cena 2 (2.8–5.8s) — Lia entra andando, para e fala ---------- */
+      // caminhada: percurso constante + freada curta ao chegar no terço esquerdo
+      tl.to(walk, { x: -40, duration: 0.70, ease: "none" }, 2.15);
+      tl.to(walk, { x: 0,   duration: 0.20, ease: "power2.out" }, 2.85);
+
+      // bob de caminhada — 5 passos, ±6px em tela (5 unidades locais × 1.25)
+      for (var i = 0; i < 5; i++) {
+        var t0 = 2.15 + i * 0.18;
+        tl.to(bob, { y: -5, duration: 0.09, ease: "sine.out" }, t0);
+        tl.to(bob, { y: 0,  duration: 0.09, ease: "sine.in"  }, t0 + 0.09);
+      }
+      // leve inclinação para a frente enquanto anda, e endireita ao parar
+      tl.to(tilt, { rotation: 4, duration: 0.30, ease: "sine.out",   svgOrigin: FEET }, 2.15);
+      tl.to(tilt, { rotation: 0, duration: 0.32, ease: "power2.out", svgOrigin: FEET }, 2.76);
+
+      // balão em spring-pop (nasce na ponta do rabicho, junto da boca)
+      tl.fromTo(bubble,
+        { opacity: 0, scale: 0.55, svgOrigin: "676 456" },
+        { opacity: 1, scale: 1, duration: 0.34, ease: "back.out(2.4)" }, 3.09);
+      tl.to(bubble, { opacity: 0, scale: 0.72, duration: 0.20, ease: "back.in(1.4)", svgOrigin: "676 456" }, 5.80);
+
+      // lip flap 8 Hz — janela de fala da Lia (dialogue_cues: 3.087 → 5.796)
+      var START = 3.087, END = 5.796, FLAP = 0.0625;
+      var on = true, t = START;
+      while (t < END) {
+        tl.set(mouthOpen,   { opacity: on ? 1 : 0 }, t);
+        tl.set(mouthClosed, { opacity: on ? 0 : 1 }, t);
+        on = !on; t += FLAP;
+      }
+      tl.set(mouthOpen,   { opacity: 0 }, END);
+      tl.set(mouthClosed, { opacity: 1 }, END);
+
+      /* ---------- piscadas (dessincronizadas) ---------- */
+      function blink(at) {
+        tl.to(eyes, { scaleY: 0.1, duration: 0.06, ease: "power2.in",  svgOrigin: HEAD }, at);
+        tl.to(eyes, { scaleY: 1,   duration: 0.06, ease: "power2.out", svgOrigin: HEAD }, at + 0.06);
+      }
+      blink(3.55);
+      blink(8.42);
+
+      /* ---------- Cena 3 (5.8–9.0s) — agacha, toca o chão seco, olha a montanha ---------- */
+      // agachamento (peso desce sobre os pés)
+      tl.to(bodyG, { y: 34, scaleY: 0.84, scaleX: 1.04, duration: 0.62, ease: "power2.inOut", svgOrigin: FEET }, 5.92);
+      tl.to(tilt,  { rotation: 6, duration: 0.62, ease: "power2.inOut", svgOrigin: FEET }, 5.92);
+      // braço direito desce e toca a terra
+      tl.to(armR,  { rotation: 30, duration: 0.55, ease: "power2.out", svgOrigin: SHLD }, 6.02);
+
+      // poeirinha no toque
+      tl.fromTo(dust,
+        { opacity: 0, scale: 0.5, y: 0, svgOrigin: "654 748" },
+        { opacity: 0.95, scale: 1.15, y: -6, duration: 0.26, ease: "back.out(2)" }, 6.45);
+      tl.to(dust, { opacity: 0, scale: 1.5, y: -26, duration: 0.60, ease: "power1.out", svgOrigin: "654 748" }, 6.76);
+
+      // ela levanta o olhar para a montanha (corpo inclina para trás, olhos sobem)
+      tl.to(tilt, { rotation: -8, duration: 0.65, ease: "power2.inOut", svgOrigin: FEET }, 6.95);
+      tl.to(armR, { rotation: 22, duration: 0.50, ease: "power2.inOut", svgOrigin: SHLD }, 6.98);
+      tl.to(eyes, { y: -3, duration: 0.40, ease: "power2.out", svgOrigin: HEAD }, 7.06);
+
+      // batida de reação — o olhar se aprofunda e os ombros sobem devagar
+      tl.to(tilt,  { rotation: -9.6, duration: 0.70, ease: "sine.inOut", svgOrigin: FEET }, 7.72);
+      tl.to(bodyG, { y: 29, scaleY: 0.865, duration: 0.90, ease: "sine.inOut", svgOrigin: FEET }, 7.82);
+      tl.to(tilt,  { rotation: -8.5, duration: 0.62, ease: "sine.inOut", svgOrigin: FEET }, 8.38);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[FID] = tl;
+    })();
+  </script>
+</template>
