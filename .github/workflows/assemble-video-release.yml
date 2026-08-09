@@ -1,0 +1,31 @@
+name: Assemble video release
+
+on:
+  push:
+    branches: [claude/video-assembly-bkhpnj]
+    paths: ['video_parts/**', '.github/workflows/assemble-video-release.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Join video parts
+        run: |
+          cat video_parts/video_final.part* > video_final.mp4
+          ls -la video_final.mp4
+          sha256sum video_final.mp4
+
+      - name: Publish release with full video
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create video-final-v1 video_final.mp4 \
+            --title "Vídeo final — 1 hora (chuva + narração)" \
+            --notes "Vídeo completo em qualidade total: narração em 8 blocos sobre som de chuva, 1h de duração, fade out final. Baixe o arquivo video_final.mp4 abaixo." \
+            --target "${{ github.sha }}" \
+          || gh release upload video-final-v1 video_final.mp4 --clobber
