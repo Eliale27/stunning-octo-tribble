@@ -1,0 +1,30 @@
+name: Assemble night2 video release
+
+on:
+  push:
+    branches: [claude/video-assembly-bkhpnj]
+    paths: ['video_parts_night2/**']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Join video parts
+        run: |
+          cat video_parts_night2/video_night2.part* > my-japan-diary-night-2.mp4
+          ls -la my-japan-diary-night-2.mp4
+
+      - name: Publish release with full video
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create japan-diary-night-2 my-japan-diary-night-2.mp4 \
+            --title "My JAPAN Diary — Night 2 (1 HR)" \
+            --notes "Vídeo completo: 60 min, 1080p. Narração termina em ~50:36 (the story ends around 50:36). Baixe my-japan-diary-night-2.mp4 abaixo." \
+            --target "${{ github.sha }}" \
+          || gh release upload japan-diary-night-2 my-japan-diary-night-2.mp4 --clobber
