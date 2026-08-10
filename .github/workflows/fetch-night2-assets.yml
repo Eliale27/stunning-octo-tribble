@@ -1,0 +1,31 @@
+name: Fetch night2 image assets
+
+on:
+  push:
+    branches: [claude/video-assembly-bkhpnj]
+    paths: ['.github/workflows/fetch-night2-assets.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download images from Artlist CDN
+        run: |
+          mkdir -p night2_assets
+          curl -fsS -o night2_assets/gen_2123.png 'https://cms-toolkit-artifacts.artlist.io/content/-e-x-t-e-r-n-a-l_-i-m-a-g-e_-t-o_-i-m-a-g-e-v1/media__7/-e-x-t-e-r-n-a-l_-i-m-a-g-e_-t-o_-i-m-a-g-e-e497a5d9-a0b5-4d3e-9456-23cc4f370207.png?Expires=2101757057&Key-Pair-Id=K2ZDLYDZI2R1DF&Signature=lHBtbERFoBufybx95GyiOR~v6mEaiDoNIJRRdj32ildE2ijYDf1u6T~ET1M6eqkmK~c5g4kr~TnmuY48DqIl2GHA2FzlZYoOftUN4-Utp7qsOZ7lR52I0qaQlWqRs7fxU-aBG0EHGsGHa40yZJaoRHnpPyEaiFrv7pwKzVC8sg9pzWe2z6T0BFhtamzSed6ecVgBbhkk50cqgkUBhcV7oteKLWViiBRcx2GjGAYkSR0KlnJFaizkqRYN0~35Us3xZRfx7PDaNuT-lnmu57iIwebS498gdJ2AeEcNGHC4tPLDNGRmt6g0bwUSv6WgFgna10fyp1Y4GJn7Ann8e56GxA__'
+          curl -fsS -o night2_assets/gen_2122.png 'https://cms-toolkit-artifacts.artlist.io/content/-e-x-t-e-r-n-a-l_-i-m-a-g-e_-t-o_-i-m-a-g-e-v1/media__1/image-88e18414-2cb7-4055-9fac-82c9f03cabbf.png?Expires=2101756979&Key-Pair-Id=K2ZDLYDZI2R1DF&Signature=GviDux9cy42TfLk~Fjt9y1G2WaXjN6xMPqa8-pjANDajPOV-fJpTxzXxrdSFiFDTulH8MZlfyLc0UBi0moeL-af9D4LXXAgoOJDb8jBS8TfnTyZrHNd0Ld3H2SMqBzc6-IU-bpaH6by6IkqAt4pCzTj8zEGsUxg92gD3xVn6J3~P-dFWdBAsKr~ZTlfsLHbss-O2Q1oTBoP9YgJ90fWu7TFcrcWq47SJVQzbhU3XSlbSaLK37cZV7a7NnrRlt38L6ybBl0XiCMYZmWGNyZvYQAOJtZGuzmQY5rg4PvlaPmnRH4zV1c~91a1kg5pQdI1wUsfRdmnasg3XpzMHeu8iyQ__'
+          curl -fsS -o night2_assets/gen_2121.png 'https://cms-toolkit-artifacts.artlist.io/content/-e-x-t-e-r-n-a-l_-i-m-a-g-e_-t-o_-i-m-a-g-e-v1/media__3/image-f19da638-830d-4ed1-8691-259d72542e72.png?Expires=2101756943&Key-Pair-Id=K2ZDLYDZI2R1DF&Signature=dkribMF6nF8kBwnwItmbW5nGe4DVJMN~Rp0lLxwc8RC1F0sPooYqWrxBhnZRZONT0lazsPWDUwt-Pnc-99k4NLwLGZIOOJdHVlUQ4mm4FaM-52tCjSLMG3waIWuJDA7LXsYQcVpWYh-Q1saS0GDPXyu9R5uYGZFg-jcLx6BxMJYXjSxEKOy9H6QClZIjC-ro9ENGrTGRf7hKMtI~PCTT5t0V-m0yezLGFpoWYJp-qkwUkaNmR2DQf050WJqo~-HMZtrxzePESVKPv1RGW-Yh2WMiU3OeYYvogJuvLwNUIGfUWYIeiJrHsrrdnxEHrkEAdpGxBtIdTQp~PpUK2s3d4w__'
+          ls -la night2_assets/
+
+      - name: Commit images to branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add night2_assets
+          git commit -m "Add night2 image assets fetched from Artlist"
+          git push
