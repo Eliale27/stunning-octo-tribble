@@ -1,0 +1,30 @@
+name: Assemble night6 video release
+
+on:
+  push:
+    branches: [claude/video-assembly-bkhpnj]
+    paths: ['video_parts_night6/**']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Join video parts
+        run: |
+          cat video_parts_night6/video_night6.part* > my-japan-diary-night-6.mp4
+          ls -la my-japan-diary-night-6.mp4
+
+      - name: Publish release with full video
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create japan-diary-night-6 my-japan-diary-night-6.mp4 \
+            --title "My JAPAN Diary — Night 6 (1 HR)" \
+            --notes "Vídeo completo: 60 min, 1080p. Narração termina em ~20:09 (the story ends around 20:09). Baixe my-japan-diary-night-6.mp4 abaixo." \
+            --target "${{ github.sha }}" \
+          || gh release upload japan-diary-night-6 my-japan-diary-night-6.mp4 --clobber
