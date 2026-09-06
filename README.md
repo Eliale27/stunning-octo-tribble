@@ -1,52 +1,54 @@
-# 🛫 ATC Voice — GitHub Pages Deploy
+# estuda.
 
-## Como publicar em 5 minutos
+Seu espaço pessoal para estudar melhor.
 
-### 1. Crie um repositório no GitHub
-- Acesse https://github.com/new
-- Nome sugerido: `atc-voice`
-- Deixe **Public**
-- Clique em **Create repository**
+Plataforma web de estudos, organização e produtividade acadêmica: planejamento, foco (Pomodoro), tarefas, anotações, revisão espaçada, metas, estatísticas e gamificação discreta. Interface inspirada no Notion, com paleta pastel, cards minimalistas e muito espaço em branco.
 
-### 2. Faça upload dos arquivos
-Na página do repositório vazio, clique em **"uploading an existing file"** e arraste TODOS os arquivos desta pasta:
-```
-index.html
-manifest.json
-sw.js
-icons/
-  icon-192.png
-  icon-512.png
+> Esta versão é uma demonstração completa com dados fictícios. Tudo é salvo no `localStorage` do navegador; nada é enviado a servidores.
+
+## Rodando localmente
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # gera dist/
+npm run preview    # serve o build
 ```
 
-Clique em **Commit changes**.
+## Stack
 
-### 3. Ative o GitHub Pages
-- No repositório, vá em **Settings** → **Pages**
-- Em "Source", selecione **Deploy from a branch**
-- Branch: **main** | Folder: **/ (root)**
-- Clique em **Save**
+- React 19 + TypeScript + Vite
+- Tailwind CSS v4 (tokens de cor pastel em `src/index.css`)
+- Zustand (estado + persistência local)
+- Motion (microinterações), Recharts (gráficos), dnd-kit (arrastar e soltar), Tiptap (editor de notas), canvas-confetti
 
-### 4. Aguarde ~1 minuto
-O site estará disponível em:
+## Estrutura
+
 ```
-https://SEU_USUARIO.github.io/atc-voice/
+src/
+  components/      layout (sidebar/menu mobile), ui (progress, modal, toasts…), editor de notas, formulários de tarefa
+  pages/           Landing, Login, Dashboard, Matérias, Planejamento, Tarefas, Anotações, Foco, Revisão, Progresso, Conquistas, Configurações
+  store/           estado global (zustand) e seletores derivados
+  data/seed.ts     dados fictícios de demonstração
+  lib/             tipos, utilitários (streak, níveis, revisão espaçada, frases)
+atc-voice/         projeto anterior deste repositório (PWA "ATC Voice"), preservado
 ```
 
----
+## Rotas
 
-## 📲 Instalar no celular
+| Rota | Página |
+| --- | --- |
+| `#/` | Landing page |
+| `#/entrar` | Login (demo) |
+| `#/app` | Dashboard |
+| `#/app/materias`, `#/app/materias/:id` | Matérias e tópicos |
+| `#/app/planejamento?tab=calendario\|lista\|kanban\|semana\|metas` | Meu Plano |
+| `#/app/tarefas` | Tarefas e subtarefas |
+| `#/app/anotacoes` | Editor de anotações |
+| `#/app/foco` | Pomodoro |
+| `#/app/revisao` | Revisão espaçada |
+| `#/app/progresso` | Estatísticas |
+| `#/app/conquistas` | Níveis e conquistas |
+| `#/app/configuracoes` | Configurações |
 
-### Android (Chrome)
-1. Abra o link acima no Chrome
-2. Menu `⋮` → **"Adicionar à tela inicial"**
-
-### iOS (Safari)
-1. Abra o link no Safari
-2. Botão `↑` → **"Adicionar à Tela de Início"**
-
----
-
-## 🔑 API Key gratuita
-Crie em: https://console.groq.com  
-A chave fica salva no celular, não precisa digitar toda vez.
+O roteamento usa hash (`#/…`) e `base: './'`, então o build funciona em qualquer subpasta, incluindo GitHub Pages.
