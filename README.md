@@ -52,3 +52,7 @@ atc-voice/         projeto anterior deste repositório (PWA "ATC Voice"), preser
 | `#/app/configuracoes` | Configurações |
 
 O roteamento usa hash (`#/…`) e `base: './'`, então o build funciona em qualquer subpasta, incluindo GitHub Pages.
+
+## Deploy
+
+O workflow em `.github/workflows/deploy-pages.yml` faz o build e publica `dist/` no GitHub Pages a cada push em `main`. O site fica em `https://eliale27.github.io/stunning-octo-tribble/`.
