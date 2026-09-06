@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ATC Voice">
+<meta name="theme-color" content="#e8a020">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>ATC Voice</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0c;
+    --panel: #111315;
+    --border: #1e2226;
+    --amber: #e8a020;
+    --amber-dim: #7a5010;
+    --amber-glow: rgba(232,160,32,0.15);
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --text: #c8cdd4;
+    --text-dim: #4a5260;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(232,160,32,0.02) 2px, rgba(232,160,32,0.02) 4px);
+    pointer-events: none; z-index: 999;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .topbar-tag { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--amber-dim); letter-spacing: 3px; }
+  .topbar-name { font-size: 30px; font-weight: 700; letter-spacing: 6px; color: var(--amber); text-shadow: 0 0 20px rgba(232,160,32,0.3); text-transform: uppercase; line-height: 1; }
+  .topbar-status { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+  .status-pill { display: flex; align-items: center; gap: 5px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1.5px; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+  .dot.on  { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+  .dot.err { background: var(--red); }
+  .dot.rec { background: var(--red); box-shadow: 0 0 8px var(--red); animation: blink 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes blink  { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+  /* SCROLL */
+  .scroll-area {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 14px 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  /* CARD */
+  .card { background: var(--panel); border: 1px solid var(--border); position: relative; }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--amber-dim), transparent); }
+  .card-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--amber-dim); padding: 8px 12px 0; text-transform: uppercase; }
+
+  /* API KEY */
+  .api-row { display: flex; gap: 8px; padding: 8px 12px 12px; }
+  .api-input {
+    flex: 1; min-width: 0;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; padding: 10px 12px; outline: none;
+    -webkit-appearance: none; border-radius: 0;
+  }
+  .api-input::placeholder { color: var(--text-dim); }
+  .api-input:focus { border-color: var(--amber-dim); }
+
+  /* BUTTONS */
+  .btn {
+    background: transparent; border: 1px solid var(--amber-dim);
+    color: var(--amber); font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; padding: 10px 14px;
+    cursor: pointer; white-space: nowrap;
+    -webkit-appearance: none; border-radius: 0; transition: all .15s;
+  }
+  .btn:active { background: var(--amber-glow); }
+  .btn:disabled { opacity: 0.3; pointer-events: none; }
+
+  /* SOURCE CARDS */
+  .source-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 12px 12px; }
+  .src-card {
+    border: 1px solid var(--border); padding: 12px 8px;
+    text-align: center; cursor: pointer; transition: all .2s;
+  }
+  .src-card.active { border-color: var(--amber); background: var(--amber-glow); }
+  .src-icon { font-size: 22px; margin-bottom: 5px; }
+  .src-name { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text); }
+  .src-desc { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); margin-top: 3px; line-height: 1.4; }
+
+  /* INFO BOX */
+  .info-box {
+    margin: 0 12px 10px; padding: 8px 12px;
+    border: 1px solid var(--amber-dim); background: rgba(232,160,32,0.04);
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    color: var(--amber-dim); line-height: 1.7; display: none;
+  }
+  .info-box.visible { display: block; }
+
+  /* RECORD SECTION */
+  .record-section { padding: 16px 12px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+  .rec-btn-wrap { position: relative; width: 120px; height: 120px; }
+  .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--amber); opacity: 0; pointer-events: none; }
+  .recording .ring-1 { animation: ripple 2s infinite; }
+  .recording .ring-2 { animation: ripple 2s .7s infinite; }
+  @keyframes ripple { 0%{transform:scale(1);opacity:.6} 100%{transform:scale(1.7);opacity:0} }
+
+  .rec-btn {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: var(--panel); border: 2px solid var(--amber-dim);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .2s; gap: 4px;
+    -webkit-appearance: none;
+  }
+  .rec-btn:active { transform: scale(.95); }
+  .rec-btn:disabled { opacity: .3; pointer-events: none; }
+  .rec-btn.active { border-color: var(--red); background: rgba(231,76,60,.08); box-shadow: 0 0 30px rgba(231,76,60,.2); }
+  .rec-icon { font-size: 34px; line-height: 1; }
+  .rec-lbl { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--amber); text-transform: uppercase; }
+  .rec-btn.active .rec-lbl { color: var(--red); }
+
+  .timer { font-family: 'Share Tech Mono', monospace; font-size: 38px; color: var(--amber); letter-spacing: 4px; text-shadow: 0 0 20px rgba(232,160,32,.4); }
+
+  /* VU */
+  .vu-wrap { width: 100%; display: flex; align-items: center; gap: 8px; }
+  .vu-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; width: 24px; }
+  .vu-track { flex: 1; height: 4px; background: var(--border); overflow: hidden; }
+  .vu-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green) 0%, var(--amber) 70%, var(--red) 100%); transition: width .05s; }
+
+  /* WAVE */
+  .wave-wrap { padding: 0 12px 12px; }
+  canvas { width: 100%; height: 48px; display: block; background: var(--bg); border: 1px solid var(--border); }
+
+  /* OPTS */
+  .opts-row { display: flex; align-items: center; gap: 10px; padding: 0 12px 12px; }
+  .opts-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 2px; }
+  .select-input {
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; padding: 7px 10px; outline: none;
+    -webkit-appearance: none; border-radius: 0; cursor: pointer;
+  }
+
+  /* LOG */
+  .log-area {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    color: var(--text-dim); padding: 4px 12px 10px;
+    max-height: 64px; overflow-y: auto; line-height: 1.9; letter-spacing: .5px;
+  }
+  .log-line { display: flex; gap: 8px; }
+  .log-time { color: var(--amber-dim); flex-shrink: 0; }
+  .log-msg.ok   { color: var(--green); }
+  .log-msg.err  { color: var(--red); }
+  .log-msg.warn { color: var(--amber-dim); }
+  .log-msg.info { color: var(--text-dim); }
+
+  /* PROGRESS */
+  .progress-bar { height: 2px; background: var(--border); margin: 0 12px 10px; display: none; overflow: hidden; }
+  .progress-bar.visible { display: block; }
+  .progress-fill { height: 100%; background: var(--amber); animation: load 1.5s infinite; }
+  @keyframes load { 0%{transform:translateX(-100%);width:60%} 100%{transform:translateX(200%);width:60%} }
+
+  /* TRANSCRIPT */
+  .t-placeholder { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--text-dim); text-align: center; padding: 22px 12px; text-transform: uppercase; }
+  .t-text { font-family: 'Share Tech Mono', monospace; font-size: 12px; line-height: 1.9; color: var(--text); padding: 12px; white-space: pre-wrap; word-break: break-word; display: none; }
+  .t-text.visible { display: block; }
+  .action-row { display: none; gap: 8px; padding: 0 12px 12px; }
+  .action-row.visible { display: flex; }
+  .btn-sm {
+    flex: 1; background: transparent; border: 1px solid var(--border);
+    color: var(--text-dim); font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    padding: 8px 4px; cursor: pointer; -webkit-appearance: none; border-radius: 0;
+  }
+  .btn-sm:active { background: rgba(255,255,255,.05); }
+
+  /* INSTALL BANNER */
+  .install-banner { display: none; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--amber-dim); background: rgba(232,160,32,.05); margin-bottom: 4px; }
+  .install-banner.visible { display: flex; }
+  .install-text { flex: 1; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--amber-dim); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-tag">◈ ATC ◈</div>
+    <div class="topbar-name">Voice</div>
+  </div>
+  <div class="topbar-status">
+    <div class="status-pill"><div class="dot" id="dotApi"></div><span id="lblApi">SEM CHAVE</span></div>
+    <div class="status-pill"><div class="dot" id="dotRec"></div><span id="lblRec">PRONTO</span></div>
+  </div>
+</div>
+
+<div class="scroll-area">
+
+  <!-- Install Banner -->
+  <div class="install-banner" id="installBanner">
+    <div class="install-text">📲 Instale o app na tela inicial para acesso rápido!</div>
+    <button class="btn" id="installBtn" onclick="installApp()">Instalar</button>
+  </div>
+
+  <!-- API Key -->
+  <div class="card">
+    <div class="card-label">▸ Groq API Key</div>
+    <div class="api-row">
+      <input type="password" class="api-input" id="apiKey"
+        placeholder="gsk_xxxxxxxxxxxxxxxx"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button class="btn" onclick="saveKey()">OK</button>
+    </div>
+  </div>
+
+  <!-- Source -->
+  <div class="card">
+    <div class="card-label">▸ Fonte de áudio</div>
+    <div class="source-grid">
+      <div class="src-card active" id="src-mic" onclick="selectSource('mic')">
+        <div class="src-icon">🎙️</div>
+        <div class="src-name">Microfone</div>
+        <div class="src-desc">Capta voz e ambiente</div>
+      </div>
+      <div class="src-card" id="src-sys" onclick="selectSource('sys')">
+        <div class="src-icon">🔊</div>
+        <div class="src-name">Sistema</div>
+        <div class="src-desc">Áudio da aba (desktop)</div>
+      </div>
+    </div>
+    <div class="info-box" id="sysInfo">
+      ⚠ Captura de sistema só funciona no desktop (Chrome/Edge). No celular use o Microfone apontado para o alto-falante.
+    </div>
+  </div>
+
+  <!-- Recorder -->
+  <div class="card">
+    <div class="card-label">▸ Gravação</div>
+    <div class="record-section">
+      <div class="rec-btn-wrap" id="recWrap">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <button class="rec-btn" id="recBtn" onclick="toggleRecord()" disabled>
+          <span class="rec-icon" id="recIcon">🎙</span>
+          <span class="rec-lbl"  id="recLbl">GRAVAR</span>
+        </button>
+      </div>
+      <div class="timer" id="timer">00:00</div>
+      <div class="vu-wrap">
+        <span class="vu-label">MIC</span>
+        <div class="vu-track"><div class="vu-fill" id="vuFill"></div></div>
+      </div>
+    </div>
+    <div class="wave-wrap"><canvas id="waveform"></canvas></div>
+    <div class="opts-row">
+      <span class="opts-label">IDIOMA</span>
+      <select class="select-input" id="langSelect">
+        <option value="">Auto</option>
+        <option value="pt">Português</option>
+        <option value="en" selected>English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+      </select>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="progress-fill"></div></div>
+    <div class="log-area" id="logArea"></div>
+  </div>
+
+  <!-- Transcript -->
+  <div class="card">
+    <div class="card-label">▸ Transcrição</div>
+    <div class="t-placeholder" id="tPlaceholder">◈ aguardando gravação ◈</div>
+    <div class="t-text" id="tOut"></div>
+    <div class="action-row" id="actionRow">
+      <button class="btn-sm" onclick="copyText()">📋 Copiar</button>
+      <button class="btn-sm" onclick="shareText()">📤 Partilhar</button>
+      <button class="btn-sm" onclick="clearAll()">🗑 Limpar</button>
+    </div>
+  </div>
+
+</div><!-- /scroll-area -->
+
+<script>
+// ── State ──────────────────────────────────────────────
+let apiKey = '';
+let source = 'mic';
+let isRecording = false;
+let mediaRecorder = null;
+let chunks = [];
+let timerInt = null;
+let elapsed = 0;
+let audioCtx = null;
+let analyser = null;
+let micStream = null;
+let sysStream = null;
+let animFrame = null;
+let deferredPrompt = null;
+let canvas, ctx2d;
+
+// ── PWA install ────────────────────────────────────────
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('visible');
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('visible');
+  deferredPrompt = null;
+});
+async function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') log('App instalado! 🎉', 'ok');
+  deferredPrompt = null;
+  document.getElementById('installBanner').classList.remove('visible');
+}
+
+// ── Service Worker ─────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ── Init ───────────────────────────────────────────────
+window.addEventListener('load', () => {
+  canvas = document.getElementById('waveform');
+  ctx2d   = canvas.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  drawIdle();
+
+  // Restore saved key
+  const saved = localStorage.getItem('atc_groq_key');
+  if (saved) {
+    document.getElementById('apiKey').value = saved;
+    saveKey(true);
+  }
+});
+
+function resizeCanvas() {
+  const r = window.devicePixelRatio || 1;
+  canvas.width  = canvas.offsetWidth  * r;
+  canvas.height = canvas.offsetHeight * r;
+  ctx2d.scale(r, r);
+}
+
+// ── API Key ────────────────────────────────────────────
+function saveKey(silent = false) {
+  apiKey = document.getElementById('apiKey').value.trim();
+  if (apiKey.length > 20) {
+    localStorage.setItem('atc_groq_key', apiKey);
+    setDot('dotApi', 'lblApi', 'on', 'AUTENTICADO');
+    document.getElementById('recBtn').disabled = false;
+    if (!silent) log('Chave salva com sucesso!', 'ok');
+  } else {
+    setDot('dotApi', 'lblApi', 'err', 'CHAVE INVÁLIDA');
+    if (!silent) log('Formato inválido — use gsk_...', 'err');
+  }
+}
+
+// ── Source ─────────────────────────────────────────────
+function selectSource(s) {
+  source = s;
+  ['mic','sys'].forEach(x => {
+    const el = document.getElementById('src-'+x);
+    el.classList.toggle('active', x === s);
+  });
+  document.getElementById('sysInfo').classList.toggle('visible', s === 'sys');
+}
+
+// ── Record ─────────────────────────────────────────────
+async function toggleRecord() {
+  if (!isRecording) await startRecording();
+  else stopRecording();
+}
+
+async function startRecording() {
+  chunks = [];
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const dest = audioCtx.createMediaStreamDestination();
+
+    if (source === 'mic') {
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+          channelCount: 1,
+          sampleRate: 16000
+        },
+        video: false
+      });
+      const src = audioCtx.createMediaStreamSource(micStream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 1024;
+      src.connect(analyser);
+      src.connect(dest);
+
+    } else {
+      // Desktop system audio
+      if (!navigator.mediaDevices.getDisplayMedia) {
+        log('getDisplayMedia não suportado neste browser', 'err');
+        return;
+      }
+      log('Selecione a aba ATC e marque "Compartilhar áudio"', 'warn');
+      sysStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      const audioTracks = sysStream.getAudioTracks();
+      if (!audioTracks.length) {
+        log('Sem áudio detectado — marque "Compartilhar áudio da aba"', 'err');
+        sysStream.getTracks().forEach(t => t.stop());
+        return;
+      }
+      const sysSrc = audioCtx.createMediaStreamSource(new MediaStream(audioTracks));
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 1024;
+      sysSrc.connect(analyser);
+      sysSrc.connect(dest);
+      sysStream.getVideoTracks().forEach(t => t.stop());
+      log('Áudio do sistema capturado!', 'ok');
+    }
+
+    const mime = getBestMime();
+    mediaRecorder = new MediaRecorder(dest.stream, mime ? { mimeType: mime } : {});
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    mediaRecorder.start(100);
+
+  } catch(e) {
+    if (e.name === 'NotAllowedError') {
+      log('Permissão negada — permita o microfone nas configs do browser', 'err');
+    } else {
+      log('Erro: ' + e.message, 'err');
+    }
+    return;
+  }
+
+  isRecording = true;
+  elapsed = 0;
+  timerInt = setInterval(() => {
+    elapsed++;
+    const m = String(Math.floor(elapsed/60)).padStart(2,'0');
+    const s = String(elapsed%60).padStart(2,'0');
+    document.getElementById('timer').textContent = m + ':' + s;
+  }, 1000);
+
+  document.getElementById('recBtn').classList.add('active');
+  document.getElementById('recWrap').classList.add('recording');
+  document.getElementById('recIcon').textContent = '⏹';
+  document.getElementById('recLbl').textContent  = 'PARAR';
+  setDot('dotRec', 'lblRec', 'rec', 'GRAVANDO');
+  log('Gravando...', 'ok');
+  drawWave();
+}
+
+function stopRecording() {
+  if (!mediaRecorder) return;
+  isRecording = false;
+  clearInterval(timerInt);
+
+  mediaRecorder.stop();
+  mediaRecorder.onstop = () => transcribe();
+
+  if (micStream) micStream.getTracks().forEach(t => t.stop());
+  if (sysStream) sysStream.getTracks().forEach(t => t.stop());
+  cancelAnimationFrame(animFrame);
+
+  document.getElementById('recBtn').classList.remove('active');
+  document.getElementById('recWrap').classList.remove('recording');
+  document.getElementById('recIcon').textContent = '🎙';
+  document.getElementById('recLbl').textContent  = 'GRAVAR';
+  document.getElementById('recBtn').disabled = true;
+  document.getElementById('vuFill').style.width = '0%';
+  setDot('dotRec', 'lblRec', '', 'PROCESSANDO');
+  log('Enviando para transcrição...', 'info');
+  drawIdle();
+}
+
+// ── Transcribe ─────────────────────────────────────────
+async function transcribe() {
+  const mime = getBestMime();
+  const ext  = mime.includes('webm') ? 'webm' : mime.includes('ogg') ? 'ogg' : 'mp4';
+  const blob = new Blob(chunks, { type: mime || 'audio/webm' });
+  log('Áudio: ' + (blob.size/1024).toFixed(0) + ' KB', 'info');
+
+  const fd = new FormData();
+  fd.append('file', blob, 'rec.' + ext);
+  fd.append('model', 'whisper-large-v3');
+  fd.append('temperature', '0');
+  fd.append('response_format', 'verbose_json');
+  const lang = document.getElementById('langSelect').value;
+  if (lang) fd.append('language', lang);
+
+  document.getElementById('progressBar').classList.add('visible');
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + apiKey },
+      body: fd
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || 'HTTP ' + res.status);
+    }
+    const data = await res.json();
+    const text = data.text || '(sem conteúdo detectado)';
+    const dur  = data.duration ? ' | ' + Math.round(data.duration) + 's' : '';
+    log('Concluído' + dur, 'ok');
+
+    document.getElementById('tPlaceholder').style.display = 'none';
+    const out = document.getElementById('tOut');
+    out.textContent = text;
+    out.classList.add('visible');
+    document.getElementById('actionRow').classList.add('visible');
+    out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(e) {
+    log('Erro: ' + e.message, 'err');
+  }
+
+  document.getElementById('progressBar').classList.remove('visible');
+  setDot('dotRec', 'lblRec', '', 'PRONTO');
+  document.getElementById('recBtn').disabled = false;
+}
+
+// ── Audio utils ────────────────────────────────────────
+function getBestMime() {
+  const types = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/ogg;codecs=opus',
+    'audio/ogg',
+    'audio/mp4'
+  ];
+  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+}
+
+function drawWave() {
+  animFrame = requestAnimationFrame(drawWave);
+  if (!analyser) return;
+  const w = canvas.offsetWidth, h = canvas.offsetHeight;
+  ctx2d.clearRect(0,0,w,h);
+  ctx2d.fillStyle = '#0a0b0c';
+  ctx2d.fillRect(0,0,w,h);
+
+  const buf = new Uint8Array(analyser.fftSize);
+  analyser.getByteTimeDomainData(buf);
+
+  ctx2d.beginPath();
+  ctx2d.strokeStyle = '#e8a020';
+  ctx2d.lineWidth = 1.5;
+  const step = w / buf.length;
+  buf.forEach((v, i) => {
+    const y = (v/128) * (h/2);
+    i === 0 ? ctx2d.moveTo(0, y) : ctx2d.lineTo(i*step, y);
+  });
+  ctx2d.stroke();
+
+  let sum = 0;
+  buf.forEach(v => { const x=(v-128)/128; sum += x*x; });
+  const rms = Math.sqrt(sum/buf.length);
+  document.getElementById('vuFill').style.width = Math.min(rms*350, 100) + '%';
+}
+
+function drawIdle() {
+  const w = canvas.offsetWidth, h = canvas.offsetHeight;
+  ctx2d.clearRect(0,0,w,h);
+  ctx2d.fillStyle = '#0a0b0c';
+  ctx2d.fillRect(0,0,w,h);
+  ctx2d.beginPath();
+  ctx2d.strokeStyle = '#1e2226';
+  ctx2d.lineWidth = 1;
+  ctx2d.moveTo(0, h/2); ctx2d.lineTo(w, h/2);
+  ctx2d.stroke();
+}
+
+// ── UI helpers ─────────────────────────────────────────
+function setDot(dotId, lblId, state, text) {
+  document.getElementById(dotId).className = 'dot' + (state ? ' '+state : '');
+  document.getElementById(lblId).textContent = text;
+}
+
+function log(msg, type='info') {
+  const area = document.getElementById('logArea');
+  const t = new Date().toTimeString().slice(0,8);
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-time">[${t}]</span><span class="log-msg ${type}">${msg}</span>`;
+  area.appendChild(line);
+  area.scrollTop = area.scrollHeight;
+}
+
+function copyText() {
+  const t = document.getElementById('tOut').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(t).then(() => log('Copiado!', 'ok'));
+  }
+}
+
+function shareText() {
+  const t = document.getElementById('tOut').textContent;
+  if (navigator.share) {
+    navigator.share({ title: 'Transcrição ATC', text: t }).catch(() => {});
+  } else {
+    copyText();
+  }
+}
+
+function clearAll() {
+  document.getElementById('tOut').textContent = '';
+  document.getElementById('tOut').classList.remove('visible');
+  document.getElementById('tPlaceholder').style.display = 'block';
+  document.getElementById('actionRow').classList.remove('visible');
+  document.getElementById('logArea').innerHTML = '';
+  document.getElementById('timer').textContent = '00:00';
+}
+</script>
+</body>
+</html>
