@@ -1,303 +1,188 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { formatISO, subDays } from 'date-fns'
-import type { FocusState, Goal, Note, Session, Settings, Subject, Subtask, Task, TaskStatus, Topic } from '@/lib/types'
-import { achievementDefs, seedGoals, seedNotes, seedSessions, seedSettings, seedSubjects, seedTasks, type AchievementId } from '@/data/seed'
-import { streak, uid, weekRange, minutesBetween, questionsBetween } from '@/lib/utils'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import type {
+  Resume, Job, CompanyIntel, Interview, InterviewTurn, MockSession, Challenge, CandidateProfile, Settings, MatchResult,
+} from '@/lib/types'
+import { DEFAULT_PROFILE, DEFAULT_SETTINGS } from '@/lib/types'
+import { uid } from '@/lib/utils'
 
-export interface Toast { id: string; title: string; desc?: string; emoji?: string; confetti?: boolean }
-
-interface State {
-  loggedIn: boolean
+export interface StoreState {
+  resumes: Resume[]
+  activeResumeId?: string
+  jobs: Job[]
+  activeJobId?: string
+  companies: CompanyIntel[]
+  interviews: Interview[]
+  mockSessions: MockSession[]
+  challenges: Challenge[]
+  matches: Record<string, MatchResult> // key: `${resumeId}:${jobId}`
+  profile: CandidateProfile
   settings: Settings
-  subjects: Subject[]
-  tasks: Task[]
-  sessions: Session[]
-  goals: Goal[]
-  notes: Note[]
-  unlocked: Partial<Record<AchievementId, string>>
-  focus: FocusState
-  toasts: Toast[]
-  sidebarCollapsed: boolean
+  onboarded: boolean
 
-  // auth
-  login: (name?: string) => void
-  logout: () => void
-
-  // settings
-  updateSettings: (p: Partial<Settings>) => void
-  toggleSidebar: () => void
-
-  // subjects & topics
-  addSubject: (s: Omit<Subject, 'id' | 'topics'>) => string
-  updateSubject: (id: string, p: Partial<Subject>) => void
-  removeSubject: (id: string) => void
-  addTopic: (subjectId: string, name: string) => void
-  updateTopic: (subjectId: string, topicId: string, p: Partial<Topic>) => void
-  removeTopic: (subjectId: string, topicId: string) => void
-
-  // tasks
-  addTask: (t: Omit<Task, 'id' | 'createdAt' | 'subtasks' | 'status'> & { subtasks?: Subtask[]; status?: TaskStatus }) => void
-  updateTask: (id: string, p: Partial<Task>) => void
-  toggleTask: (id: string) => void
-  moveTask: (id: string, status: TaskStatus) => void
-  removeTask: (id: string) => void
-  addSubtask: (taskId: string, title: string) => void
-  toggleSubtask: (taskId: string, subId: string) => void
-  removeSubtask: (taskId: string, subId: string) => void
-
-  // sessions
-  addSession: (s: Omit<Session, 'id' | 'date'> & { date?: string }) => void
-
-  // goals
-  addGoal: (g: Omit<Goal, 'id'>) => void
-  updateGoal: (id: string, p: Partial<Goal>) => void
-  removeGoal: (id: string) => void
-
-  // notes
-  addNote: (n?: Partial<Note>) => string
-  updateNote: (id: string, p: Partial<Note>) => void
-  removeNote: (id: string) => void
-
-  // review
-  markReviewed: (subjectId: string, topicId: string, result: 'easy' | 'ok' | 'hard') => void
-
-  // focus
-  startFocus: (opts?: { subjectId?: string; topicId?: string; minutes?: number }) => void
-  pauseFocus: () => void
-  resumeFocus: () => void
-  resetFocus: (mode?: 'focus' | 'break') => void
-  completeFocus: () => void
-  setFocusDuration: (minutes: number) => void
-
-  // gamification
-  checkAchievements: () => void
-  pushToast: (t: Omit<Toast, 'id'>) => void
-  dismissToast: (id: string) => void
-
-  resetDemo: () => void
+  // resumes
+  addResume: (r: Omit<Resume, 'id' | 'createdAt' | 'updatedAt'>) => Resume
+  updateResume: (id: string, patch: Partial<Resume>) => void
+  deleteResume: (id: string) => void
+  setActiveResume: (id?: string) => void
+  // jobs
+  addJob: (j: Omit<Job, 'id' | 'createdAt'>) => Job
+  updateJob: (id: string, patch: Partial<Job>) => void
+  deleteJob: (id: string) => void
+  setActiveJob: (id?: string) => void
+  // companies
+  addCompany: (c: Omit<CompanyIntel, 'id' | 'createdAt'>) => CompanyIntel
+  updateCompany: (id: string, patch: Partial<CompanyIntel>) => void
+  deleteCompany: (id: string) => void
+  // matches
+  setMatch: (resumeId: string, jobId: string, m: MatchResult) => void
+  // interviews
+  addInterview: (i: Omit<Interview, 'id' | 'createdAt' | 'updatedAt' | 'turns' | 'strengths' | 'weaknesses'>) => Interview
+  updateInterview: (id: string, patch: Partial<Interview>) => void
+  deleteInterview: (id: string) => void
+  addTurn: (interviewId: string, question: string) => InterviewTurn
+  updateTurn: (interviewId: string, turnId: string, patch: Partial<InterviewTurn>) => void
+  deleteTurn: (interviewId: string, turnId: string) => void
+  // mock
+  addMock: (m: Omit<MockSession, 'id' | 'createdAt' | 'updatedAt' | 'turns' | 'status'>) => MockSession
+  updateMock: (id: string, patch: Partial<MockSession> | ((m: MockSession) => Partial<MockSession>)) => void
+  deleteMock: (id: string) => void
+  // challenges
+  addChallenge: (c: Omit<Challenge, 'id' | 'createdAt'>) => Challenge
+  updateChallenge: (id: string, patch: Partial<Challenge>) => void
+  deleteChallenge: (id: string) => void
+  // profile / settings
+  setProfile: (p: Partial<CandidateProfile>) => void
+  setSettings: (s: Partial<Settings>) => void
+  setOnboarded: (v: boolean) => void
+  // privacy
+  deleteProfile: () => void
+  deleteAllData: () => void
 }
 
-const seedUnlocked = (): Partial<Record<AchievementId, string>> => ({
-  'first-session': formatISO(subDays(new Date(), 33)),
-  'hours-10': formatISO(subDays(new Date(), 22)),
-  'streak-7': formatISO(subDays(new Date(), 5)),
-  'questions-100': formatISO(subDays(new Date(), 14)),
-  'weekly-goal': formatISO(subDays(new Date(), 8)),
-  'early-bird': formatISO(subDays(new Date(), 17)),
-})
+const initialData = {
+  resumes: [] as Resume[], activeResumeId: undefined as string | undefined,
+  jobs: [] as Job[], activeJobId: undefined as string | undefined,
+  companies: [] as CompanyIntel[], interviews: [] as Interview[], mockSessions: [] as MockSession[],
+  challenges: [] as Challenge[], matches: {} as Record<string, MatchResult>,
+}
 
-const initialFocus = (minutes: number): FocusState => ({
-  mode: 'focus', running: false, remaining: minutes * 60, duration: minutes * 60, completedToday: 2,
-})
-
-export const useStore = create<State>()(
+export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
-      loggedIn: false,
-      settings: seedSettings,
-      subjects: seedSubjects,
-      tasks: seedTasks,
-      sessions: seedSessions,
-      goals: seedGoals,
-      notes: seedNotes,
-      unlocked: seedUnlocked(),
-      focus: initialFocus(seedSettings.focusMinutes),
-      toasts: [],
-      sidebarCollapsed: false,
+      ...initialData,
+      profile: DEFAULT_PROFILE,
+      settings: DEFAULT_SETTINGS,
+      onboarded: false,
 
-      login: (name) => set(s => ({ loggedIn: true, settings: name ? { ...s.settings, name } : s.settings })),
-      logout: () => set({ loggedIn: false }),
-
-      updateSettings: (p) => set(s => ({ settings: { ...s.settings, ...p } })),
-      toggleSidebar: () => set(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
-
-      addSubject: (sub) => {
-        const id = uid()
-        set(s => ({ subjects: [...s.subjects, { ...sub, id, topics: [] }] }))
-        return id
+      addResume: (r) => {
+        const resume: Resume = { ...r, id: uid('res'), createdAt: Date.now(), updatedAt: Date.now() }
+        set((s) => ({ resumes: [resume, ...s.resumes], activeResumeId: resume.id }))
+        return resume
       },
-      updateSubject: (id, p) => set(s => ({ subjects: s.subjects.map(x => x.id === id ? { ...x, ...p } : x) })),
-      removeSubject: (id) => set(s => ({ subjects: s.subjects.filter(x => x.id !== id) })),
-      addTopic: (subjectId, name) => set(s => ({
-        subjects: s.subjects.map(x => x.id === subjectId ? {
-          ...x, topics: [...x.topics, { id: uid(), subjectId, name, status: 'todo', progress: 0, minutes: 0, questions: 0, correct: 0, reviewStage: 0 }],
-        } : x),
+      updateResume: (id, patch) => set((s) => ({ resumes: s.resumes.map((r) => (r.id === id ? { ...r, ...patch, updatedAt: Date.now() } : r)) })),
+      deleteResume: (id) => set((s) => ({
+        resumes: s.resumes.filter((r) => r.id !== id),
+        activeResumeId: s.activeResumeId === id ? s.resumes.find((r) => r.id !== id)?.id : s.activeResumeId,
+        matches: Object.fromEntries(Object.entries(s.matches).filter(([k]) => !k.startsWith(`${id}:`))),
       })),
-      updateTopic: (subjectId, topicId, p) => set(s => ({
-        subjects: s.subjects.map(x => x.id === subjectId ? { ...x, topics: x.topics.map(t => t.id === topicId ? { ...t, ...p } : t) } : x),
-      })),
-      removeTopic: (subjectId, topicId) => set(s => ({
-        subjects: s.subjects.map(x => x.id === subjectId ? { ...x, topics: x.topics.filter(t => t.id !== topicId) } : x),
-      })),
+      setActiveResume: (id) => set({ activeResumeId: id }),
 
-      addTask: (t) => set(s => ({
-        tasks: [{ ...t, id: uid(), createdAt: formatISO(new Date()), subtasks: t.subtasks ?? [], status: t.status ?? 'todo' }, ...s.tasks],
-      })),
-      updateTask: (id, p) => set(s => ({ tasks: s.tasks.map(t => t.id === id ? { ...t, ...p } : t) })),
-      toggleTask: (id) => {
-        set(s => ({ tasks: s.tasks.map(t => t.id === id ? { ...t, status: t.status === 'done' ? 'todo' : 'done' } : t) }))
-        get().checkAchievements()
+      addJob: (j) => {
+        const job: Job = { ...j, id: uid('job'), createdAt: Date.now() }
+        set((s) => ({ jobs: [job, ...s.jobs], activeJobId: job.id }))
+        return job
       },
-      moveTask: (id, status) => set(s => ({ tasks: s.tasks.map(t => t.id === id ? { ...t, status } : t) })),
-      removeTask: (id) => set(s => ({ tasks: s.tasks.filter(t => t.id !== id) })),
-      addSubtask: (taskId, title) => set(s => ({
-        tasks: s.tasks.map(t => t.id === taskId ? { ...t, subtasks: [...t.subtasks, { id: uid(), title, done: false }] } : t),
+      updateJob: (id, patch) => set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? { ...j, ...patch } : j)) })),
+      deleteJob: (id) => set((s) => ({
+        jobs: s.jobs.filter((j) => j.id !== id),
+        activeJobId: s.activeJobId === id ? s.jobs.find((j) => j.id !== id)?.id : s.activeJobId,
+        matches: Object.fromEntries(Object.entries(s.matches).filter(([k]) => !k.endsWith(`:${id}`))),
       })),
-      toggleSubtask: (taskId, subId) => set(s => ({
-        tasks: s.tasks.map(t => t.id === taskId ? { ...t, subtasks: t.subtasks.map(st => st.id === subId ? { ...st, done: !st.done } : st) } : t),
+      setActiveJob: (id) => set({ activeJobId: id }),
+
+      addCompany: (c) => {
+        const company: CompanyIntel = { ...c, id: uid('co'), createdAt: Date.now() }
+        set((s) => ({ companies: [company, ...s.companies] }))
+        return company
+      },
+      updateCompany: (id, patch) => set((s) => ({ companies: s.companies.map((c) => (c.id === id ? { ...c, ...patch } : c)) })),
+      deleteCompany: (id) => set((s) => ({ companies: s.companies.filter((c) => c.id !== id) })),
+
+      setMatch: (resumeId, jobId, m) => set((s) => ({ matches: { ...s.matches, [`${resumeId}:${jobId}`]: m } })),
+
+      addInterview: (i) => {
+        const interview: Interview = { ...i, id: uid('int'), turns: [], strengths: [], weaknesses: [], createdAt: Date.now(), updatedAt: Date.now() }
+        set((s) => ({ interviews: [interview, ...s.interviews] }))
+        return interview
+      },
+      updateInterview: (id, patch) => set((s) => ({ interviews: s.interviews.map((i) => (i.id === id ? { ...i, ...patch, updatedAt: Date.now() } : i)) })),
+      deleteInterview: (id) => set((s) => ({ interviews: s.interviews.filter((i) => i.id !== id) })),
+      addTurn: (interviewId, question) => {
+        const turn: InterviewTurn = { id: uid('turn'), question, askedAt: Date.now(), status: 'pending' }
+        set((s) => ({ interviews: s.interviews.map((i) => (i.id === interviewId ? { ...i, turns: [...i.turns, turn], updatedAt: Date.now() } : i)) }))
+        return turn
+      },
+      updateTurn: (interviewId, turnId, patch) => set((s) => ({
+        interviews: s.interviews.map((i) => (i.id === interviewId
+          ? { ...i, updatedAt: Date.now(), turns: i.turns.map((t) => (t.id === turnId ? { ...t, ...patch } : t)) }
+          : i)),
       })),
-      removeSubtask: (taskId, subId) => set(s => ({
-        tasks: s.tasks.map(t => t.id === taskId ? { ...t, subtasks: t.subtasks.filter(st => st.id !== subId) } : t),
+      deleteTurn: (interviewId, turnId) => set((s) => ({
+        interviews: s.interviews.map((i) => (i.id === interviewId ? { ...i, turns: i.turns.filter((t) => t.id !== turnId) } : i)),
       })),
 
-      addSession: (sess) => {
-        const date = sess.date ?? formatISO(new Date())
-        set(s => ({
-          sessions: [...s.sessions, { ...sess, id: uid(), date }],
-          subjects: s.subjects.map(x => x.id === sess.subjectId ? {
-            ...x,
-            topics: x.topics.map(t => t.id === sess.topicId ? {
-              ...t,
-              minutes: t.minutes + sess.minutes,
-              questions: t.questions + (sess.questions ?? 0),
-              correct: t.correct + (sess.correct ?? 0),
-              lastSession: date,
-              status: t.status === 'locked' || t.status === 'todo' ? 'in_progress' : t.status,
-              progress: t.status === 'done' ? 100 : Math.min(95, t.progress + Math.round(sess.minutes / 6)),
-            } : t),
-          } : x),
-        }))
-        get().checkAchievements()
+      addMock: (m) => {
+        const session: MockSession = { ...m, id: uid('mock'), turns: [], status: 'active', createdAt: Date.now(), updatedAt: Date.now() }
+        set((s) => ({ mockSessions: [session, ...s.mockSessions] }))
+        return session
       },
-
-      addGoal: (g) => set(s => ({ goals: [...s.goals, { ...g, id: uid() }] })),
-      updateGoal: (id, p) => set(s => ({ goals: s.goals.map(g => g.id === id ? { ...g, ...p } : g) })),
-      removeGoal: (id) => set(s => ({ goals: s.goals.filter(g => g.id !== id) })),
-
-      addNote: (n) => {
-        const id = uid()
-        set(s => ({
-          notes: [{ id, title: 'Sem título', emoji: '📝', content: '', updatedAt: formatISO(new Date()), ...n }, ...s.notes],
-        }))
-        get().checkAchievements()
-        return id
-      },
-      updateNote: (id, p) => set(s => ({ notes: s.notes.map(n => n.id === id ? { ...n, ...p, updatedAt: formatISO(new Date()) } : n) })),
-      removeNote: (id) => set(s => ({ notes: s.notes.filter(n => n.id !== id) })),
-
-      markReviewed: (subjectId, topicId, result) => {
-        set(s => ({
-          subjects: s.subjects.map(x => x.id === subjectId ? {
-            ...x,
-            topics: x.topics.map(t => t.id === topicId ? {
-              ...t,
-              lastReviewed: formatISO(new Date()),
-              reviewStage: result === 'hard' ? Math.max(0, t.reviewStage - 1) : result === 'ok' ? t.reviewStage + 1 : Math.min(5, t.reviewStage + 2),
-            } : t),
-          } : x),
-        }))
-        get().checkAchievements()
-      },
-
-      startFocus: (opts) => set(s => {
-        const minutes = opts?.minutes ?? s.focus.duration / 60
-        return { focus: { ...s.focus, mode: 'focus', running: true, duration: minutes * 60, remaining: minutes * 60, endsAt: Date.now() + minutes * 60 * 1000, subjectId: opts?.subjectId ?? s.focus.subjectId, topicId: opts?.topicId ?? s.focus.topicId } }
-      }),
-      pauseFocus: () => set(s => ({
-        focus: { ...s.focus, running: false, remaining: s.focus.endsAt ? Math.max(0, Math.round((s.focus.endsAt - Date.now()) / 1000)) : s.focus.remaining, endsAt: undefined },
+      updateMock: (id, patch) => set((s) => ({
+        mockSessions: s.mockSessions.map((m) => (m.id === id ? { ...m, ...(typeof patch === 'function' ? patch(m) : patch), updatedAt: Date.now() } : m)),
       })),
-      resumeFocus: () => set(s => ({ focus: { ...s.focus, running: true, endsAt: Date.now() + s.focus.remaining * 1000 } })),
-      resetFocus: (mode) => set(s => {
-        const m = mode ?? s.focus.mode
-        const dur = m === 'focus' ? s.settings.focusMinutes * 60 : s.settings.breakMinutes * 60
-        return { focus: { ...s.focus, mode: m, running: false, endsAt: undefined, duration: dur, remaining: dur } }
-      }),
-      setFocusDuration: (minutes) => set(s => ({ focus: { ...s.focus, running: false, endsAt: undefined, duration: minutes * 60, remaining: minutes * 60 } })),
-      completeFocus: () => {
-        const { focus, settings } = get()
-        if (focus.mode === 'focus') {
-          get().addSession({ subjectId: focus.subjectId, topicId: focus.topicId, minutes: Math.round(focus.duration / 60) })
-          const dur = settings.breakMinutes * 60
-          set(s => ({ focus: { ...s.focus, mode: 'break', running: false, endsAt: undefined, duration: dur, remaining: dur, completedToday: s.focus.completedToday + 1 } }))
-          get().pushToast({ title: 'Mais uma sessão concluída! 🎉', desc: `${Math.round(focus.duration / 60)} minutos registrados. Hora de uma pausa.`, emoji: '⏱️' })
-        } else {
-          const dur = settings.focusMinutes * 60
-          set(s => ({ focus: { ...s.focus, mode: 'focus', running: false, endsAt: undefined, duration: dur, remaining: dur } }))
-          get().pushToast({ title: 'Pausa concluída', desc: 'Pronto para a próxima sessão?', emoji: '🌱' })
-        }
-      },
+      deleteMock: (id) => set((s) => ({ mockSessions: s.mockSessions.filter((m) => m.id !== id) })),
 
-      checkAchievements: () => {
-        const s = get()
-        const total = s.sessions.reduce((a, x) => a + x.minutes, 0)
-        const questions = s.sessions.reduce((a, x) => a + (x.questions ?? 0), 0)
-        const st = streak(s.sessions)
-        const { start, end } = weekRange()
-        const weeklyGoalDone = s.goals.some(g => g.period === 'weekly' && (
-          (g.unit === 'minutes' && minutesBetween(s.sessions, start, end) >= g.target) ||
-          (g.unit === 'questions' && questionsBetween(s.sessions, start, end) >= g.target)))
-        const should: Record<AchievementId, boolean> = {
-          'first-session': s.sessions.length > 0,
-          'streak-7': st >= 7,
-          'hours-10': total >= 600,
-          'questions-100': questions >= 100,
-          'weekly-goal': weeklyGoalDone,
-          'streak-30': st >= 30,
-          'hours-50': total >= 3000,
-          'topic-master': s.subjects.some(x => x.topics.some(t => t.reviewStage >= 5)),
-          'notes-5': s.notes.length >= 5,
-          'early-bird': s.sessions.some(x => new Date(x.date).getHours() < 8),
-        }
-        const newly = (Object.keys(should) as AchievementId[]).filter(id => should[id] && !s.unlocked[id])
-        if (newly.length) {
-          const now = formatISO(new Date())
-          set(x => ({ unlocked: { ...x.unlocked, ...Object.fromEntries(newly.map(id => [id, now])) } }))
-          newly.forEach(id => {
-            const def = achievementDefs.find(d => d.id === id)!
-            get().pushToast({ title: 'Conquista desbloqueada', desc: def.title, emoji: def.emoji, confetti: true })
-          })
-        }
+      addChallenge: (c) => {
+        const ch: Challenge = { ...c, id: uid('ch'), createdAt: Date.now() }
+        set((s) => ({ challenges: [ch, ...s.challenges] }))
+        return ch
       },
-      pushToast: (t) => {
-        const id = uid()
-        set(s => ({ toasts: [...s.toasts, { ...t, id }] }))
-        setTimeout(() => get().dismissToast(id), 5000)
-      },
-      dismissToast: (id) => set(s => ({ toasts: s.toasts.filter(t => t.id !== id) })),
+      updateChallenge: (id, patch) => set((s) => ({ challenges: s.challenges.map((c) => (c.id === id ? { ...c, ...patch } : c)) })),
+      deleteChallenge: (id) => set((s) => ({ challenges: s.challenges.filter((c) => c.id !== id) })),
 
-      resetDemo: () => set({
-        settings: seedSettings, subjects: seedSubjects, tasks: seedTasks, sessions: seedSessions, goals: seedGoals,
-        notes: seedNotes, unlocked: seedUnlocked(), focus: initialFocus(seedSettings.focusMinutes), toasts: [],
-      }),
+      setProfile: (p) => set((s) => ({ profile: { ...s.profile, ...p } })),
+      setSettings: (p) => set((s) => ({ settings: { ...s.settings, ...p } })),
+      setOnboarded: (v) => set({ onboarded: v }),
+
+      deleteProfile: () => set({ profile: DEFAULT_PROFILE }),
+      deleteAllData: () => {
+        set({ ...initialData, profile: DEFAULT_PROFILE, settings: { ...DEFAULT_SETTINGS, theme: get().settings.theme }, onboarded: false })
+      },
     }),
     {
-      name: 'estuda-v1',
+      name: 'interviewpilot-v1',
+      storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({
-        loggedIn: s.loggedIn, settings: s.settings, subjects: s.subjects, tasks: s.tasks, sessions: s.sessions,
-        goals: s.goals, notes: s.notes, unlocked: s.unlocked, focus: s.focus, sidebarCollapsed: s.sidebarCollapsed,
+        resumes: s.resumes, activeResumeId: s.activeResumeId, jobs: s.jobs, activeJobId: s.activeJobId, companies: s.companies,
+        interviews: s.interviews, mockSessions: s.mockSessions, challenges: s.challenges, matches: s.matches,
+        profile: s.profile, settings: s.settings, onboarded: s.onboarded,
       }),
     },
   ),
 )
 
-/* ---------- derived selectors ---------- */
-export const useSubject = (id?: string) => useStore(s => s.subjects.find(x => x.id === id))
-export const subjectProgress = (s: Subject) => s.topics.length ? Math.round(s.topics.reduce((a, t) => a + t.progress, 0) / s.topics.length) : 0
-export const goalProgress = (g: Goal, sessions: Session[], subjects: Subject[]) => {
-  const now = new Date()
-  const range = g.period === 'daily'
-    ? { start: new Date(now.getFullYear(), now.getMonth(), now.getDate()), end: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59) }
-    : g.period === 'weekly' ? weekRange(now)
-    : { start: new Date(now.getFullYear(), now.getMonth(), 1), end: new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59) }
-  const inRange = sessions.filter(x => { const d = new Date(x.date); return d >= range.start && d <= range.end && (!g.subjectId || x.subjectId === g.subjectId) })
-  let current = g.manualProgress ?? 0
-  if (g.unit === 'minutes') current = inRange.reduce((a, x) => a + x.minutes, 0)
-  else if (g.unit === 'questions') current = inRange.reduce((a, x) => a + (x.questions ?? 0), 0)
-  else if (g.unit === 'sessions') current = inRange.length
-  else if (g.unit === 'topics') {
-    const subj = subjects.find(x => x.id === g.subjectId)
-    current = subj ? subj.topics.filter(t => t.status === 'done').length : g.manualProgress ?? 0
-  }
-  return { current, pct: Math.min(100, Math.round((current / g.target) * 100)) }
+// Keep multiple windows (main app + Copilot window) in sync through localStorage events.
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'interviewpilot-v1') void useStore.persist.rehydrate()
+  })
+}
+
+// ---------- selectors ----------
+
+export const selectActiveResume = (s: StoreState) => s.resumes.find((r) => r.id === s.activeResumeId) ?? s.resumes[0]
+export const selectActiveJob = (s: StoreState) => s.jobs.find((j) => j.id === s.activeJobId) ?? s.jobs[0]
+
+export function matchKey(resumeId?: string, jobId?: string) {
+  return resumeId && jobId ? `${resumeId}:${jobId}` : ''
 }

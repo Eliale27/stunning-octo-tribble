@@ -1,35 +1,38 @@
+import { create } from 'zustand'
 import { AnimatePresence, motion } from 'motion/react'
-import confetti from 'canvas-confetti'
-import { useEffect, useRef } from 'react'
-import { useStore } from '@/store/useStore'
+import { CheckCircle2, AlertTriangle, Info, X } from 'lucide-react'
+import { uid } from '@/lib/utils'
 
-export function fireConfetti(big = false) {
-  const colors = ['#A9C4A0', '#A9C4E0', '#C5B8E0', '#EFB8C4', '#F2DC9B']
-  confetti({ particleCount: big ? 90 : 40, spread: big ? 80 : 55, startVelocity: 28, gravity: 0.9, scalar: 0.9, ticks: 160, origin: { y: 0.3 }, colors })
+interface Toast { id: string; kind: 'success' | 'error' | 'info'; text: string }
+interface ToastState { toasts: Toast[]; push: (kind: Toast['kind'], text: string) => void; dismiss: (id: string) => void }
+
+export const useToasts = create<ToastState>((set) => ({
+  toasts: [],
+  push: (kind, text) => {
+    const id = uid('t')
+    set((s) => ({ toasts: [...s.toasts, { id, kind, text }] }))
+    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), kind === 'error' ? 7000 : 3500)
+  },
+  dismiss: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
+}))
+
+export const toast = {
+  success: (t: string) => useToasts.getState().push('success', t),
+  error: (t: string) => useToasts.getState().push('error', t),
+  info: (t: string) => useToasts.getState().push('info', t),
 }
 
 export function Toasts() {
-  const toasts = useStore(s => s.toasts)
-  const dismiss = useStore(s => s.dismissToast)
-  const seen = useRef(new Set<string>())
-  useEffect(() => {
-    toasts.forEach(t => {
-      if (t.confetti && !seen.current.has(t.id)) { seen.current.add(t.id); fireConfetti(true) }
-    })
-  }, [toasts])
+  const { toasts, dismiss } = useToasts()
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-4 z-[60] flex flex-col items-center gap-2 px-4 sm:items-end sm:right-4">
+    <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 w-[min(360px,calc(100vw-2rem))]">
       <AnimatePresence>
-        {toasts.map(t => (
-          <motion.div key={t.id} layout
-            initial={{ opacity: 0, y: -12, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: 0.96 }}
-            className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl border border-line bg-surface/95 p-4 shadow-lift backdrop-blur"
-            onClick={() => dismiss(t.id)}>
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-butter-soft text-xl">{t.emoji ?? '✨'}</div>
-            <div className="min-w-0">
-              <p className="text-sm font-bold">{t.title}</p>
-              {t.desc && <p className="text-xs text-muted">{t.desc}</p>}
-            </div>
+        {toasts.map((t) => (
+          <motion.div key={t.id} initial={{ opacity: 0, y: 12, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8 }}
+            className="card px-3.5 py-3 flex items-start gap-2.5 text-sm shadow-lift">
+            {t.kind === 'success' ? <CheckCircle2 className="size-4 text-success shrink-0 mt-0.5" /> : t.kind === 'error' ? <AlertTriangle className="size-4 text-danger shrink-0 mt-0.5" /> : <Info className="size-4 text-accent shrink-0 mt-0.5" />}
+            <span className="flex-1 text-ink-2">{t.text}</span>
+            <button onClick={() => dismiss(t.id)} className="text-muted hover:text-ink"><X className="size-4" /></button>
           </motion.div>
         ))}
       </AnimatePresence>
