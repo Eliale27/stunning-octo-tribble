@@ -297,10 +297,10 @@
   // ---------- State ----------
   function defaultState() {
     return {
-      v: 1,
+      v: 2,
       tab: "desafios",
       challenges: [
-        { id: "c200", name: "Desafio 200 Depósitos", count: 200, mode: "crescente", base: 1, color: "pink", done: {}, createdAt: today() }
+        { id: "c200", name: "Desafio 200 Depósitos", count: 200, mode: "fixo", base: 100, color: "pink", done: {}, createdAt: today() }
       ],
       goals: [
         { id: "g1", name: "Reserva de emergência", target: 3000, color: "mint", deposits: [] }
@@ -308,6 +308,15 @@
     };
   }
   let state = defaultState();
+  // v1 seeded the 200-deposit challenge as 1+2+...+200; it is 200 x R$ 100.
+  function migrate(s) {
+    if (!s || !s.challenges) return s;
+    if (!s.v || s.v < 2) {
+      s.challenges.forEach((c) => { if (c.id === "c200" && c.mode === "crescente" && c.base === 1) { c.mode = "fixo"; c.base = 100; } });
+      s.v = 2;
+    }
+    return s;
+  }
 
   // ---------- Amount helpers ----------
   const amountOf = (c, n) => c.mode === "fixo" ? c.base : c.base * n;
@@ -323,7 +332,7 @@
   const statusEl = document.getElementById("storeStatus");
 
   function loadLocal() {
-    try { const raw = localStorage.getItem(LS_KEY); if (raw) { const s = JSON.parse(raw); if (s && s.challenges) state = s; } } catch (e) {}
+    try { const raw = localStorage.getItem(LS_KEY); if (raw) { const s = JSON.parse(raw); if (s && s.challenges) state = migrate(s); } } catch (e) {}
   }
   function save() {
     try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
@@ -343,7 +352,7 @@
       const snap = await docRef.get();
       if (snap.exists) {
         const remote = snap.data();
-        if (remote && remote.challenges) { state = JSON.parse(JSON.stringify(remote)); render(); }
+        if (remote && remote.challenges) { state = migrate(JSON.parse(JSON.stringify(remote))); render(); if (remote.v !== state.v) save(); }
       } else {
         await docRef.set(JSON.parse(JSON.stringify(state)));
       }
@@ -351,7 +360,7 @@
       docRef.onSnapshot((s) => {
         if (!s.exists || s.metadata.hasPendingWrites) return;
         const remote = s.data();
-        if (remote && JSON.stringify(remote) !== JSON.stringify(state)) { state = JSON.parse(JSON.stringify(remote)); render(); }
+        if (remote && JSON.stringify(remote) !== JSON.stringify(state)) { state = migrate(JSON.parse(JSON.stringify(remote))); render(); }
       }, () => { docRef = null; statusEl.textContent = "Salvando neste navegador"; });
     } catch (e) { docRef = null; }
   }
@@ -453,10 +462,10 @@
     const d = el("details", { class: "adder" });
     d.append(el("summary", null, el("span", { class: "btn big" }, "＋ Criar novo desafio")));
     const form = el("div", { class: "card form" });
-    let mode = "crescente", color = "mint";
+    let mode = "fixo", color = "mint";
     const name = el("input", { id: "newName", placeholder: "Ex.: Desafio 100 Depósitos", maxlength: "40" });
     const count = el("input", { id: "newCount", type: "number", min: "1", max: "500", value: "100", inputmode: "numeric" });
-    const base = el("input", { id: "newBase", type: "number", min: "0.01", step: "0.01", value: "1", inputmode: "decimal" });
+    const base = el("input", { id: "newBase", type: "number", min: "0.01", step: "0.01", value: "100", inputmode: "decimal" });
     const baseLbl = el("label", { for: "newBase" }, "Valor base (R$)");
     const preview = el("div", { class: "preview" });
     const seg = el("div", { class: "seg" });
@@ -622,7 +631,7 @@
 
   // ---------- Boot ----------
   function start(hot) {
-    if (hot && hot.state && hot.state.challenges) state = hot.state; else loadLocal();
+    if (hot && hot.state && hot.state.challenges) state = migrate(hot.state); else loadLocal();
     render();
     connectDb();
   }
