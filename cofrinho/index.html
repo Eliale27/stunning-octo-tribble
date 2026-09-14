@@ -1,0 +1,633 @@
+<title>Cofrinho de Desafios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #E3F0DF;
+    --bg-deep: #CFE4CA;
+    --card: #FFFDF8;
+    --card-2: #F7F3EA;
+    --ink: #493F4C;
+    --muted: #8B8090;
+    --line: #E6E0D4;
+    --cell: #F6F3EC;
+    --cell-line: #E4DED2;
+    --pink: #F6BDB8;
+    --pink-deep: #E38F88;
+    --pink-ink: #7A3F3A;
+    --mint: #C4E6CB;
+    --mint-deep: #7FC594;
+    --mint-ink: #2F5E3E;
+    --butter: #F9E4A6;
+    --butter-deep: #E6C055;
+    --butter-ink: #6E5312;
+    --lilac: #DED5F5;
+    --lilac-deep: #AF9CE4;
+    --lilac-ink: #4B3A7A;
+    --sky: #CFE4F4;
+    --sky-deep: #86B9DF;
+    --sky-ink: #2F4F6A;
+    --shadow: 0 10px 30px rgba(73, 63, 76, 0.10);
+    --radius: 22px;
+    --focus: 0 0 0 3px rgba(175, 156, 228, 0.55);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E2921;
+      --bg-deep: #172019;
+      --card: #2A352F;
+      --card-2: #223129;
+      --ink: #F3EEE6;
+      --muted: #A9A1AC;
+      --line: #3B4741;
+      --cell: #33403A;
+      --cell-line: #47534D;
+      --pink: #B98A88;
+      --pink-deep: #E6A29C;
+      --pink-ink: #FFE6E3;
+      --mint: #6E9B7C;
+      --mint-deep: #9AD6AD;
+      --mint-ink: #E7F7EC;
+      --butter: #B4A05E;
+      --butter-deep: #F0D278;
+      --butter-ink: #FFF5D6;
+      --lilac: #8A7CB3;
+      --lilac-deep: #C4B4F2;
+      --lilac-ink: #F0EAFF;
+      --sky: #6F94AE;
+      --sky-deep: #A6D0F0;
+      --sky-ink: #E6F2FB;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      --focus: 0 0 0 3px rgba(196, 180, 242, 0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1E2921;
+    --bg-deep: #172019;
+    --card: #2A352F;
+    --card-2: #223129;
+    --ink: #F3EEE6;
+    --muted: #A9A1AC;
+    --line: #3B4741;
+    --cell: #33403A;
+    --cell-line: #47534D;
+    --pink: #B98A88;
+    --pink-deep: #E6A29C;
+    --pink-ink: #FFE6E3;
+    --mint: #6E9B7C;
+    --mint-deep: #9AD6AD;
+    --mint-ink: #E7F7EC;
+    --butter: #B4A05E;
+    --butter-deep: #F0D278;
+    --butter-ink: #FFF5D6;
+    --lilac: #8A7CB3;
+    --lilac-deep: #C4B4F2;
+    --lilac-ink: #F0EAFF;
+    --sky: #6F94AE;
+    --sky-deep: #A6D0F0;
+    --sky-ink: #E6F2FB;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --focus: 0 0 0 3px rgba(196, 180, 242, 0.6);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding-inline: 16px;
+    padding-block: 20px 60px;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 12% 8%, rgba(255,255,255,0.35), transparent 30%),
+                      radial-gradient(circle at 90% 90%, rgba(255,255,255,0.25), transparent 28%);
+    color: var(--ink);
+    font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    min-height: 100vh;
+  }
+  h1, h2, h3, .display { font-family: "Fredoka", "Nunito", system-ui, sans-serif; font-weight: 600; text-wrap: balance; margin: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: none; box-shadow: var(--focus); }
+  input, select { font: inherit; color: var(--ink); }
+
+  .app { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+
+  /* Header */
+  .hero {
+    background: var(--card);
+    border-radius: 30px;
+    padding: 22px 22px 20px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .row { display: flex; align-items: center; gap: 14px; }
+  .hero svg { flex: none; }
+  .eyebrow { font-family: "Fredoka", sans-serif; letter-spacing: 0.22em; text-transform: uppercase; font-size: 12px; color: var(--muted); font-weight: 500; }
+  .hero h1 { font-size: 30px; line-height: 1.05; }
+  .motto { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .motto b { color: var(--ink); }
+  .totals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+  .tile { background: var(--card-2); border-radius: 18px; padding: 12px 14px; }
+  .tile .lbl { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .tile .val { font-family: "Fredoka", sans-serif; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.15; margin-top: 2px; }
+  .tile.pink { background: var(--pink); color: var(--pink-ink); }
+  .tile.pink .lbl { color: inherit; opacity: 0.8; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 6px; background: var(--bg-deep); padding: 6px; border-radius: 999px; }
+  .tab { flex: 1; border: 0; background: transparent; border-radius: 999px; padding: 10px 12px; font-weight: 800; color: var(--muted); font-family: "Fredoka", sans-serif; font-size: 16px; letter-spacing: 0.01em; transition: background .2s, color .2s; }
+  .tab[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+
+  /* Cards */
+  .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .card-head h2 { font-size: 22px; line-height: 1.1; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 3px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+  .chip.done { background: var(--mint); color: var(--mint-ink); }
+  .chip.going { background: var(--butter); color: var(--butter-ink); }
+  .chip.new { background: var(--lilac); color: var(--lilac-ink); }
+
+  .bar { height: 12px; border-radius: 999px; background: var(--cell); overflow: hidden; margin-top: 12px; border: 1px solid var(--cell-line); }
+  .bar > i { display: block; height: 100%; border-radius: 999px; background: var(--accent-deep, var(--pink-deep)); width: 0; transition: width .5s cubic-bezier(.2,.8,.2,1); }
+  .stats { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .stats b { color: var(--ink); }
+
+  /* Grid of deposits */
+  .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; margin-top: 14px; }
+  .grid.g7 { grid-template-columns: repeat(7, 1fr); }
+  .grid.g8 { grid-template-columns: repeat(8, 1fr); }
+  .cell {
+    aspect-ratio: 1; border-radius: 9px; border: 1px solid var(--cell-line); background: var(--cell);
+    display: grid; place-items: center; font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums;
+    padding: 0; position: relative; transition: transform .12s, background .2s, color .2s; color: var(--ink);
+  }
+  .cell:hover { transform: translateY(-1px); }
+  .cell:active { transform: scale(0.92); }
+  .cell.on { background: var(--accent, var(--pink)); border-color: transparent; color: var(--accent-ink, var(--pink-ink)); }
+  .cell.on::after { content: "✓"; position: absolute; top: -5px; right: -4px; width: 15px; height: 15px; border-radius: 50%; background: var(--accent-deep, var(--pink-deep)); color: #fff; font-size: 10px; line-height: 15px; text-align: center; }
+  .cell.next { box-shadow: inset 0 0 0 2px var(--accent-deep, var(--pink-deep)); }
+  .cell.pop { animation: pop .45s cubic-bezier(.2,.9,.3,1.4); }
+  @keyframes pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+  .cell .sm { font-size: 9px; font-weight: 700; opacity: 0.75; margin-top: -2px; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .btn { border: 0; border-radius: 999px; padding: 10px 16px; font-weight: 800; background: var(--card-2); color: var(--ink); display: inline-flex; align-items: center; gap: 6px; transition: transform .1s, filter .15s; }
+  .btn:hover { filter: brightness(0.97); }
+  .btn:active { transform: scale(0.97); }
+  .btn.primary { background: var(--accent, var(--pink)); color: var(--accent-ink, var(--pink-ink)); }
+  .btn.ghost { background: transparent; color: var(--muted); }
+  .btn.danger { color: var(--pink-deep); background: transparent; }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn.big { width: 100%; justify-content: center; padding: 14px; font-size: 16px; font-family: "Fredoka", sans-serif; }
+
+  .next-hint { margin-top: 12px; padding: 12px 14px; border-radius: 16px; background: var(--card-2); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .next-hint .n { font-family: "Fredoka", sans-serif; font-size: 18px; }
+  .next-hint small { color: var(--muted); display: block; font-size: 12px; }
+
+  /* Color swatches */
+  .swatches { display: flex; gap: 8px; }
+  .sw { width: 30px; height: 30px; border-radius: 50%; border: 3px solid transparent; padding: 0; }
+  .sw[aria-pressed="true"] { border-color: var(--ink); }
+  .sw.pink { background: var(--pink); } .sw.mint { background: var(--mint); } .sw.butter { background: var(--butter); } .sw.lilac { background: var(--lilac); } .sw.sky { background: var(--sky); }
+
+  [data-color="pink"] { --accent: var(--pink); --accent-deep: var(--pink-deep); --accent-ink: var(--pink-ink); }
+  [data-color="mint"] { --accent: var(--mint); --accent-deep: var(--mint-deep); --accent-ink: var(--mint-ink); }
+  [data-color="butter"] { --accent: var(--butter); --accent-deep: var(--butter-deep); --accent-ink: var(--butter-ink); }
+  [data-color="lilac"] { --accent: var(--lilac); --accent-deep: var(--lilac-deep); --accent-ink: var(--lilac-ink); }
+  [data-color="sky"] { --accent: var(--sky); --accent-deep: var(--sky-deep); --accent-ink: var(--sky-ink); }
+
+  /* Forms */
+  .form { display: grid; gap: 12px; margin-top: 14px; }
+  .field { display: grid; gap: 5px; }
+  .field label { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .field input, .field select { border: 1.5px solid var(--line); background: var(--card-2); border-radius: 14px; padding: 11px 13px; width: 100%; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .preview { background: var(--mint); color: var(--mint-ink); border-radius: 16px; padding: 12px 14px; font-weight: 700; }
+  .preview b { font-family: "Fredoka", sans-serif; font-size: 20px; }
+  .seg { display: flex; gap: 6px; }
+  .seg button { flex: 1; border: 1.5px solid var(--line); background: var(--card-2); border-radius: 14px; padding: 10px; font-weight: 800; }
+  .seg button[aria-pressed="true"] { background: var(--lilac); border-color: transparent; color: var(--lilac-ink); }
+
+  details.adder { margin-top: 4px; }
+  details.adder summary { list-style: none; cursor: pointer; }
+  details.adder summary::-webkit-details-marker { display: none; }
+  details.adder[open] summary .btn { background: var(--lilac); color: var(--lilac-ink); }
+
+  /* Goals */
+  .goal-amt { font-family: "Fredoka", sans-serif; font-size: 26px; font-variant-numeric: tabular-nums; margin-top: 6px; }
+  .goal-amt small { font-size: 14px; color: var(--muted); font-family: "Nunito", sans-serif; font-weight: 700; }
+  .deposit-row { display: flex; gap: 8px; margin-top: 12px; }
+  .deposit-row input { flex: 1; border: 1.5px solid var(--line); background: var(--card-2); border-radius: 999px; padding: 10px 14px; min-width: 0; }
+  .history { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 4px; font-size: 13px; }
+  .history li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; border-radius: 10px; background: var(--card-2); font-variant-numeric: tabular-nums; }
+  .history li span { color: var(--muted); }
+  .history li button { border: 0; background: transparent; color: var(--muted); padding: 0 4px; }
+  .history li button:hover { color: var(--pink-deep); }
+  .quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .quick button { border: 0; background: var(--card-2); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 800; }
+
+  .empty { text-align: center; color: var(--muted); padding: 24px 12px; }
+  .foot { text-align: center; color: var(--muted); font-size: 12px; }
+
+  /* Toast + confetti */
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--card); padding: 10px 18px; border-radius: 999px; font-weight: 800; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; z-index: 20; max-width: calc(100% - 32px); text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+
+  @media (max-width: 420px) {
+    .hero h1 { font-size: 26px; }
+    .grid { gap: 4px; }
+    .cell { font-size: 11px; border-radius: 7px; }
+    .card { padding: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="app" id="app">
+  <header class="hero">
+    <div class="row">
+      <svg width="64" height="56" viewBox="0 0 64 56" aria-hidden="true">
+        <ellipse cx="34" cy="36" rx="24" ry="17" fill="var(--pink)"/>
+        <circle cx="12" cy="34" r="8" fill="var(--pink)"/>
+        <ellipse cx="9" cy="34" rx="3.5" ry="4.5" fill="var(--pink-deep)"/>
+        <circle cx="8" cy="33" r="1" fill="var(--pink-ink)"/><circle cx="11" cy="33" r="1" fill="var(--pink-ink)"/>
+        <circle cx="21" cy="30" r="1.6" fill="var(--pink-ink)"/>
+        <path d="M27 21 l4 -6 l4 6z" fill="var(--pink-deep)"/>
+        <rect x="18" y="50" width="6" height="5" rx="2" fill="var(--pink-deep)"/>
+        <rect x="42" y="50" width="6" height="5" rx="2" fill="var(--pink-deep)"/>
+        <rect x="30" y="19" width="12" height="3" rx="1.5" fill="var(--pink-ink)"/>
+        <circle cx="36" cy="10" r="6" fill="var(--butter)" stroke="var(--butter-deep)" stroke-width="1.5"/>
+        <text x="36" y="13.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--butter-ink)" font-family="Fredoka, sans-serif">$</text>
+        <path d="M56 32 q6 2 4 8" stroke="var(--pink-deep)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="eyebrow">Meu cofrinho</div>
+        <h1>Cofrinho de Desafios</h1>
+        <div class="motto">Quem economiza, <b>realiza.</b></div>
+      </div>
+    </div>
+    <div class="totals">
+      <div class="tile pink"><div class="lbl">Guardado até agora</div><div class="val" id="totalSaved">R$ 0,00</div></div>
+      <div class="tile"><div class="lbl">Objetivo total</div><div class="val" id="totalTarget">R$ 0,00</div></div>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabDesafios" aria-selected="true" data-tab="desafios">Desafios</button>
+    <button class="tab" role="tab" id="tabMetas" aria-selected="false" data-tab="metas">Metas</button>
+  </div>
+
+  <main id="view"></main>
+  <div class="foot" id="storeStatus">Salvando neste navegador</div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+(function () {
+  const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+  const fmt = (n) => BRL.format(Math.round(n * 100) / 100);
+  const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+  const today = () => new Date().toISOString().slice(0, 10);
+  const COLORS = ["pink", "mint", "butter", "lilac", "sky"];
+
+  // ---------- State ----------
+  function defaultState() {
+    return {
+      v: 1,
+      tab: "desafios",
+      challenges: [
+        { id: "c200", name: "Desafio 200 Depósitos", count: 200, mode: "crescente", base: 1, color: "pink", done: {}, createdAt: today() }
+      ],
+      goals: [
+        { id: "g1", name: "Reserva de emergência", target: 3000, color: "mint", deposits: [] }
+      ]
+    };
+  }
+  let state = defaultState();
+
+  // ---------- Amount helpers ----------
+  const amountOf = (c, n) => c.mode === "fixo" ? c.base : c.base * n;
+  const totalOf = (c) => { let t = 0; for (let i = 1; i <= c.count; i++) t += amountOf(c, i); return t; };
+  const savedOf = (c) => Object.keys(c.done).reduce((t, k) => t + amountOf(c, Number(k)), 0);
+  const goalSaved = (g) => g.deposits.reduce((t, d) => t + d.amount, 0);
+  const nextOf = (c) => { for (let i = 1; i <= c.count; i++) if (!c.done[i]) return i; return null; };
+
+  // ---------- Persistence: db when available, localStorage otherwise ----------
+  const LS_KEY = "cofrinho-desafios-v1";
+  let docRef = null;
+  let saveTimer = null;
+  const statusEl = document.getElementById("storeStatus");
+
+  function loadLocal() {
+    try { const raw = localStorage.getItem(LS_KEY); if (raw) { const s = JSON.parse(raw); if (s && s.challenges) state = s; } } catch (e) {}
+  }
+  function save() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+    if (docRef) {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        docRef.set(JSON.parse(JSON.stringify(state))).catch(() => { statusEl.textContent = "Não consegui salvar na nuvem. Guardado neste navegador."; });
+      }, 350);
+    }
+  }
+  async function connectDb() {
+    if (!window.claude || typeof window.claude.use !== "function") return;
+    const db = await window.claude.use("db");
+    if (!db) return;
+    try {
+      docRef = db.doc("cofrinho/estado");
+      const snap = await docRef.get();
+      if (snap.exists) {
+        const remote = snap.data();
+        if (remote && remote.challenges) { state = JSON.parse(JSON.stringify(remote)); render(); }
+      } else {
+        await docRef.set(JSON.parse(JSON.stringify(state)));
+      }
+      statusEl.textContent = "Progresso salvo na nuvem, sincronizado em todos os seus aparelhos";
+      docRef.onSnapshot((s) => {
+        if (!s.exists || s.metadata.hasPendingWrites) return;
+        const remote = s.data();
+        if (remote && JSON.stringify(remote) !== JSON.stringify(state)) { state = JSON.parse(JSON.stringify(remote)); render(); }
+      }, () => { docRef = null; statusEl.textContent = "Salvando neste navegador"; });
+    } catch (e) { docRef = null; }
+  }
+
+  // ---------- Rendering ----------
+  const view = document.getElementById("view");
+  const el = (tag, attrs, ...kids) => {
+    const n = document.createElement(tag);
+    for (const k in attrs || {}) {
+      if (k === "class") n.className = attrs[k];
+      else if (k === "html") n.innerHTML = attrs[k];
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+    }
+    for (const kid of kids) if (kid !== null && kid !== undefined) n.append(kid);
+    return n;
+  };
+
+  function render() {
+    // header totals
+    let saved = 0, target = 0;
+    state.challenges.forEach((c) => { saved += savedOf(c); target += totalOf(c); });
+    state.goals.forEach((g) => { saved += goalSaved(g); target += g.target; });
+    document.getElementById("totalSaved").textContent = fmt(saved);
+    document.getElementById("totalTarget").textContent = fmt(target);
+    document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === state.tab)));
+
+    view.replaceChildren();
+    if (state.tab === "desafios") renderChallenges(); else renderGoals();
+  }
+
+  function statusChip(saved, total) {
+    if (saved >= total && total > 0) return el("span", { class: "chip done" }, "Concluído");
+    if (saved > 0) return el("span", { class: "chip going" }, "Em andamento");
+    return el("span", { class: "chip new" }, "Começar");
+  }
+
+  function renderChallenges() {
+    const wrap = el("div", { style: "display:grid;gap:16px" });
+    if (!state.challenges.length) wrap.append(el("div", { class: "card empty" }, "Nenhum desafio ainda. Crie o primeiro abaixo."));
+    state.challenges.forEach((c) => wrap.append(challengeCard(c)));
+    wrap.append(challengeAdder());
+    view.append(wrap);
+  }
+
+  function challengeCard(c) {
+    const saved = savedOf(c), total = totalOf(c), doneCount = Object.keys(c.done).length, next = nextOf(c);
+    const pct = total ? Math.min(100, (saved / total) * 100) : 0;
+    const card = el("section", { class: "card", "data-color": c.color, "aria-label": c.name });
+
+    const desc = c.mode === "fixo"
+      ? `${c.count} depósitos de ${fmt(c.base)}`
+      : (c.base === 1 ? `${c.count} depósitos, cada número vale o próprio valor em reais` : `${c.count} depósitos, número × ${fmt(c.base)}`);
+    card.append(el("div", { class: "card-head" },
+      el("div", null, el("h2", null, c.name), el("div", { class: "sub" }, desc)),
+      statusChip(saved, total)));
+
+    const bar = el("div", { class: "bar" }, el("i"));
+    card.append(bar);
+    requestAnimationFrame(() => { bar.firstChild.style.width = pct + "%"; });
+    card.append(el("div", { class: "stats" },
+      el("span", null, el("b", null, fmt(saved)), ` de ${fmt(total)}`),
+      el("span", null, el("b", null, `${doneCount}/${c.count}`), ` · ${Math.round(pct)}%`)));
+
+    if (next) {
+      card.append(el("div", { class: "next-hint" },
+        el("div", null, el("small", null, "Próximo depósito"), el("span", { class: "n" }, `Nº ${next} · ${fmt(amountOf(c, next))}`)),
+        el("button", { class: "btn primary", onclick: () => markNumber(c, next) }, "Depositei ✓")));
+    } else {
+      card.append(el("div", { class: "next-hint" },
+        el("div", null, el("small", null, "Parabéns!"), el("span", { class: "n" }, `Você guardou ${fmt(total)}`))));
+    }
+
+    const cols = c.count <= 56 ? "g7" : c.count <= 80 ? "g8" : "";
+    const grid = el("div", { class: "grid " + cols, role: "group", "aria-label": "Depósitos" });
+    for (let i = 1; i <= c.count; i++) {
+      const on = !!c.done[i];
+      const cell = el("button", {
+        class: "cell" + (on ? " on" : "") + (i === next ? " next" : ""),
+        "aria-pressed": String(on),
+        title: on ? `Nº ${i} · ${fmt(amountOf(c, i))} · depositado em ${c.done[i]}` : `Nº ${i} · ${fmt(amountOf(c, i))}`,
+        onclick: () => toggle(c, i)
+      }, String(i));
+      if (c.mode === "fixo" && c.count <= 56) cell.append(el("span", { class: "sm" }, fmt(c.base).replace(/,00$/, "")));
+      grid.append(cell);
+    }
+    card.append(grid);
+
+    const actions = el("div", { class: "actions" });
+    const remaining = c.count - doneCount;
+    actions.append(el("button", { class: "btn", disabled: remaining ? null : "", onclick: () => raffle(c) }, "🎲 Sortear um número"));
+    actions.append(el("button", { class: "btn ghost", onclick: () => rename(c) }, "Renomear"));
+    actions.append(el("button", { class: "btn danger", onclick: () => removeChallenge(c) }, "Excluir"));
+    card.append(actions);
+    return card;
+  }
+
+  function challengeAdder() {
+    const d = el("details", { class: "adder" });
+    d.append(el("summary", null, el("span", { class: "btn big" }, "＋ Criar novo desafio")));
+    const form = el("div", { class: "card form" });
+    let mode = "crescente", color = "mint";
+    const name = el("input", { id: "newName", placeholder: "Ex.: Desafio 100 Depósitos", maxlength: "40" });
+    const count = el("input", { id: "newCount", type: "number", min: "1", max: "500", value: "100", inputmode: "numeric" });
+    const base = el("input", { id: "newBase", type: "number", min: "0.01", step: "0.01", value: "1", inputmode: "decimal" });
+    const baseLbl = el("label", { for: "newBase" }, "Valor base (R$)");
+    const preview = el("div", { class: "preview" });
+    const seg = el("div", { class: "seg" });
+    const segBtn = (m, txt) => el("button", { type: "button", "aria-pressed": String(mode === m), onclick: () => { mode = m; seg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === m))); update(); }, "data-m": m }, txt);
+    seg.append(segBtn("crescente", "Crescente"), segBtn("fixo", "Valor fixo"));
+    const swatches = el("div", { class: "swatches" });
+    COLORS.forEach((k) => swatches.append(el("button", { type: "button", class: "sw " + k, "aria-label": k, "aria-pressed": String(color === k), onclick: () => { color = k; swatches.querySelectorAll(".sw").forEach((s) => s.setAttribute("aria-pressed", String(s.classList.contains(k)))); } })));
+
+    function update() {
+      const n = Math.max(1, Math.min(500, Number(count.value) || 1));
+      const b = Math.max(0.01, Number(base.value) || 1);
+      baseLbl.textContent = mode === "fixo" ? "Valor de cada depósito (R$)" : "Valor base por número (R$)";
+      const total = totalOf({ count: n, mode, base: b });
+      preview.replaceChildren(el("div", null, "Total ao completar: ", el("b", null, fmt(total))),
+        el("div", { style: "font-size:12px;opacity:.8" }, mode === "fixo" ? `${n} × ${fmt(b)}` : `1 + 2 + … + ${n}, cada um × ${fmt(b)}`));
+    }
+    count.addEventListener("input", update); base.addEventListener("input", update); update();
+
+    form.append(
+      el("div", { class: "field" }, el("label", { for: "newName" }, "Nome"), name),
+      el("div", { class: "field" }, el("label", null, "Como os depósitos crescem"), seg),
+      el("div", { class: "two" },
+        el("div", { class: "field" }, el("label", { for: "newCount" }, "Quantos depósitos"), count),
+        el("div", { class: "field" }, baseLbl, base)),
+      el("div", { class: "field" }, el("label", null, "Cor"), swatches),
+      preview,
+      el("button", { class: "btn primary big", "data-color": color, onclick: () => {
+        const n = Math.max(1, Math.min(500, Number(count.value) || 1));
+        const b = Math.max(0.01, Number(base.value) || 1);
+        state.challenges.push({ id: uid(), name: name.value.trim() || `Desafio ${n} Depósitos`, count: n, mode, base: b, color, done: {}, createdAt: today() });
+        save(); render(); toast("Desafio criado. Bora economizar!");
+      } }, "Criar desafio"));
+    d.append(form);
+    return d;
+  }
+
+  // ---------- Challenge actions ----------
+  function toggle(c, i) {
+    if (c.done[i]) delete c.done[i]; else c.done[i] = today();
+    save(); render();
+    if (c.done[i]) afterMark(c, i);
+  }
+  function markNumber(c, i) {
+    if (c.done[i]) return;
+    c.done[i] = today(); save(); render(); afterMark(c, i);
+  }
+  function afterMark(c, i) {
+    const card = [...view.querySelectorAll(".card")].find((k) => k.getAttribute("aria-label") === c.name);
+    const cell = card && card.querySelectorAll(".cell")[i - 1];
+    if (cell) cell.classList.add("pop");
+    if (Object.keys(c.done).length === c.count) { confetti(); toast(`Desafio concluído! ${fmt(totalOf(c))} guardados 🎉`); }
+    else toast(`Nº ${i} marcado · ${fmt(amountOf(c, i))}`);
+  }
+  function raffle(c) {
+    const free = []; for (let i = 1; i <= c.count; i++) if (!c.done[i]) free.push(i);
+    if (!free.length) return;
+    const pick = free[Math.floor(Math.random() * free.length)];
+    c.done[pick] = today(); save(); render(); afterMark(c, pick);
+    toast(`Sorteado: nº ${pick} · deposite ${fmt(amountOf(c, pick))}`);
+  }
+  function rename(c) {
+    const n = prompt("Novo nome do desafio:", c.name);
+    if (n && n.trim()) { c.name = n.trim().slice(0, 40); save(); render(); }
+  }
+  function removeChallenge(c) {
+    if (!confirm(`Excluir "${c.name}"? Os depósitos marcados serão apagados.`)) return;
+    state.challenges = state.challenges.filter((x) => x.id !== c.id); save(); render();
+  }
+
+  // ---------- Goals ----------
+  function renderGoals() {
+    const wrap = el("div", { style: "display:grid;gap:16px" });
+    if (!state.goals.length) wrap.append(el("div", { class: "card empty" }, "Nenhuma meta ainda. Crie a primeira abaixo."));
+    state.goals.forEach((g) => wrap.append(goalCard(g)));
+    wrap.append(goalAdder());
+    view.append(wrap);
+  }
+
+  function goalCard(g) {
+    const saved = goalSaved(g), pct = g.target ? Math.min(100, (saved / g.target) * 100) : 0;
+    const card = el("section", { class: "card", "data-color": g.color });
+    card.append(el("div", { class: "card-head" },
+      el("div", null, el("h2", null, g.name), el("div", { class: "sub" }, `Meta de ${fmt(g.target)}`)),
+      statusChip(saved, g.target)));
+    card.append(el("div", { class: "goal-amt" }, fmt(saved), " ", el("small", null, `· faltam ${fmt(Math.max(0, g.target - saved))}`)));
+    const bar = el("div", { class: "bar" }, el("i"));
+    card.append(bar);
+    requestAnimationFrame(() => { bar.firstChild.style.width = pct + "%"; });
+    card.append(el("div", { class: "stats" }, el("span", null, el("b", null, `${Math.round(pct)}%`), " da meta"), el("span", null, `${g.deposits.length} depósito${g.deposits.length === 1 ? "" : "s"}`)));
+
+    const input = el("input", { type: "number", min: "0.01", step: "0.01", placeholder: "Valor do depósito", inputmode: "decimal", id: "dep-" + g.id });
+    const add = (v) => {
+      const amount = Number(v);
+      if (!amount || amount <= 0) { toast("Digite um valor maior que zero"); return; }
+      g.deposits.push({ id: uid(), amount, date: today() });
+      save(); render(); toast(`${fmt(amount)} guardado em ${g.name}`);
+      if (goalSaved(g) >= g.target && saved < g.target) { confetti(); toast(`Meta "${g.name}" alcançada! 🎉`); }
+    };
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") add(input.value); });
+    card.append(el("div", { class: "deposit-row" }, input, el("button", { class: "btn primary", onclick: () => add(input.value) }, "Depositar")));
+    const quick = el("div", { class: "quick" });
+    [10, 20, 50, 100].forEach((v) => quick.append(el("button", { onclick: () => add(v) }, "+ " + fmt(v).replace(",00", ""))));
+    card.append(quick);
+
+    if (g.deposits.length) {
+      const list = el("ul", { class: "history" });
+      g.deposits.slice().reverse().slice(0, 6).forEach((d) => {
+        const [y, m, day] = d.date.split("-");
+        list.append(el("li", null, el("span", null, `${day}/${m}/${y}`), el("b", null, fmt(d.amount)),
+          el("button", { title: "Remover depósito", "aria-label": "Remover depósito", onclick: () => { g.deposits = g.deposits.filter((x) => x.id !== d.id); save(); render(); } }, "×")));
+      });
+      card.append(list);
+    }
+    card.append(el("div", { class: "actions" },
+      el("button", { class: "btn ghost", onclick: () => { const n = prompt("Novo valor da meta (R$):", g.target); const v = Number(n); if (v > 0) { g.target = v; save(); render(); } } }, "Ajustar meta"),
+      el("button", { class: "btn danger", onclick: () => { if (confirm(`Excluir a meta "${g.name}"?`)) { state.goals = state.goals.filter((x) => x.id !== g.id); save(); render(); } } }, "Excluir")));
+    return card;
+  }
+
+  function goalAdder() {
+    const d = el("details", { class: "adder" });
+    d.append(el("summary", null, el("span", { class: "btn big" }, "＋ Criar nova meta")));
+    let color = "lilac";
+    const name = el("input", { id: "goalName", placeholder: "Ex.: Viagem para a praia", maxlength: "40" });
+    const target = el("input", { id: "goalTarget", type: "number", min: "1", step: "0.01", placeholder: "Ex.: 2500", inputmode: "decimal" });
+    const swatches = el("div", { class: "swatches" });
+    COLORS.forEach((k) => swatches.append(el("button", { type: "button", class: "sw " + k, "aria-label": k, "aria-pressed": String(color === k), onclick: () => { color = k; swatches.querySelectorAll(".sw").forEach((s) => s.setAttribute("aria-pressed", String(s.classList.contains(k)))); } })));
+    const form = el("div", { class: "card form" },
+      el("div", { class: "field" }, el("label", { for: "goalName" }, "Nome da meta"), name),
+      el("div", { class: "field" }, el("label", { for: "goalTarget" }, "Quanto quer juntar (R$)"), target),
+      el("div", { class: "field" }, el("label", null, "Cor"), swatches),
+      el("button", { class: "btn primary big", onclick: () => {
+        const v = Number(target.value);
+        if (!v || v <= 0) { toast("Informe o valor da meta"); return; }
+        state.goals.push({ id: uid(), name: name.value.trim() || "Nova meta", target: v, color, deposits: [] });
+        save(); render(); toast("Meta criada!");
+      } }, "Criar meta"));
+    d.append(form);
+    return d;
+  }
+
+  // ---------- Tabs ----------
+  document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => { state.tab = t.dataset.tab; save(); render(); }));
+
+  // ---------- Toast + confetti ----------
+  const toastEl = document.getElementById("toast"); let toastT;
+  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove("show"), 2200); }
+
+  const canvas = document.getElementById("confetti"), ctx = canvas.getContext("2d");
+  function confetti() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    canvas.width = innerWidth; canvas.height = innerHeight;
+    const cs = getComputedStyle(document.documentElement);
+    const palette = ["--pink-deep", "--mint-deep", "--butter-deep", "--lilac-deep", "--sky-deep"].map((v) => cs.getPropertyValue(v).trim());
+    const bits = Array.from({ length: 140 }, () => ({ x: Math.random() * canvas.width, y: -20 - Math.random() * canvas.height * 0.5, r: 4 + Math.random() * 5, c: palette[Math.floor(Math.random() * palette.length)], vy: 2 + Math.random() * 3, vx: -1 + Math.random() * 2, a: Math.random() * Math.PI, va: -0.1 + Math.random() * 0.2 }));
+    let frames = 0;
+    (function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      bits.forEach((b) => { b.x += b.vx; b.y += b.vy; b.a += b.va; ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.a); ctx.fillStyle = b.c; ctx.fillRect(-b.r, -b.r / 2, b.r * 2, b.r); ctx.restore(); });
+      if (++frames < 220) requestAnimationFrame(tick); else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    })();
+  }
+
+  // ---------- Boot ----------
+  function start(hot) {
+    if (hot && hot.state && hot.state.challenges) state = hot.state; else loadLocal();
+    render();
+    connectDb();
+  }
+  const hotApi = window.claude && window.claude.hot;
+  if (hotApi && typeof hotApi.snapshot === "function") hotApi.snapshot(() => ({ state }));
+  if (hotApi && typeof hotApi.ready === "function") hotApi.ready(start); else start((hotApi && hotApi.data) || {});
+})();
+</script>
