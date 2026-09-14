@@ -180,6 +180,9 @@
   .btn.danger { color: var(--pink-deep); background: transparent; }
   .btn:disabled { opacity: 0.5; cursor: default; }
   .btn.big { width: 100%; justify-content: center; padding: 14px; font-size: 16px; font-family: "Fredoka", sans-serif; }
+  .btn.confirm-yes { background: var(--pink-deep); color: #fff; }
+  .confirm-msg { flex-basis: 100%; font-weight: 700; font-size: 14px; }
+  .inline-input { flex: 1 1 140px; min-width: 0; border: 1.5px solid var(--line); background: var(--card-2); border-radius: 999px; padding: 9px 14px; }
 
   .next-hint { margin-top: 12px; padding: 12px 14px; border-radius: 16px; background: var(--card-2); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .next-hint .n { font-family: "Fredoka", sans-serif; font-size: 18px; }
@@ -452,8 +455,8 @@
     const actions = el("div", { class: "actions" });
     const remaining = c.count - doneCount;
     actions.append(el("button", { class: "btn", disabled: remaining ? null : "", onclick: () => raffle(c) }, "🎲 Sortear um número"));
-    actions.append(el("button", { class: "btn ghost", onclick: () => rename(c) }, "Renomear"));
-    actions.append(el("button", { class: "btn danger", onclick: () => removeChallenge(c) }, "Excluir"));
+    actions.append(el("button", { class: "btn ghost", onclick: () => rename(c, actions) }, "Renomear"));
+    actions.append(el("button", { class: "btn danger", onclick: () => removeChallenge(c, actions) }, "Excluir"));
     card.append(actions);
     return card;
   }
@@ -526,13 +529,36 @@
     c.done[pick] = today(); save(); render(); afterMark(c, pick);
     toast(`Sorteado: nº ${pick} · deposite ${fmt(amountOf(c, pick))}`);
   }
-  function rename(c) {
-    const n = prompt("Novo nome do desafio:", c.name);
-    if (n && n.trim()) { c.name = n.trim().slice(0, 40); save(); render(); }
+  // Browser dialogs (prompt/confirm) are blocked inside the artifact frame,
+  // so confirmations and edits happen inline, replacing the card's action row.
+  function askConfirm(row, message, onYes) {
+    const restore = [...row.childNodes];
+    row.replaceChildren(
+      el("span", { class: "confirm-msg" }, message),
+      el("button", { class: "btn confirm-yes", onclick: onYes }, "Sim, excluir"),
+      el("button", { class: "btn ghost", onclick: () => row.replaceChildren(...restore) }, "Cancelar"));
+    row.querySelector(".confirm-yes").focus();
   }
-  function removeChallenge(c) {
-    if (!confirm(`Excluir "${c.name}"? Os depósitos marcados serão apagados.`)) return;
-    state.challenges = state.challenges.filter((x) => x.id !== c.id); save(); render();
+  function askValue(row, label, initial, type, onSave) {
+    const restore = [...row.childNodes];
+    const input = el("input", { class: "inline-input", type, value: initial, "aria-label": label,
+      step: type === "number" ? "0.01" : null, min: type === "number" ? "0.01" : null, maxlength: type === "text" ? "40" : null, inputmode: type === "number" ? "decimal" : null });
+    const commit = () => onSave(input.value);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") commit(); if (e.key === "Escape") row.replaceChildren(...restore); });
+    row.replaceChildren(
+      el("span", { class: "confirm-msg" }, label),
+      input,
+      el("button", { class: "btn primary", onclick: commit }, "Salvar"),
+      el("button", { class: "btn ghost", onclick: () => row.replaceChildren(...restore) }, "Cancelar"));
+    input.focus(); input.select();
+  }
+  function rename(c, row) {
+    askValue(row, "Novo nome", c.name, "text", (v) => { if (v && v.trim()) { c.name = v.trim().slice(0, 40); save(); render(); toast("Nome atualizado"); } });
+  }
+  function removeChallenge(c, row) {
+    askConfirm(row, `Excluir "${c.name}"? Os depósitos marcados serão apagados.`, () => {
+      state.challenges = state.challenges.filter((x) => x.id !== c.id); save(); render(); toast("Desafio excluído");
+    });
   }
 
   // ---------- Goals ----------
@@ -579,9 +605,15 @@
       });
       card.append(list);
     }
-    card.append(el("div", { class: "actions" },
-      el("button", { class: "btn ghost", onclick: () => { const n = prompt("Novo valor da meta (R$):", g.target); const v = Number(n); if (v > 0) { g.target = v; save(); render(); } } }, "Ajustar meta"),
-      el("button", { class: "btn danger", onclick: () => { if (confirm(`Excluir a meta "${g.name}"?`)) { state.goals = state.goals.filter((x) => x.id !== g.id); save(); render(); } } }, "Excluir")));
+    const gActions = el("div", { class: "actions" });
+    gActions.append(
+      el("button", { class: "btn ghost", onclick: () => askValue(gActions, "Novo valor da meta (R$)", g.target, "number", (v) => {
+        const n = Number(v); if (n > 0) { g.target = n; save(); render(); toast("Meta ajustada"); } else toast("Informe um valor maior que zero");
+      }) }, "Ajustar meta"),
+      el("button", { class: "btn danger", onclick: () => askConfirm(gActions, `Excluir a meta "${g.name}"?`, () => {
+        state.goals = state.goals.filter((x) => x.id !== g.id); save(); render(); toast("Meta excluída");
+      }) }, "Excluir"));
+    card.append(gActions);
     return card;
   }
 
