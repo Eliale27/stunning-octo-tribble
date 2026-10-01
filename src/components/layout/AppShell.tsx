@@ -2,49 +2,54 @@ import { NavLink, useOutlet, useLocation, Navigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import {
   Home, BookOpen, CalendarDays, CheckSquare, FileText, Timer, RefreshCw, BarChart3, Trophy, Settings,
-  PanelLeftClose, PanelLeftOpen, Play, Pause, Menu, X, LogOut,
+  PanelLeftClose, PanelLeftOpen, Play, Pause, Menu, X, LogOut, CircleHelp,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Logo, LogoMark } from '@/components/Logo'
 import { Toasts } from '@/components/ui/Toasts'
+import { Tour } from '@/components/ui/Tour'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { useT } from '@/i18n'
 import { useStore } from '@/store/useStore'
 import { cn, levelFor, streak } from '@/lib/utils'
-import { fmtClock, useFocusTicker } from '@/lib/useFocusTicker'
+import { fmtClock, useFocusAlarm, useFocusTicker } from '@/lib/useFocusTicker'
 
+// labels are translation keys under `app.nav.*` / `app.mobileNav.*`
 const nav = [
-  { to: '/app', label: 'Início', icon: Home, end: true },
-  { to: '/app/materias', label: 'Minhas matérias', icon: BookOpen },
-  { to: '/app/planejamento', label: 'Planejamento', icon: CalendarDays },
-  { to: '/app/tarefas', label: 'Tarefas', icon: CheckSquare },
-  { to: '/app/anotacoes', label: 'Anotações', icon: FileText },
-  { to: '/app/foco', label: 'Foco', icon: Timer },
-  { to: '/app/revisao', label: 'Revisão', icon: RefreshCw },
-  { to: '/app/progresso', label: 'Meu progresso', icon: BarChart3 },
-  { to: '/app/conquistas', label: 'Conquistas', icon: Trophy },
-  { to: '/app/configuracoes', label: 'Configurações', icon: Settings },
+  { to: '/app', label: 'app.nav.home', icon: Home, end: true },
+  { to: '/app/materias', label: 'app.nav.subjects', icon: BookOpen },
+  { to: '/app/planejamento', label: 'app.nav.planner', icon: CalendarDays },
+  { to: '/app/tarefas', label: 'app.nav.tasks', icon: CheckSquare },
+  { to: '/app/anotacoes', label: 'app.nav.notes', icon: FileText },
+  { to: '/app/foco', label: 'app.nav.focus', icon: Timer },
+  { to: '/app/revisao', label: 'app.nav.review', icon: RefreshCw },
+  { to: '/app/progresso', label: 'app.nav.progress', icon: BarChart3 },
+  { to: '/app/conquistas', label: 'app.nav.achievements', icon: Trophy },
+  { to: '/app/configuracoes', label: 'app.nav.settings', icon: Settings },
 ]
 const mobileNav = [
-  { ...nav[0], short: 'Início' }, { ...nav[3], short: 'Tarefas' }, { ...nav[5], short: 'Foco' }, { ...nav[2], short: 'Plano' }, { ...nav[7], short: 'Progresso' },
+  { ...nav[0], short: 'app.mobileNav.home' }, { ...nav[3], short: 'app.mobileNav.tasks' }, { ...nav[5], short: 'app.mobileNav.focus' }, { ...nav[2], short: 'app.mobileNav.planner' }, { ...nav[7], short: 'app.mobileNav.progress' },
 ]
 
 function MiniTimer({ collapsed }: { collapsed: boolean }) {
-  const t = useFocusTicker()
+  const tk = useFocusTicker()
+  const t = useT()
   const pause = useStore(s => s.pauseFocus)
   const resume = useStore(s => s.resumeFocus)
-  const active = t.running || t.remaining !== t.duration
+  const active = tk.running || tk.remaining !== tk.duration
   if (!active) return null
   return (
     <NavLink to="/app/foco" className={cn('card mx-3 mb-3 flex items-center gap-3 p-3 transition hover:shadow-lift', collapsed && 'mx-2 justify-center p-2')}>
-      <div className={cn('relative grid h-9 w-9 place-items-center rounded-full', t.mode === 'focus' ? 'bg-sage-soft' : 'bg-sky-soft')}>
-        <span className={cn('absolute inset-0 rounded-full', t.running && 'animate-ping opacity-30', t.mode === 'focus' ? 'bg-sage' : 'bg-sky')} style={{ animationDuration: '2.5s' }} />
-        <button onClick={(e) => { e.preventDefault(); t.running ? pause() : resume() }} className="relative z-10 grid h-9 w-9 place-items-center" aria-label={t.running ? 'Pausar' : 'Continuar'}>
-          {t.running ? <Pause size={14} /> : <Play size={14} />}
+      <div className={cn('relative grid h-9 w-9 place-items-center rounded-full', tk.mode === 'focus' ? 'bg-sage-soft' : 'bg-sky-soft')}>
+        <span className={cn('absolute inset-0 rounded-full', tk.running && 'animate-ping opacity-30', tk.mode === 'focus' ? 'bg-sage' : 'bg-sky')} style={{ animationDuration: '2.5s' }} />
+        <button onClick={(e) => { e.preventDefault(); tk.running ? pause() : resume() }} className="relative z-10 grid h-9 w-9 place-items-center" aria-label={tk.running ? t('app.timer.pause') : t('app.timer.resume')}>
+          {tk.running ? <Pause size={14} /> : <Play size={14} />}
         </button>
       </div>
       {!collapsed && (
         <div className="min-w-0">
-          <p className="text-sm font-bold tabular-nums">{fmtClock(t.remaining)}</p>
-          <p className="truncate text-[11px] text-muted">{t.mode === 'focus' ? 'Em foco' : 'Pausa'}</p>
+          <p className="text-sm font-bold tabular-nums">{fmtClock(tk.remaining)}</p>
+          <p className="truncate text-[11px] text-muted">{tk.mode === 'focus' ? t('app.timer.focusing') : t('app.timer.break')}</p>
         </div>
       )}
     </NavLink>
@@ -55,6 +60,8 @@ function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavig
   const settings = useStore(s => s.settings)
   const sessions = useStore(s => s.sessions)
   const logout = useStore(s => s.logout)
+  const startTour = useStore(s => s.startTour)
+  const t = useT()
   const total = sessions.reduce((a, s) => a + s.minutes, 0)
   const lvl = levelFor(total)
   const st = streak(sessions)
@@ -65,19 +72,20 @@ function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavig
       </div>
       <nav className="flex-1 space-y-0.5 px-3">
         {nav.map(item => (
-          <NavLink key={item.to} to={item.to} end={item.end} onClick={onNavigate} title={collapsed ? item.label : undefined}
+          <NavLink key={item.to} to={item.to} end={item.end} onClick={onNavigate} title={collapsed ? t(item.label) : undefined}
             className={({ isActive }) => cn(
               'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all',
               isActive ? 'bg-beige text-ink' : 'text-ink-2 hover:bg-cream-2 hover:text-ink',
               collapsed && 'justify-center px-0',
             )}>
             <item.icon size={18} className="shrink-0 opacity-80 transition group-hover:opacity-100" />
-            {!collapsed && <span>{item.label}</span>}
+            {!collapsed && <span>{t(item.label)}</span>}
           </NavLink>
         ))}
       </nav>
       <MiniTimer collapsed={collapsed} />
       <div className={cn('border-t border-line p-3', collapsed && 'flex flex-col items-center')}>
+        {!collapsed && <div className="mb-2 px-2"><LanguageSwitcher /></div>}
         <div className={cn('flex items-center gap-3 rounded-xl p-2', !collapsed && 'hover:bg-cream-2')}>
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-lilac-soft text-sm font-bold text-lilac-ink">
             {settings.name.slice(0, 1).toUpperCase()}
@@ -85,10 +93,11 @@ function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavig
           {!collapsed && (
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold">{settings.name}</p>
-              <p className="truncate text-[11px] text-muted">{lvl.current.emoji} {lvl.current.name} · 🔥 {st} dias</p>
+              <p className="truncate text-[11px] text-muted">{lvl.current.emoji} {t(lvl.current.nameKey)} · 🔥 {t('common.streakDays', { count: st })}</p>
             </div>
           )}
-          {!collapsed && <button onClick={logout} className="btn btn-ghost h-8 w-8 rounded-full p-0 text-muted" title="Sair"><LogOut size={15} /></button>}
+          {!collapsed && <button onClick={() => { onNavigate?.(); startTour() }} className="btn btn-ghost h-8 w-8 rounded-full p-0 text-muted" title={t('app.aria.replayTour')}><CircleHelp size={15} /></button>}
+          {!collapsed && <button onClick={logout} className="btn btn-ghost h-8 w-8 rounded-full p-0 text-muted" title={t('app.aria.logout')}><LogOut size={15} /></button>}
         </div>
       </div>
     </div>
@@ -102,18 +111,30 @@ export default function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
   const outlet = useOutlet()
+  const tourSeen = useStore(s => s.tourSeen)
+  const startTour = useStore(s => s.startTour)
+  const t = useT()
   useFocusTicker()
+  useFocusAlarm()
+
+  // first visit: open the guided tour once the app has settled
+  useEffect(() => {
+    if (!loggedIn || tourSeen) return
+    const id = setTimeout(startTour, 700)
+    return () => clearTimeout(id)
+  }, [loggedIn, tourSeen, startTour])
 
   if (!loggedIn) return <Navigate to="/entrar" replace />
 
   return (
     <div className="min-h-screen bg-cream">
       <Toasts />
+      <Tour />
       {/* Desktop sidebar */}
       <aside className={cn('fixed inset-y-0 left-0 z-30 hidden border-r border-line bg-cream/80 backdrop-blur-md transition-[width] duration-300 md:block', collapsed ? 'w-[76px]' : 'w-[248px]')}>
         <SidebarContent collapsed={collapsed} />
         <button onClick={toggle} className="absolute -right-3 top-6 grid h-6 w-6 place-items-center rounded-full border border-line bg-surface text-muted shadow-soft hover:text-ink"
-          aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}>
+          aria-label={collapsed ? t('app.aria.expandMenu') : t('app.aria.collapseMenu')}>
           {collapsed ? <PanelLeftOpen size={13} /> : <PanelLeftClose size={13} />}
         </button>
       </aside>
@@ -121,7 +142,11 @@ export default function AppShell() {
       {/* Mobile top bar */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-cream/85 px-4 py-3 backdrop-blur-md md:hidden">
         <Logo />
-        <button onClick={() => setMobileOpen(true)} className="btn btn-ghost h-10 w-10 rounded-full p-0" aria-label="Abrir menu"><Menu size={20} /></button>
+        <div className="flex items-center gap-1">
+          <LanguageSwitcher tour={false} className="mr-1" />
+          <button onClick={startTour} className="btn btn-ghost h-10 w-10 rounded-full p-0 text-muted" aria-label={t('app.aria.replayTour')}><CircleHelp size={19} /></button>
+          <button onClick={() => setMobileOpen(true)} className="btn btn-ghost h-10 w-10 rounded-full p-0" aria-label={t('app.aria.openMenu')}><Menu size={20} /></button>
+        </div>
       </header>
 
       {/* Mobile drawer */}
@@ -130,7 +155,7 @@ export default function AppShell() {
           <motion.div className="fixed inset-0 z-40 md:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="absolute inset-0 bg-ink/25" onClick={() => setMobileOpen(false)} />
             <motion.div className="absolute inset-y-0 left-0 w-[280px] bg-cream shadow-lift" initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }} transition={{ type: 'spring', stiffness: 380, damping: 36 }}>
-              <button onClick={() => setMobileOpen(false)} className="absolute right-3 top-4 btn btn-ghost h-9 w-9 rounded-full p-0" aria-label="Fechar"><X size={18} /></button>
+              <button onClick={() => setMobileOpen(false)} className="absolute right-3 top-4 btn btn-ghost h-9 w-9 rounded-full p-0" aria-label={t('app.aria.close')}><X size={18} /></button>
               <SidebarContent collapsed={false} onNavigate={() => setMobileOpen(false)} />
             </motion.div>
           </motion.div>
@@ -157,7 +182,7 @@ export default function AppShell() {
               {({ isActive }) => (
                 <>
                   <span className={cn('grid h-8 w-12 place-items-center rounded-full transition', isActive && 'bg-beige')}><item.icon size={19} /></span>
-                  {item.short}
+                  {t(item.short)}
                 </>
               )}
             </NavLink>

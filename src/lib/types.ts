@@ -90,6 +90,7 @@ export interface Settings {
   breakMinutes: number
   longBreakMinutes: number
   soundEnabled: boolean
+  alertVolume: number // 0..1
   weekStartsMonday: boolean
 }
 

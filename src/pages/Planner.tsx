@@ -6,7 +6,6 @@ import { DndContext, DragOverlay, PointerSensor, TouchSensor, useDraggable, useD
 import {
   addDays, addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday, parseISO, startOfMonth, startOfWeek, subMonths,
 } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 import { useStore, goalProgress } from '@/store/useStore'
 import { PageHeader, Segmented, Select, SubjectChip } from '@/components/ui/Bits'
 import { Modal } from '@/components/ui/Modal'
@@ -17,6 +16,7 @@ import { TaskRow } from '@/components/tasks/TaskRow'
 import { TaskList } from './Tasks'
 import { cn, colorClasses, fmtMinutes, priorityMeta, todayISO, fmtDate } from '@/lib/utils'
 import type { Goal, GoalPeriod, GoalUnit, Task, TaskStatus } from '@/lib/types'
+import { useT, useLang } from '@/i18n'
 
 type View = 'calendario' | 'lista' | 'kanban' | 'semana' | 'metas'
 
@@ -44,6 +44,7 @@ function DragCard({ task, overlay = false }: { task: Task; overlay?: boolean }) 
 }
 
 function Column({ id, title, sub, tasks, accent, onAdd }: { id: string; title: React.ReactNode; sub?: string; tasks: Task[]; accent?: string; onAdd?: () => void }) {
+  const t = useT()
   const { setNodeRef, isOver } = useDroppable({ id })
   return (
     <div ref={setNodeRef} className={cn('flex min-h-[110px] w-full flex-col rounded-2xl lg:min-h-[220px] border border-line bg-cream-2/50 p-2.5 transition', isOver && 'bg-sage-soft/50 ring-2 ring-sage/40')}>
@@ -56,7 +57,7 @@ function Column({ id, title, sub, tasks, accent, onAdd }: { id: string; title: R
       </div>
       <div className="flex flex-1 flex-col gap-2">
         {tasks.map(t => <DragCard key={t.id} task={t} />)}
-        {onAdd && <button onClick={onAdd} className="mt-auto flex items-center justify-center gap-1 rounded-xl border border-dashed border-line-2 py-2 text-xs font-semibold text-muted hover:border-sage hover:text-ink"><Plus size={13} /> Adicionar</button>}
+        {onAdd && <button onClick={onAdd} className="mt-auto flex items-center justify-center gap-1 rounded-xl border border-dashed border-line-2 py-2 text-xs font-semibold text-muted hover:border-sage hover:text-ink"><Plus size={13} /> {t('common.actions.add')}</button>}
       </div>
     </div>
   )
@@ -71,11 +72,12 @@ function useDnd(onDrop: (taskId: string, target: string) => void) {
 
 /* ---------- Kanban ---------- */
 function Kanban({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
+  const t = useT()
   const tasks = useStore(s => s.tasks)
   const move = useStore(s => s.moveTask)
   const dnd = useDnd((id, target) => move(id, target as TaskStatus))
   const cols: Array<{ id: TaskStatus; title: string; accent: string }> = [
-    { id: 'todo', title: 'A fazer', accent: 'text-muted' }, { id: 'doing', title: 'Em andamento', accent: 'text-sky-ink' }, { id: 'done', title: 'Concluído', accent: 'text-sage-ink' },
+    { id: 'todo', title: t('common.status.todo'), accent: 'text-muted' }, { id: 'doing', title: t('common.status.in_progress'), accent: 'text-sky-ink' }, { id: 'done', title: t('common.status.done'), accent: 'text-sage-ink' },
   ]
   return (
     <DndContext sensors={dnd.sensors} onDragStart={dnd.onDragStart} onDragEnd={dnd.onDragEnd}>
@@ -89,6 +91,8 @@ function Kanban({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
 
 /* ---------- Week ---------- */
 function Week({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
+  const t = useT()
+  const { dfLocale } = useLang()
   const tasks = useStore(s => s.tasks)
   const update = useStore(s => s.updateTask)
   const [offset, setOffset] = useState(0)
@@ -99,26 +103,28 @@ function Week({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
     <div>
       <div className="mb-3 flex items-center justify-between">
         <button onClick={() => setOffset(o => o - 1)} className="btn btn-ghost h-9 w-9 p-0"><ChevronLeft size={18} /></button>
-        <p className="text-sm font-bold">{format(start, "d 'de' MMM", { locale: ptBR })} — {format(addDays(start, 6), "d 'de' MMM", { locale: ptBR })}{offset !== 0 && <button onClick={() => setOffset(0)} className="ml-2 text-xs font-semibold text-muted underline">hoje</button>}</p>
+        <p className="text-sm font-bold">{format(start, t('common.fmt.dayMonth'), { locale: dfLocale })} — {format(addDays(start, 6), t('common.fmt.dayMonth'), { locale: dfLocale })}{offset !== 0 && <button onClick={() => setOffset(0)} className="ml-2 text-xs font-semibold text-muted underline">{t('planner.week.today')}</button>}</p>
         <button onClick={() => setOffset(o => o + 1)} className="btn btn-ghost h-9 w-9 p-0"><ChevronRight size={18} /></button>
       </div>
       <DndContext sensors={dnd.sensors} onDragStart={dnd.onDragStart} onDragEnd={dnd.onDragEnd}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-7 lg:gap-2">
           {days.map(d => {
             const iso = format(d, 'yyyy-MM-dd')
-            return <Column key={iso} id={iso} title={<span className={cn(isToday(d) && 'text-sage-ink')}>{format(d, 'EEE', { locale: ptBR })}</span>} sub={format(d, 'd MMM', { locale: ptBR })}
+            return <Column key={iso} id={iso} title={<span className={cn(isToday(d) && 'text-sage-ink')}>{format(d, 'EEE', { locale: dfLocale })}</span>} sub={format(d, t('planner.fmt.weekDaySub'), { locale: dfLocale })}
               tasks={tasks.filter(t => t.date === iso)} onAdd={() => onAdd({ date: iso })} />
           })}
         </div>
         <DragOverlay>{dnd.active && <DragCard task={dnd.active} overlay />}</DragOverlay>
       </DndContext>
-      <p className="mt-3 text-xs text-muted">Arraste as tarefas entre os dias para reorganizar sua semana.</p>
+      <p className="mt-3 text-xs text-muted">{t('planner.week.hint')}</p>
     </div>
   )
 }
 
 /* ---------- Calendar ---------- */
 function Calendar({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
+  const t = useT()
+  const { dfLocale } = useLang()
   const tasks = useStore(s => s.tasks)
   const subjects = useStore(s => s.subjects)
   const [month, setMonth] = useState(new Date())
@@ -130,11 +136,11 @@ function Calendar({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
       <div className="card p-4 lg:col-span-2">
         <div className="mb-3 flex items-center justify-between">
           <button onClick={() => setMonth(m => subMonths(m, 1))} className="btn btn-ghost h-9 w-9 p-0"><ChevronLeft size={18} /></button>
-          <p className="text-base font-bold capitalize">{format(month, 'MMMM yyyy', { locale: ptBR })}</p>
+          <p className="text-base font-bold capitalize">{format(month, t('common.fmt.monthYear'), { locale: dfLocale })}</p>
           <button onClick={() => setMonth(m => addMonths(m, 1))} className="btn btn-ghost h-9 w-9 p-0"><ChevronRight size={18} /></button>
         </div>
         <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-bold uppercase tracking-wider text-muted">
-          {['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((d, i) => <div key={i} className="py-1">{d}</div>)}
+          {[0, 1, 2, 3, 4, 5, 6].map(i => <div key={i} className="py-1">{t(`planner.calendar.weekdays.${i}`)}</div>)}
         </div>
         <div className="grid grid-cols-7 gap-1">
           {days.map(d => {
@@ -159,10 +165,10 @@ function Calendar({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
       </div>
       <div className="card p-4">
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm font-bold capitalize">{isSameDay(parseISO(selected), new Date()) ? 'Hoje' : fmtDate(selected, "EEEE, d 'de' MMM")}</p>
-          <button onClick={() => onAdd({ date: selected })} className="btn btn-soft h-8 px-2.5 text-xs"><Plus size={13} /> Tarefa</button>
+          <p className="text-sm font-bold capitalize">{isSameDay(parseISO(selected), new Date()) ? t('common.relative.today') : fmtDate(selected, t('planner.fmt.selectedDay'), dfLocale)}</p>
+          <button onClick={() => onAdd({ date: selected })} className="btn btn-soft h-8 px-2.5 text-xs"><Plus size={13} /> {t('planner.calendar.task')}</button>
         </div>
-        {dayTasks.length === 0 ? <p className="text-sm text-muted">Nenhuma tarefa neste dia.</p> : (
+        {dayTasks.length === 0 ? <p className="text-sm text-muted">{t('planner.calendar.empty')}</p> : (
           <div className="space-y-2">{dayTasks.map(t => <TaskRow key={t.id} task={t} compact />)}</div>
         )}
       </div>
@@ -171,11 +177,10 @@ function Calendar({ onAdd }: { onAdd: (p: Partial<Task>) => void }) {
 }
 
 /* ---------- Goals ---------- */
-const unitLabel: Record<GoalUnit, string> = { minutes: 'minutos', questions: 'questões', topics: 'tópicos', sessions: 'sessões' }
-const periodLabel: Record<GoalPeriod, string> = { daily: 'Diária', weekly: 'Semanal', monthly: 'Mensal' }
 const periodColor: Record<GoalPeriod, string> = { daily: 'bg-sky', weekly: 'bg-lilac', monthly: 'bg-rose' }
 
 function GoalForm({ onSubmit }: { onSubmit: (g: Omit<Goal, 'id'>) => void }) {
+  const t = useT()
   const subjects = useStore(s => s.subjects)
   const [title, setTitle] = useState('')
   const [period, setPeriod] = useState<GoalPeriod>('daily')
@@ -183,25 +188,28 @@ function GoalForm({ onSubmit }: { onSubmit: (g: Omit<Goal, 'id'>) => void }) {
   const [target, setTarget] = useState(60)
   const [subjectId, setSubjectId] = useState('')
   const [deadline, setDeadline] = useState('')
-  const suggestion = unit === 'minutes' ? `Estudar ${fmtMinutes(target)} ${period === 'daily' ? 'por dia' : period === 'weekly' ? 'esta semana' : 'este mês'}`
-    : unit === 'questions' ? `Resolver ${target} questões ${period === 'daily' ? 'hoje' : period === 'weekly' ? 'esta semana' : 'este mês'}`
-    : unit === 'topics' ? `Concluir ${target} tópicos${subjectId ? ' de ' + subjects.find(s => s.id === subjectId)?.name : ''}` : `Completar ${target} sessões de foco`
+  const suggestion = unit === 'minutes' ? t(`planner.goals.suggestion.minutes.${period}`, { amount: fmtMinutes(target) })
+    : unit === 'questions' ? t(`planner.goals.suggestion.questions.${period}`, { n: target })
+    : unit === 'topics' ? (subjectId ? t('planner.goals.suggestion.topicsOf', { n: target, subject: subjects.find(s => s.id === subjectId)?.name }) : t('planner.goals.suggestion.topics', { n: target }))
+    : t('planner.goals.suggestion.sessions', { n: target })
   return (
     <form className="space-y-4" onSubmit={e => { e.preventDefault(); onSubmit({ title: title.trim() || suggestion, period, unit, target, subjectId: subjectId || undefined, deadline: deadline || undefined }) }}>
-      <div><label className="label">Título</label><input className="input" placeholder={suggestion} value={title} onChange={e => setTitle(e.target.value)} /></div>
+      <div><label className="label">{t('planner.goals.form.title')}</label><input className="input" placeholder={suggestion} value={title} onChange={e => setTitle(e.target.value)} /></div>
       <div className="grid grid-cols-2 gap-3">
-        <div><label className="label">Período</label><Select value={period} onChange={setPeriod} options={[{ value: 'daily', label: 'Diária' }, { value: 'weekly', label: 'Semanal' }, { value: 'monthly', label: 'Mensal' }]} /></div>
-        <div><label className="label">Medir em</label><Select value={unit} onChange={setUnit} options={[{ value: 'minutes', label: 'Minutos' }, { value: 'questions', label: 'Questões' }, { value: 'sessions', label: 'Sessões' }, { value: 'topics', label: 'Tópicos' }]} /></div>
-        <div><label className="label">Alvo</label><input type="number" min={1} className="input" value={target} onChange={e => setTarget(+e.target.value)} /></div>
-        <div><label className="label">Matéria</label><Select value={subjectId} onChange={setSubjectId} placeholder="Todas" options={subjects.map(s => ({ value: s.id, label: `${s.emoji} ${s.name}` }))} /></div>
-        <div className="col-span-2"><label className="label">Prazo (opcional)</label><input type="date" className="input" value={deadline} onChange={e => setDeadline(e.target.value)} /></div>
+        <div><label className="label">{t('planner.goals.form.period')}</label><Select value={period} onChange={setPeriod} options={[{ value: 'daily', label: t('planner.goals.period.daily') }, { value: 'weekly', label: t('planner.goals.period.weekly') }, { value: 'monthly', label: t('planner.goals.period.monthly') }]} /></div>
+        <div><label className="label">{t('planner.goals.form.measureIn')}</label><Select value={unit} onChange={setUnit} options={[{ value: 'minutes', label: t('planner.goals.unitOptions.minutes') }, { value: 'questions', label: t('planner.goals.unitOptions.questions') }, { value: 'sessions', label: t('planner.goals.unitOptions.sessions') }, { value: 'topics', label: t('planner.goals.unitOptions.topics') }]} /></div>
+        <div><label className="label">{t('planner.goals.form.target')}</label><input type="number" min={1} className="input" value={target} onChange={e => setTarget(+e.target.value)} /></div>
+        <div><label className="label">{t('planner.goals.form.subject')}</label><Select value={subjectId} onChange={setSubjectId} placeholder={t('planner.goals.form.allSubjects')} options={subjects.map(s => ({ value: s.id, label: `${s.emoji} ${s.name}` }))} /></div>
+        <div className="col-span-2"><label className="label">{t('planner.goals.form.deadline')}</label><input type="date" className="input" value={deadline} onChange={e => setDeadline(e.target.value)} /></div>
       </div>
-      <button className="btn btn-primary w-full">Criar meta</button>
+      <button className="btn btn-primary w-full">{t('planner.goals.create')}</button>
     </form>
   )
 }
 
 function Goals() {
+  const t = useT()
+  const { dfLocale } = useLang()
   const goals = useStore(s => s.goals)
   const sessions = useStore(s => s.sessions)
   const subjects = useStore(s => s.subjects)
@@ -210,12 +218,12 @@ function Goals() {
   const byPeriod = (p: GoalPeriod) => goals.filter(g => g.period === p)
   return (
     <div>
-      <div className="mb-4 flex justify-end"><button onClick={() => setOpen(true)} className="btn btn-primary"><Target size={15} /> Nova meta</button></div>
+      <div className="mb-4 flex justify-end"><button onClick={() => setOpen(true)} className="btn btn-primary"><Target size={15} /> {t('planner.goals.newGoal')}</button></div>
       <div className="grid gap-4 md:grid-cols-3">
         {(['daily', 'weekly', 'monthly'] as GoalPeriod[]).map(p => (
           <div key={p} className="card p-4">
-            <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted"><span className={cn('h-2 w-2 rounded-full', periodColor[p])} /> Meta {periodLabel[p].toLowerCase()}</p>
-            {byPeriod(p).length === 0 && <p className="text-sm text-muted">Nenhuma meta {periodLabel[p].toLowerCase()}.</p>}
+            <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted"><span className={cn('h-2 w-2 rounded-full', periodColor[p])} /> {t(`planner.goals.heading.${p}`)}</p>
+            {byPeriod(p).length === 0 && <p className="text-sm text-muted">{t(`planner.goals.empty.${p}`)}</p>}
             <ul className="space-y-4">
               {byPeriod(p).map(g => {
                 const pr = goalProgress(g, sessions, subjects)
@@ -224,7 +232,7 @@ function Goals() {
                     <div className="mb-1.5 flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-sm font-semibold">{pr.pct >= 100 && '✅ '}{g.title}</p>
-                        <p className="text-xs text-muted">{g.unit === 'minutes' ? fmtMinutes(pr.current) : pr.current} de {g.unit === 'minutes' ? fmtMinutes(g.target) : `${g.target} ${unitLabel[g.unit]}`}{g.deadline && ` · até ${fmtDate(g.deadline, 'dd/MM')}`}</p>
+                        <p className="text-xs text-muted">{t('planner.goals.progress', { current: g.unit === 'minutes' ? fmtMinutes(pr.current) : pr.current, target: g.unit === 'minutes' ? fmtMinutes(g.target) : `${g.target} ${t(`planner.goals.units.${g.unit}`)}` })}{g.deadline && t('planner.goals.until', { date: fmtDate(g.deadline, t('planner.fmt.deadline'), dfLocale) })}</p>
                       </div>
                       <button onClick={() => removeGoal(g.id)} className="text-muted opacity-0 transition hover:text-rose-ink group-hover:opacity-100"><Trash2 size={14} /></button>
                     </div>
@@ -236,13 +244,14 @@ function Goals() {
           </div>
         ))}
       </div>
-      <Modal open={open} onClose={() => setOpen(false)} title="Nova meta"><GoalForm onSubmit={g => { addGoal(g); setOpen(false) }} /></Modal>
+      <Modal open={open} onClose={() => setOpen(false)} title={t('planner.goals.newGoal')}><GoalForm onSubmit={g => { addGoal(g); setOpen(false) }} /></Modal>
     </div>
   )
 }
 
 /* ---------- Page ---------- */
 export default function Planner() {
+  const t = useT()
   const [params, setParams] = useSearchParams()
   const view = (params.get('tab') as View) || 'semana'
   const setView = (v: View) => setParams({ tab: v })
@@ -252,11 +261,11 @@ export default function Planner() {
 
   return (
     <div>
-      <PageHeader title="Meu Plano" sub="Organize por dia, semana ou mês. Arraste, solte e ajuste no seu ritmo."
-        action={<button onClick={() => setDraft({})} className="btn btn-primary"><Plus size={16} /> Nova tarefa</button>} />
+      <PageHeader tourId="planner" title={t('planner.title')} sub={t('planner.sub')}
+        action={<button onClick={() => setDraft({})} className="btn btn-primary"><Plus size={16} /> {t('planner.newTask')}</button>} />
       <div className="mb-5 overflow-x-auto">
         <Segmented value={view} onChange={setView} options={[
-          { value: 'calendario', label: '📅 Calendário' }, { value: 'lista', label: '📋 Lista' }, { value: 'kanban', label: '🗂️ Kanban' }, { value: 'semana', label: '📆 Semana' }, { value: 'metas', label: '🎯 Metas' },
+          { value: 'calendario', label: t('planner.views.calendario') }, { value: 'lista', label: t('planner.views.lista') }, { value: 'kanban', label: t('planner.views.kanban') }, { value: 'semana', label: t('planner.views.semana') }, { value: 'metas', label: t('planner.views.metas') },
         ]} />
       </div>
       {view === 'calendario' && <Calendar onAdd={setDraft} />}
@@ -265,7 +274,7 @@ export default function Planner() {
       {view === 'semana' && <Week onAdd={setDraft} />}
       {view === 'metas' && <Goals />}
 
-      <Modal open={draft !== null} onClose={() => setDraft(null)} title="Nova tarefa">
+      <Modal open={draft !== null} onClose={() => setDraft(null)} title={t('planner.newTask')}>
         {draft && <TaskForm initial={draft} onSubmit={d => { addTask({ ...d, status: draft.status ?? d.status }); setDraft(null) }} />}
       </Modal>
       <div className="mt-6 flex flex-wrap gap-2 text-xs text-muted">

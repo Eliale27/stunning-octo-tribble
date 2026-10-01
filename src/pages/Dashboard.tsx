@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/Checkbox'
 import { SubjectChip, Stat } from '@/components/ui/Bits'
 import { dailyQuote, fmtMinutes, greeting, lastNDays, minutesOn, streak, todayISO, reviewInfo, colorClasses, cn, levelFor } from '@/lib/utils'
 import { format, isToday } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { useT, useLang } from '@/i18n'
 
 export default function Dashboard() {
   const settings = useStore(s => s.settings)
@@ -16,6 +16,8 @@ export default function Dashboard() {
   const subjects = useStore(s => s.subjects)
   const goals = useStore(s => s.goals)
   const toggleTask = useStore(s => s.toggleTask)
+  const t = useT()
+  const { dfLocale } = useLang()
 
   const today = new Date()
   const minutesToday = minutesOn(sessions, today)
@@ -36,20 +38,20 @@ export default function Dashboard() {
       {/* Greeting */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted">{format(today, "EEEE, d 'de' MMMM", { locale: ptBR })}</p>
-          <h1 className="page-title mt-1">{greeting(settings.name)}</h1>
-          <p className="page-sub">Pequenos passos todos os dias levam você mais longe.</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted">{format(today, t('common.fmt.weekdayDayMonth'), { locale: dfLocale })}</p>
+          <h1 className="page-title mt-1">{greeting(settings.name, t)}</h1>
+          <p className="page-sub">{t('dashboard.tagline')}</p>
         </div>
-        <Link to="/app/foco" className="btn btn-primary"><Play size={16} /> Iniciar sessão de foco</Link>
+        <Link to="/app/foco" className="btn btn-primary"><Play size={16} /> {t('dashboard.startFocus')}</Link>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-        <Stat icon="📚" label="Estudos de hoje" value={sessionsToday} hint={sessionsToday === 1 ? 'sessão' : 'sessões'} tone="bg-sky-soft" />
-        <Stat icon="⏱️" label="Tempo estudado" value={fmtMinutes(minutesToday)} hint="hoje" tone="bg-sage-soft" />
-        <Stat icon="🎯" label="Meta diária" value={fmtMinutes(settings.dailyGoalMinutes)} hint={`${pct}% concluído`} tone="bg-butter-soft" />
-        <Stat icon="🔥" label="Sequência" value={`${st} dias`} hint="seguidos" tone="bg-peach-soft" />
-        <Stat icon="✅" label="Tarefas" value={`${doneToday}/${todayTasks.length}`} hint="concluídas hoje" tone="bg-lilac-soft" className="col-span-2 md:col-span-1" />
+        <Stat icon="📚" label={t('dashboard.stats.studiesToday')} value={sessionsToday} hint={t('dashboard.stats.session', { count: sessionsToday })} tone="bg-sky-soft" />
+        <Stat icon="⏱️" label={t('dashboard.stats.timeStudied')} value={fmtMinutes(minutesToday)} hint={t('dashboard.stats.today')} tone="bg-sage-soft" />
+        <Stat icon="🎯" label={t('dashboard.stats.dailyGoal')} value={fmtMinutes(settings.dailyGoalMinutes)} hint={t('dashboard.stats.pctDone', { pct })} tone="bg-butter-soft" />
+        <Stat icon="🔥" label={t('dashboard.stats.streak')} value={t('common.streakDays', { count: st })} hint={t('dashboard.stats.inARow')} tone="bg-peach-soft" />
+        <Stat icon="✅" label={t('dashboard.stats.tasks')} value={`${doneToday}/${todayTasks.length}`} hint={t('dashboard.stats.doneToday')} tone="bg-lilac-soft" className="col-span-2 md:col-span-1" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -61,25 +63,25 @@ export default function Dashboard() {
             <ProgressRing value={pct} size={150} stroke={13}>
               <div className="text-center">
                 <p className="text-3xl font-extrabold tracking-tight">{pct}%</p>
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">da meta</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">{t('dashboard.progress.ofGoal')}</p>
               </div>
             </ProgressRing>
             <div className="flex-1 text-center sm:text-left">
-              <h2 className="text-xl font-bold">Seu progresso hoje</h2>
+              <h2 className="text-xl font-bold">{t('dashboard.progress.title')}</h2>
               <p className="mt-1 text-muted">
-                {pct >= 100 ? 'Meta do dia concluída. Descanse com orgulho. 🌿'
-                  : `Você está ${pct}% mais perto da sua meta de hoje.`}
+                {pct >= 100 ? t('dashboard.progress.goalDone')
+                  : t('dashboard.progress.closer', { pct })}
               </p>
               <div className="mt-4">
                 <ProgressBar value={pct} height="h-3" />
                 <div className="mt-2 flex justify-between text-xs text-muted">
-                  <span>{fmtMinutes(minutesToday)} estudados</span>
-                  <span>faltam {fmtMinutes(Math.max(0, settings.dailyGoalMinutes - minutesToday))}</span>
+                  <span>{t('dashboard.progress.studied', { time: fmtMinutes(minutesToday) })}</span>
+                  <span>{t('dashboard.progress.remaining', { time: fmtMinutes(Math.max(0, settings.dailyGoalMinutes - minutesToday)) })}</span>
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                <span className="chip bg-cream-2 text-ink-2">{lvl.current.emoji} {lvl.current.name}</span>
-                {lvl.next && <span className="chip bg-cream-2 text-muted">{Math.round(lvl.pct)}% para {lvl.next.emoji} {lvl.next.name}</span>}
+                <span className="chip bg-cream-2 text-ink-2">{lvl.current.emoji} {t(lvl.current.nameKey)}</span>
+                {lvl.next && <span className="chip bg-cream-2 text-muted">{t('dashboard.progress.toNext', { pct: Math.round(lvl.pct), emoji: lvl.next.emoji, name: t(lvl.next.nameKey) })}</span>}
               </div>
             </div>
           </div>
@@ -89,8 +91,8 @@ export default function Dashboard() {
         <motion.div className="card flex flex-col justify-between bg-butter-soft/60 p-6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
           <div className="grid h-10 w-10 place-items-center rounded-xl bg-surface/70"><Sparkles size={18} className="text-butter-ink" /></div>
           <div>
-            <p className="mt-6 text-lg font-bold leading-snug text-ink">“{dailyQuote()}”</p>
-            <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-butter-ink/80">Motivação de hoje</p>
+            <p className="mt-6 text-lg font-bold leading-snug text-ink">“{dailyQuote(t)}”</p>
+            <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-butter-ink/80">{t('dashboard.quote.label')}</p>
           </div>
         </motion.div>
       </div>
@@ -99,22 +101,22 @@ export default function Dashboard() {
         {/* Today's tasks */}
         <div className="card p-5 lg:col-span-2">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="section-title">Tarefas de hoje</h2>
-            <Link to="/app/tarefas" className="text-sm font-semibold text-muted hover:text-ink">Ver todas <ArrowRight size={14} className="inline" /></Link>
+            <h2 className="section-title">{t('dashboard.tasks.title')}</h2>
+            <Link to="/app/tarefas" className="text-sm font-semibold text-muted hover:text-ink">{t('dashboard.tasks.seeAll')} <ArrowRight size={14} className="inline" /></Link>
           </div>
           {todayTasks.length === 0 ? (
-            <p className="text-sm text-muted">Nenhuma tarefa para hoje. Que tal planejar a próxima sessão?</p>
+            <p className="text-sm text-muted">{t('dashboard.tasks.empty')}</p>
           ) : (
             <ul className="divide-y divide-line">
-              {todayTasks.map(t => (
-                <li key={t.id} className="flex items-center gap-3 py-3">
-                  <Checkbox checked={t.status === 'done'} onChange={() => toggleTask(t.id)} />
+              {todayTasks.map(task => (
+                <li key={task.id} className="flex items-center gap-3 py-3">
+                  <Checkbox checked={task.status === 'done'} onChange={() => toggleTask(task.id)} />
                   <div className="min-w-0 flex-1">
-                    <p className={cn('truncate text-sm font-medium transition', t.status === 'done' && 'text-muted line-through')}>{t.title}</p>
-                    {t.subtasks.length > 0 && <p className="text-xs text-muted">{t.subtasks.filter(s => s.done).length}/{t.subtasks.length} subtarefas</p>}
+                    <p className={cn('truncate text-sm font-medium transition', task.status === 'done' && 'text-muted line-through')}>{task.title}</p>
+                    {task.subtasks.length > 0 && <p className="text-xs text-muted">{t('dashboard.tasks.subtasks', { done: task.subtasks.filter(s => s.done).length, total: task.subtasks.length })}</p>}
                   </div>
-                  <SubjectChip id={t.subjectId} size="xs" className="hidden sm:inline-flex" />
-                  {t.estimate && <span className="text-xs text-muted">{fmtMinutes(t.estimate)}</span>}
+                  <SubjectChip id={task.subjectId} size="xs" className="hidden sm:inline-flex" />
+                  {task.estimate && <span className="text-xs text-muted">{fmtMinutes(task.estimate)}</span>}
                 </li>
               ))}
             </ul>
@@ -124,8 +126,8 @@ export default function Dashboard() {
         {/* This week */}
         <div className="card p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="section-title">Esta semana</h2>
-            <Link to="/app/progresso" className="text-sm font-semibold text-muted hover:text-ink">Detalhes</Link>
+            <h2 className="section-title">{t('dashboard.week.title')}</h2>
+            <Link to="/app/progresso" className="text-sm font-semibold text-muted hover:text-ink">{t('dashboard.week.details')}</Link>
           </div>
           <div className="flex h-32 items-end justify-between gap-2">
             {week.map(({ d, m }, i) => (
@@ -134,11 +136,11 @@ export default function Dashboard() {
                   <motion.div className={cn('w-full rounded-lg', isToday(d) ? 'bg-sage' : 'bg-sage-soft')}
                     initial={{ height: 0 }} animate={{ height: `${(m / maxWeek) * 100}%` }} transition={{ delay: i * 0.05, duration: 0.6 }} title={fmtMinutes(m)} />
                 </div>
-                <span className={cn('text-[11px] font-semibold', isToday(d) ? 'text-ink' : 'text-muted')}>{format(d, 'EEEEE', { locale: ptBR }).toUpperCase()}</span>
+                <span className={cn('text-[11px] font-semibold', isToday(d) ? 'text-ink' : 'text-muted')}>{format(d, 'EEEEE', { locale: dfLocale }).toUpperCase()}</span>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-sm text-muted">{fmtMinutes(week.reduce((a, w) => a + w.m, 0))} nos últimos 7 dias</p>
+          <p className="mt-3 text-sm text-muted">{t('dashboard.week.last7', { time: fmtMinutes(week.reduce((a, w) => a + w.m, 0)) })}</p>
         </div>
       </div>
 
@@ -146,17 +148,17 @@ export default function Dashboard() {
         {/* Review due */}
         <div className="card p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="section-title">Para revisar hoje</h2>
-            <Link to="/app/revisao" className="text-sm font-semibold text-muted hover:text-ink">Revisar <ArrowRight size={14} className="inline" /></Link>
+            <h2 className="section-title">{t('dashboard.review.title')}</h2>
+            <Link to="/app/revisao" className="text-sm font-semibold text-muted hover:text-ink">{t('dashboard.review.action')} <ArrowRight size={14} className="inline" /></Link>
           </div>
-          {dueTopics.length === 0 ? <p className="text-sm text-muted">Nada pendente. Sua memória agradece. 🧠</p> : (
+          {dueTopics.length === 0 ? <p className="text-sm text-muted">{t('dashboard.review.empty')}</p> : (
             <ul className="space-y-2">
-              {dueTopics.map(({ s, t, info }) => (
-                <li key={t.id} className="flex items-center gap-3 rounded-xl bg-cream-2 px-3 py-2.5">
+              {dueTopics.map(({ s, t: topic, info }) => (
+                <li key={topic.id} className="flex items-center gap-3 rounded-xl bg-cream-2 px-3 py-2.5">
                   <span className={cn('grid h-8 w-8 place-items-center rounded-lg text-base', colorClasses[s.color].soft)}>{s.emoji}</span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{t.name}</p>
-                    <p className="text-xs text-muted">{s.name} · estudado há {info!.daysSince} {info!.daysSince === 1 ? 'dia' : 'dias'}</p>
+                    <p className="truncate text-sm font-semibold">{topic.name}</p>
+                    <p className="text-xs text-muted">{s.name} · {t('dashboard.review.studiedAgo', { count: info!.daysSince })}</p>
                   </div>
                   <span className="h-2 w-2 rounded-full bg-rose" />
                 </li>
@@ -168,8 +170,8 @@ export default function Dashboard() {
         {/* Goals */}
         <div className="card p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="section-title">Metas</h2>
-            <Link to="/app/planejamento?tab=metas" className="text-sm font-semibold text-muted hover:text-ink">Gerenciar</Link>
+            <h2 className="section-title">{t('dashboard.goals.title')}</h2>
+            <Link to="/app/planejamento?tab=metas" className="text-sm font-semibold text-muted hover:text-ink">{t('dashboard.goals.manage')}</Link>
           </div>
           <ul className="space-y-4">
             {goals.slice(0, 3).map(g => {

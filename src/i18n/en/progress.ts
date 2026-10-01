@@ -1,0 +1,58 @@
+import type { progress as Pt } from '../pt/progress'
+
+export const progress: typeof Pt = {
+  title: 'My progress',
+  sub: 'Numbers that tell the story of your effort.',
+  week: {
+    label: 'This week',
+    studied: 'You studied {time} this week.',
+    delta: "That's {delta}% compared to last week.",
+    first: 'First week on record.',
+  },
+  month: {
+    label: 'This month',
+    studied: '{time} this month.',
+    delta: 'Daily pace {delta}% compared to last month.',
+    first: 'First month on record.',
+  },
+  stats: {
+    hours: 'Hours studied',
+    hoursHint: 'in total',
+    days: 'Days studied',
+    daysHint: 'days with a session',
+    avg: 'Daily average',
+    avgHint: 'per study day',
+    accuracy: 'Accuracy',
+    questions_one: '{count} question',
+    questions_other: '{count} questions',
+  },
+  charts: {
+    minutesPerDay: 'Minutes per day',
+    range14: '14 days',
+    range30: '30 days',
+    studied: 'Studied',
+    weekly: 'Weekly trend',
+    monthly: 'Monthly trend',
+    hours: 'Hours',
+    questions: 'Questions',
+  },
+  subjects: {
+    title: 'Most studied subjects',
+    distribution: 'Breakdown',
+    attention: 'Needs attention',
+    attentionHint: 'Lowest accuracy',
+  },
+  achievements: {
+    title: 'Achievements',
+    sub: '{n} of {total} unlocked. No rush: they come with the routine.',
+    yourLevel: 'Your level',
+    totalStudied: '{time} studied in total',
+    toNext: ' · {time} to go until {name}',
+    streak_one: "You've studied {count} day in a row!",
+    streak_other: "You've studied {count} days in a row!",
+    newStreak: 'Start a new streak today.',
+    unlockedOn: 'Unlocked on {date}',
+    dateFmt: 'MM/dd/yyyy',
+    locked: 'Locked',
+  },
+}

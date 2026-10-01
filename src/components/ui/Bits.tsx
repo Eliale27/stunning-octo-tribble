@@ -17,9 +17,9 @@ export function ColorDot({ color, className }: { color: PastelColor; className?:
   return <span className={cn('inline-block h-2.5 w-2.5 rounded-full', colorClasses[color].dot, className)} />
 }
 
-export function PageHeader({ title, sub, action }: { title: React.ReactNode; sub?: React.ReactNode; action?: React.ReactNode }) {
+export function PageHeader({ title, sub, action, tourId }: { title: React.ReactNode; sub?: React.ReactNode; action?: React.ReactNode; tourId?: string }) {
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" data-tour={tourId}>
       <div>
         <h1 className="page-title">{title}</h1>
         {sub && <p className="page-sub">{sub}</p>}
