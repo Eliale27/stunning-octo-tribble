@@ -8,7 +8,7 @@ function Row({ label, hint, children, wide = false }: { label: string; hint?: st
   return (
     <div className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between">
       <div><p className="text-sm font-semibold">{label}</p>{hint && <p className="text-xs text-muted">{hint}</p>}</div>
-      <div className={wide ? 'sm:w-80' : 'sm:w-56'}>{children}</div>
+      <div className={wide ? 'sm:w-96' : 'sm:w-56'}>{children}</div>
     </div>
   )
 }

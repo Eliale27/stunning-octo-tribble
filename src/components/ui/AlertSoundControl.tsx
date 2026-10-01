@@ -18,7 +18,7 @@ export function AlertSoundControl({ compact = false }: { compact?: boolean }) {
       </button>
       <input type="range" min={0} max={100} value={pct} disabled={!soundEnabled}
         onChange={e => update({ alertVolume: +e.target.value / 100 })}
-        className="w-full accent-sage disabled:opacity-40" aria-label="Volume do alerta" />
+        className="min-w-[96px] flex-1 accent-sage disabled:opacity-40" aria-label="Volume do alerta" />
       <span className={cn('w-9 shrink-0 text-right tabular-nums', soundEnabled ? 'text-muted' : 'text-line-2')}>{soundEnabled ? `${pct}%` : 'off'}</span>
       <button type="button" onClick={() => playChime(volume)} disabled={!soundEnabled}
         className="btn btn-soft h-9 shrink-0 px-2.5 text-xs" title="Ouvir o som">
