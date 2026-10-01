@@ -252,7 +252,7 @@ export default function Planner() {
 
   return (
     <div>
-      <PageHeader title="Meu Plano" sub="Organize por dia, semana ou mês. Arraste, solte e ajuste no seu ritmo."
+      <PageHeader tourId="planner" title="Meu Plano" sub="Organize por dia, semana ou mês. Arraste, solte e ajuste no seu ritmo."
         action={<button onClick={() => setDraft({})} className="btn btn-primary"><Plus size={16} /> Nova tarefa</button>} />
       <div className="mb-5 overflow-x-auto">
         <Segmented value={view} onChange={setView} options={[

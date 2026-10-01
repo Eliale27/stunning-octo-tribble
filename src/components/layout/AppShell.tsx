@@ -2,11 +2,12 @@ import { NavLink, useOutlet, useLocation, Navigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import {
   Home, BookOpen, CalendarDays, CheckSquare, FileText, Timer, RefreshCw, BarChart3, Trophy, Settings,
-  PanelLeftClose, PanelLeftOpen, Play, Pause, Menu, X, LogOut,
+  PanelLeftClose, PanelLeftOpen, Play, Pause, Menu, X, LogOut, CircleHelp,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Logo, LogoMark } from '@/components/Logo'
 import { Toasts } from '@/components/ui/Toasts'
+import { Tour } from '@/components/ui/Tour'
 import { useStore } from '@/store/useStore'
 import { cn, levelFor, streak } from '@/lib/utils'
 import { fmtClock, useFocusAlarm, useFocusTicker } from '@/lib/useFocusTicker'
@@ -55,6 +56,7 @@ function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavig
   const settings = useStore(s => s.settings)
   const sessions = useStore(s => s.sessions)
   const logout = useStore(s => s.logout)
+  const startTour = useStore(s => s.startTour)
   const total = sessions.reduce((a, s) => a + s.minutes, 0)
   const lvl = levelFor(total)
   const st = streak(sessions)
@@ -88,6 +90,7 @@ function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavig
               <p className="truncate text-[11px] text-muted">{lvl.current.emoji} {lvl.current.name} · 🔥 {st} dias</p>
             </div>
           )}
+          {!collapsed && <button onClick={() => { onNavigate?.(); startTour() }} className="btn btn-ghost h-8 w-8 rounded-full p-0 text-muted" title="Rever o tour"><CircleHelp size={15} /></button>}
           {!collapsed && <button onClick={logout} className="btn btn-ghost h-8 w-8 rounded-full p-0 text-muted" title="Sair"><LogOut size={15} /></button>}
         </div>
       </div>
@@ -102,14 +105,24 @@ export default function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
   const outlet = useOutlet()
+  const tourSeen = useStore(s => s.tourSeen)
+  const startTour = useStore(s => s.startTour)
   useFocusTicker()
   useFocusAlarm()
+
+  // first visit: open the guided tour once the app has settled
+  useEffect(() => {
+    if (!loggedIn || tourSeen) return
+    const id = setTimeout(startTour, 700)
+    return () => clearTimeout(id)
+  }, [loggedIn, tourSeen, startTour])
 
   if (!loggedIn) return <Navigate to="/entrar" replace />
 
   return (
     <div className="min-h-screen bg-cream">
       <Toasts />
+      <Tour />
       {/* Desktop sidebar */}
       <aside className={cn('fixed inset-y-0 left-0 z-30 hidden border-r border-line bg-cream/80 backdrop-blur-md transition-[width] duration-300 md:block', collapsed ? 'w-[76px]' : 'w-[248px]')}>
         <SidebarContent collapsed={collapsed} />
@@ -122,7 +135,10 @@ export default function AppShell() {
       {/* Mobile top bar */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-cream/85 px-4 py-3 backdrop-blur-md md:hidden">
         <Logo />
-        <button onClick={() => setMobileOpen(true)} className="btn btn-ghost h-10 w-10 rounded-full p-0" aria-label="Abrir menu"><Menu size={20} /></button>
+        <div className="flex items-center gap-1">
+          <button onClick={startTour} className="btn btn-ghost h-10 w-10 rounded-full p-0 text-muted" aria-label="Rever o tour"><CircleHelp size={19} /></button>
+          <button onClick={() => setMobileOpen(true)} className="btn btn-ghost h-10 w-10 rounded-full p-0" aria-label="Abrir menu"><Menu size={20} /></button>
+        </div>
       </header>
 
       {/* Mobile drawer */}

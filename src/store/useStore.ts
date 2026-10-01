@@ -5,6 +5,7 @@ import type { FocusState, Goal, Note, Session, Settings, Subject, Subtask, Task,
 import { achievementDefs, seedGoals, seedNotes, seedSessions, seedSettings, seedSubjects, seedTasks, type AchievementId } from '@/data/seed'
 import { streak, uid, weekRange, minutesBetween, questionsBetween } from '@/lib/utils'
 import { playChime } from '@/lib/alarm'
+import { tourSteps } from '@/lib/tour'
 
 export interface Toast { id: string; title: string; desc?: string; emoji?: string; confetti?: boolean }
 
@@ -20,6 +21,9 @@ interface State {
   focus: FocusState
   toasts: Toast[]
   sidebarCollapsed: boolean
+  /** Guided tour: shown automatically once, replayable from the help button. */
+  tourSeen: boolean
+  tour: { active: boolean; step: number }
 
   // auth
   login: (name?: string) => void
@@ -28,6 +32,11 @@ interface State {
   // settings
   updateSettings: (p: Partial<Settings>) => void
   toggleSidebar: () => void
+
+  // tour
+  startTour: () => void
+  nextTourStep: () => void
+  endTour: () => void
 
   // subjects & topics
   addSubject: (s: Omit<Subject, 'id' | 'topics'>) => string
@@ -108,12 +117,18 @@ export const useStore = create<State>()(
       focus: initialFocus(seedSettings.focusMinutes),
       toasts: [],
       sidebarCollapsed: false,
+      tourSeen: false,
+      tour: { active: false, step: 0 },
 
       login: (name) => set(s => ({ loggedIn: true, settings: name ? { ...s.settings, name } : s.settings })),
       logout: () => set({ loggedIn: false }),
 
       updateSettings: (p) => set(s => ({ settings: { ...s.settings, ...p } })),
       toggleSidebar: () => set(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+
+      startTour: () => set({ tourSeen: true, tour: { active: true, step: 0 } }),
+      nextTourStep: () => set(s => s.tour.step + 1 >= tourSteps.length ? { tour: { active: false, step: 0 } } : { tour: { active: true, step: s.tour.step + 1 } }),
+      endTour: () => set({ tourSeen: true, tour: { active: false, step: 0 } }),
 
       addSubject: (sub) => {
         const id = uid()
@@ -289,6 +304,7 @@ export const useStore = create<State>()(
       partialize: (s) => ({
         loggedIn: s.loggedIn, settings: s.settings, subjects: s.subjects, tasks: s.tasks, sessions: s.sessions,
         goals: s.goals, notes: s.notes, unlocked: s.unlocked, focus: s.focus, sidebarCollapsed: s.sidebarCollapsed,
+        tourSeen: s.tourSeen,
       }),
     },
   ),

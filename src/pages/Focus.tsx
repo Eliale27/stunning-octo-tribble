@@ -46,7 +46,7 @@ export default function Focus() {
         <p className="page-sub">Uma sessão de cada vez. O resto pode esperar.</p>
       </div>
 
-      <motion.div layout className={cn('card relative overflow-hidden p-6 sm:p-10 transition-colors duration-700', isFocus ? 'bg-surface' : 'bg-sky-soft/40')}>
+      <motion.div layout data-tour="timer" className={cn('card relative overflow-hidden p-6 sm:p-10 transition-colors duration-700', isFocus ? 'bg-surface' : 'bg-sky-soft/40')}>
         <div className={cn('pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full blur-3xl transition-colors duration-700', isFocus ? 'bg-sage-soft/70' : 'bg-sky-soft')} />
         <div className={cn('pointer-events-none absolute -bottom-24 -right-20 h-72 w-72 rounded-full blur-3xl transition-colors duration-700', isFocus ? 'bg-butter-soft/60' : 'bg-lilac-soft/70')} />
 

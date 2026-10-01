@@ -17,6 +17,7 @@ export default function Settings() {
   const settings = useStore(s => s.settings)
   const update = useStore(s => s.updateSettings)
   const resetDemo = useStore(s => s.resetDemo)
+  const startTour = useStore(s => s.startTour)
   const [name, setName] = useState(settings.name)
   return (
     <div className="mx-auto max-w-2xl">
@@ -35,6 +36,9 @@ export default function Settings() {
           <div className="flex gap-1.5">{[5, 10, 15].map(m => <button key={m} onClick={() => update({ breakMinutes: m })} className={cn('btn h-9 flex-1 px-0 text-xs', settings.breakMinutes === m ? 'btn-primary' : 'btn-soft')}>{m} min</button>)}</div>
         </Row>
         <Row label="Som ao terminar" hint="Um sino suave quando o cronômetro chega a zero. Toca mesmo com a aba em segundo plano." wide><AlertSoundControl /></Row>
+        <Row label="Tour guiado" hint="Reveja a apresentação das principais partes da plataforma.">
+          <button onClick={startTour} className="btn btn-soft w-full">Rever tour</button>
+        </Row>
       </div>
 
       <div className="card mt-4 p-5">

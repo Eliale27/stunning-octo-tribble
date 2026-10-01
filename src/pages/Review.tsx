@@ -30,7 +30,7 @@ export default function Review() {
 
   return (
     <div>
-      <PageHeader title="Revisar" sub="Revisão espaçada: o sistema avisa o que revisar, e quando." />
+      <PageHeader tourId="review" title="Revisar" sub="Revisão espaçada: o sistema avisa o que revisar, e quando." />
 
       <div className="mb-6 grid grid-cols-3 gap-3">
         {buckets.map(b => (
