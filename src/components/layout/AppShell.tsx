@@ -9,7 +9,7 @@ import { Logo, LogoMark } from '@/components/Logo'
 import { Toasts } from '@/components/ui/Toasts'
 import { useStore } from '@/store/useStore'
 import { cn, levelFor, streak } from '@/lib/utils'
-import { fmtClock, useFocusTicker } from '@/lib/useFocusTicker'
+import { fmtClock, useFocusAlarm, useFocusTicker } from '@/lib/useFocusTicker'
 
 const nav = [
   { to: '/app', label: 'Início', icon: Home, end: true },
@@ -103,6 +103,7 @@ export default function AppShell() {
   const location = useLocation()
   const outlet = useOutlet()
   useFocusTicker()
+  useFocusAlarm()
 
   if (!loggedIn) return <Navigate to="/entrar" replace />
 

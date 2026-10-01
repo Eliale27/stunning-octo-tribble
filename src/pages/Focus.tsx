@@ -6,6 +6,7 @@ import { fmtClock, useFocusTicker } from '@/lib/useFocusTicker'
 import { ProgressRing } from '@/components/ui/Progress'
 import { Select } from '@/components/ui/Bits'
 import { cn, fmtMinutes, minutesOn } from '@/lib/utils'
+import { AlertSoundControl } from '@/components/ui/AlertSoundControl'
 
 const presets = [15, 25, 45, 50, 60]
 const focusPhrases = [
@@ -99,6 +100,10 @@ export default function Focus() {
                 ))}
               </div>
               <p className="mt-3 text-xs text-muted">Pausa de {settings.breakMinutes} min entre sessões · ajuste em Configurações</p>
+              <div className="mt-4 border-t border-line pt-4">
+                <p className="label">Som ao terminar</p>
+                <AlertSoundControl compact />
+              </div>
             </div>
             <div className="card grid gap-3 p-5 sm:grid-cols-2">
               <div><label className="label">Matéria</label>

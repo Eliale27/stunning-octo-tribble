@@ -246,6 +246,7 @@ export const seedSettings: Settings = {
   breakMinutes: 5,
   longBreakMinutes: 15,
   soundEnabled: true,
+  alertVolume: 0.7,
   weekStartsMonday: true,
 }
 

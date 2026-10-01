@@ -2,21 +2,14 @@ import { useState } from 'react'
 import { useStore } from '@/store/useStore'
 import { PageHeader } from '@/components/ui/Bits'
 import { cn, fmtMinutes } from '@/lib/utils'
+import { AlertSoundControl } from '@/components/ui/AlertSoundControl'
 
-function Row({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+function Row({ label, hint, children, wide = false }: { label: string; hint?: string; children: React.ReactNode; wide?: boolean }) {
   return (
     <div className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between">
       <div><p className="text-sm font-semibold">{label}</p>{hint && <p className="text-xs text-muted">{hint}</p>}</div>
-      <div className="sm:w-56">{children}</div>
+      <div className={wide ? 'sm:w-80' : 'sm:w-56'}>{children}</div>
     </div>
-  )
-}
-
-function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button role="switch" aria-checked={value} onClick={() => onChange(!value)} className={cn('relative h-7 w-12 rounded-full transition', value ? 'bg-sage' : 'bg-line-2')}>
-      <span className={cn('absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all', value ? 'left-6' : 'left-1')} />
-    </button>
   )
 }
 
@@ -41,7 +34,7 @@ export default function Settings() {
         <Row label="Duração da pausa">
           <div className="flex gap-1.5">{[5, 10, 15].map(m => <button key={m} onClick={() => update({ breakMinutes: m })} className={cn('btn h-9 flex-1 px-0 text-xs', settings.breakMinutes === m ? 'btn-primary' : 'btn-soft')}>{m} min</button>)}</div>
         </Row>
-        <Row label="Sons" hint="Aviso ao final de cada sessão"><Toggle value={settings.soundEnabled} onChange={v => update({ soundEnabled: v })} /></Row>
+        <Row label="Som ao terminar" hint="Um sino suave quando o cronômetro chega a zero. Toca mesmo com a aba em segundo plano." wide><AlertSoundControl /></Row>
       </div>
 
       <div className="card mt-4 p-5">

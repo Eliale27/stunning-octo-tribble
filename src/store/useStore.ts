@@ -4,6 +4,7 @@ import { formatISO, subDays } from 'date-fns'
 import type { FocusState, Goal, Note, Session, Settings, Subject, Subtask, Task, TaskStatus, Topic } from '@/lib/types'
 import { achievementDefs, seedGoals, seedNotes, seedSessions, seedSettings, seedSubjects, seedTasks, type AchievementId } from '@/data/seed'
 import { streak, uid, weekRange, minutesBetween, questionsBetween } from '@/lib/utils'
+import { playChime } from '@/lib/alarm'
 
 export interface Toast { id: string; title: string; desc?: string; emoji?: string; confetti?: boolean }
 
@@ -68,6 +69,8 @@ interface State {
   resumeFocus: () => void
   resetFocus: (mode?: 'focus' | 'break') => void
   completeFocus: () => void
+  /** Completes the running session only if its end time has passed (safe to call twice). */
+  finishIfDue: () => void
   setFocusDuration: (minutes: number) => void
 
   // gamification
@@ -214,8 +217,13 @@ export const useStore = create<State>()(
         return { focus: { ...s.focus, mode: m, running: false, endsAt: undefined, duration: dur, remaining: dur } }
       }),
       setFocusDuration: (minutes) => set(s => ({ focus: { ...s.focus, running: false, endsAt: undefined, duration: minutes * 60, remaining: minutes * 60 } })),
+      finishIfDue: () => {
+        const { focus } = get()
+        if (focus.running && focus.endsAt && Date.now() >= focus.endsAt - 250) get().completeFocus()
+      },
       completeFocus: () => {
         const { focus, settings } = get()
+        if (settings.soundEnabled) playChime(settings.alertVolume)
         if (focus.mode === 'focus') {
           get().addSession({ subjectId: focus.subjectId, topicId: focus.topicId, minutes: Math.round(focus.duration / 60) })
           const dur = settings.breakMinutes * 60
@@ -273,6 +281,11 @@ export const useStore = create<State>()(
     }),
     {
       name: 'estuda-v1',
+      // keep newly added settings at their defaults for users with an older saved state
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<State>
+        return { ...current, ...p, settings: { ...current.settings, ...(p.settings ?? {}) } }
+      },
       partialize: (s) => ({
         loggedIn: s.loggedIn, settings: s.settings, subjects: s.subjects, tasks: s.tasks, sessions: s.sessions,
         goals: s.goals, notes: s.notes, unlocked: s.unlocked, focus: s.focus, sidebarCollapsed: s.sidebarCollapsed,
