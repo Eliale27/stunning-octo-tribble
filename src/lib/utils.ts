@@ -3,7 +3,8 @@ import {
   differenceInCalendarDays, format, isSameDay, parseISO, startOfWeek, endOfWeek,
   startOfMonth, endOfMonth, isWithinInterval, subDays, addDays, getDayOfYear,
 } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import type { Locale } from 'date-fns'
+import type { TFn } from '@/i18n'
 
 export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4)
 
@@ -17,24 +18,25 @@ export const fmtMinutes = (m: number) => {
   return `${h}h${String(mm).padStart(2, '0')}`
 }
 
-export const fmtDate = (iso: string, f = "d 'de' MMM") => format(parseISO(iso), f, { locale: ptBR })
+/** Format an ISO date with a pattern from `t('common.fmt.*')` and the date-fns locale from `useLang()`. */
+export const fmtDate = (iso: string, pattern: string, locale: Locale) => format(parseISO(iso), pattern, { locale })
 
 export const todayISO = () => format(new Date(), 'yyyy-MM-dd')
 
-export const relativeDay = (iso: string) => {
+export const relativeDay = (iso: string, t: TFn, locale: Locale) => {
   const d = parseISO(iso)
   const diff = differenceInCalendarDays(d, new Date())
-  if (diff === 0) return 'Hoje'
-  if (diff === 1) return 'Amanhã'
-  if (diff === -1) return 'Ontem'
-  if (diff < 0) return `há ${Math.abs(diff)} dias`
-  if (diff < 7) return format(d, 'EEEE', { locale: ptBR })
-  return format(d, "d 'de' MMM", { locale: ptBR })
+  if (diff === 0) return t('common.relative.today')
+  if (diff === 1) return t('common.relative.tomorrow')
+  if (diff === -1) return t('common.relative.yesterday')
+  if (diff < 0) return t('common.relative.daysAgo', { count: Math.abs(diff) })
+  if (diff < 7) return format(d, 'EEEE', { locale })
+  return format(d, t('common.fmt.dayMonth'), { locale })
 }
 
-export const greeting = (name: string) => {
+export const greeting = (name: string, t: TFn) => {
   const h = new Date().getHours()
-  const g = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'
+  const g = h < 12 ? t('common.greeting.morning') : h < 18 ? t('common.greeting.afternoon') : t('common.greeting.evening')
   return `${g}, ${name} 👋`
 }
 
@@ -49,38 +51,26 @@ export const colorClasses: Record<PastelColor, { bg: string; soft: string; text:
 }
 export const pastelColors: PastelColor[] = ['sky', 'butter', 'sage', 'rose', 'lilac', 'peach']
 
-export const priorityMeta: Record<Priority, { label: string; cls: string; icon: string }> = {
-  alta:  { label: 'Alta',  cls: 'bg-rose-soft text-rose-ink',     icon: '⭐' },
-  media: { label: 'Média', cls: 'bg-butter-soft text-butter-ink', icon: '◐' },
-  baixa: { label: 'Baixa', cls: 'bg-sage-soft text-sage-ink',     icon: '○' },
+/** Visual meta per priority; the label is `t(labelKey)`. */
+export const priorityMeta: Record<Priority, { labelKey: string; cls: string; icon: string }> = {
+  alta:  { labelKey: 'common.priority.alta',  cls: 'bg-rose-soft text-rose-ink',     icon: '⭐' },
+  media: { labelKey: 'common.priority.media', cls: 'bg-butter-soft text-butter-ink', icon: '◐' },
+  baixa: { labelKey: 'common.priority.baixa', cls: 'bg-sage-soft text-sage-ink',     icon: '○' },
 }
 
 /* ---------- quotes ---------- */
-export const quotes = [
-  'Não precisa estudar perfeitamente. Precisa continuar.',
-  'Seu futuro está sendo construído nas pequenas sessões de hoje.',
-  '30 minutos hoje são melhores que zero.',
-  'Consistência vence intensidade.',
-  'Aprender é lento até o dia em que deixa de ser.',
-  'O que você revisa hoje, lembra amanhã.',
-  'Foque na próxima sessão, não em todo o caminho.',
-  'Cada tópico concluído é um peso a menos.',
-  'Você não precisa de motivação. Precisa de um começo.',
-  'Estudar cansado ainda é estudar. Só ajuste o ritmo.',
-  'Progresso invisível ainda é progresso.',
-  'Comece pequeno. Termine o que começou.',
-  'A dúvida de hoje é a resposta de amanhã.',
-  'Descansar também faz parte do plano.',
-]
-export const dailyQuote = () => quotes[getDayOfYear(new Date()) % quotes.length]
+export const QUOTE_COUNT = 14 // entries in common.quotes
+/** Quote of the day, translated: `dailyQuote(t)`. */
+export const dailyQuote = (t: TFn) => t(`common.quotes.${getDayOfYear(new Date()) % QUOTE_COUNT}`)
 
 /* ---------- levels ---------- */
+/** The name is `t(nameKey)`. */
 export const levels = [
-  { name: 'Começando', emoji: '🌱', minHours: 0 },
-  { name: 'Criando ritmo', emoji: '🌿', minHours: 10 },
-  { name: 'Consistente', emoji: '🌳', minHours: 40 },
-  { name: 'Avançado', emoji: '⭐', minHours: 100 },
-  { name: 'Mestre', emoji: '🏆', minHours: 250 },
+  { nameKey: 'common.levels.0', emoji: '🌱', minHours: 0 },
+  { nameKey: 'common.levels.1', emoji: '🌿', minHours: 10 },
+  { nameKey: 'common.levels.2', emoji: '🌳', minHours: 40 },
+  { nameKey: 'common.levels.3', emoji: '⭐', minHours: 100 },
+  { nameKey: 'common.levels.4', emoji: '🏆', minHours: 250 },
 ]
 export const levelFor = (totalMinutes: number) => {
   const hours = totalMinutes / 60

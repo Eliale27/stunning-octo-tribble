@@ -6,6 +6,7 @@ import { achievementDefs, seedGoals, seedNotes, seedSessions, seedSettings, seed
 import { streak, uid, weekRange, minutesBetween, questionsBetween } from '@/lib/utils'
 import { playChime } from '@/lib/alarm'
 import { tourSteps } from '@/lib/tour'
+import { detectLang, translate, type Lang } from '@/i18n/core'
 
 export interface Toast { id: string; title: string; desc?: string; emoji?: string; confetti?: boolean }
 
@@ -24,6 +25,8 @@ interface State {
   /** Guided tour: shown automatically once, replayable from the help button. */
   tourSeen: boolean
   tour: { active: boolean; step: number }
+  /** UI language: detected from the browser on first visit, then remembered. */
+  language: Lang
 
   // auth
   login: (name?: string) => void
@@ -32,6 +35,8 @@ interface State {
   // settings
   updateSettings: (p: Partial<Settings>) => void
   toggleSidebar: () => void
+
+  setLanguage: (l: Lang) => void
 
   // tour
   startTour: () => void
@@ -105,7 +110,9 @@ const initialFocus = (minutes: number): FocusState => ({
 
 export const useStore = create<State>()(
   persist(
-    (set, get) => ({
+    (set, get) => {
+    const tr = (key: string, vars?: Record<string, string | number>) => translate(get().language, key, vars)
+    return ({
       loggedIn: false,
       settings: seedSettings,
       subjects: seedSubjects,
@@ -119,12 +126,15 @@ export const useStore = create<State>()(
       sidebarCollapsed: false,
       tourSeen: false,
       tour: { active: false, step: 0 },
+      language: detectLang(),
 
       login: (name) => set(s => ({ loggedIn: true, settings: name ? { ...s.settings, name } : s.settings })),
       logout: () => set({ loggedIn: false }),
 
       updateSettings: (p) => set(s => ({ settings: { ...s.settings, ...p } })),
       toggleSidebar: () => set(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+
+      setLanguage: (language) => set({ language }),
 
       startTour: () => set({ tourSeen: true, tour: { active: true, step: 0 } }),
       nextTourStep: () => set(s => s.tour.step + 1 >= tourSteps.length ? { tour: { active: false, step: 0 } } : { tour: { active: true, step: s.tour.step + 1 } }),
@@ -196,7 +206,7 @@ export const useStore = create<State>()(
       addNote: (n) => {
         const id = uid()
         set(s => ({
-          notes: [{ id, title: 'Sem título', emoji: '📝', content: '', updatedAt: formatISO(new Date()), ...n }, ...s.notes],
+          notes: [{ id, title: tr('common.untitledNote'), emoji: '📝', content: '', updatedAt: formatISO(new Date()), ...n }, ...s.notes],
         }))
         get().checkAchievements()
         return id
@@ -243,11 +253,11 @@ export const useStore = create<State>()(
           get().addSession({ subjectId: focus.subjectId, topicId: focus.topicId, minutes: Math.round(focus.duration / 60) })
           const dur = settings.breakMinutes * 60
           set(s => ({ focus: { ...s.focus, mode: 'break', running: false, endsAt: undefined, duration: dur, remaining: dur, completedToday: s.focus.completedToday + 1 } }))
-          get().pushToast({ title: 'Mais uma sessão concluída! 🎉', desc: `${Math.round(focus.duration / 60)} minutos registrados. Hora de uma pausa.`, emoji: '⏱️' })
+          get().pushToast({ title: tr('common.toasts.sessionDone'), desc: tr('common.toasts.sessionDoneDesc', { minutes: Math.round(focus.duration / 60) }), emoji: '⏱️' })
         } else {
           const dur = settings.focusMinutes * 60
           set(s => ({ focus: { ...s.focus, mode: 'focus', running: false, endsAt: undefined, duration: dur, remaining: dur } }))
-          get().pushToast({ title: 'Pausa concluída', desc: 'Pronto para a próxima sessão?', emoji: '🌱' })
+          get().pushToast({ title: tr('common.toasts.breakDone'), desc: tr('common.toasts.breakDoneDesc'), emoji: '🌱' })
         }
       },
 
@@ -278,7 +288,7 @@ export const useStore = create<State>()(
           set(x => ({ unlocked: { ...x.unlocked, ...Object.fromEntries(newly.map(id => [id, now])) } }))
           newly.forEach(id => {
             const def = achievementDefs.find(d => d.id === id)!
-            get().pushToast({ title: 'Conquista desbloqueada', desc: def.title, emoji: def.emoji, confetti: true })
+            get().pushToast({ title: tr('common.toasts.achievement'), desc: tr(`common.achievements.${def.id}.title`), emoji: def.emoji, confetti: true })
           })
         }
       },
@@ -293,7 +303,8 @@ export const useStore = create<State>()(
         settings: seedSettings, subjects: seedSubjects, tasks: seedTasks, sessions: seedSessions, goals: seedGoals,
         notes: seedNotes, unlocked: seedUnlocked(), focus: initialFocus(seedSettings.focusMinutes), toasts: [],
       }),
-    }),
+    })
+    },
     {
       name: 'estuda-v1',
       // keep newly added settings at their defaults for users with an older saved state
@@ -304,7 +315,7 @@ export const useStore = create<State>()(
       partialize: (s) => ({
         loggedIn: s.loggedIn, settings: s.settings, subjects: s.subjects, tasks: s.tasks, sessions: s.sessions,
         goals: s.goals, notes: s.notes, unlocked: s.unlocked, focus: s.focus, sidebarCollapsed: s.sidebarCollapsed,
-        tourSeen: s.tourSeen,
+        tourSeen: s.tourSeen, language: s.language,
       }),
     },
   ),

@@ -250,17 +250,18 @@ export const seedSettings: Settings = {
   weekStartsMonday: true,
 }
 
+/** Titles and descriptions live in the translations: `common.achievements.<id>`. */
 export const achievementDefs = [
-  { id: 'first-session', title: 'Primeira sessão concluída', desc: 'Toda jornada começa com um passo.', emoji: '🌱' },
-  { id: 'streak-7', title: '7 dias consecutivos', desc: 'Uma semana inteira de constância.', emoji: '🔥' },
-  { id: 'hours-10', title: '10 horas estudadas', desc: 'Dez horas de dedicação registradas.', emoji: '⏱️' },
-  { id: 'questions-100', title: '100 questões resolvidas', desc: 'Prática que vira confiança.', emoji: '🎯' },
-  { id: 'weekly-goal', title: 'Primeira meta semanal concluída', desc: 'Planejou, executou, alcançou.', emoji: '🏁' },
-  { id: 'streak-30', title: '30 dias consecutivos', desc: 'Um mês inteiro. Isso é um hábito.', emoji: '🌳' },
-  { id: 'hours-50', title: '50 horas estudadas', desc: 'Meio caminho para a maestria.', emoji: '⭐' },
-  { id: 'topic-master', title: 'Primeiro tópico dominado', desc: 'Revisado até virar memória de longo prazo.', emoji: '🧠' },
-  { id: 'notes-5', title: '5 anotações criadas', desc: 'Seu caderno digital está crescendo.', emoji: '📝' },
-  { id: 'early-bird', title: 'Sessão antes das 8h', desc: 'O silêncio da manhã rende.', emoji: '🌅' },
+  { id: 'first-session', emoji: '🌱' },
+  { id: 'streak-7', emoji: '🔥' },
+  { id: 'hours-10', emoji: '⏱️' },
+  { id: 'questions-100', emoji: '🎯' },
+  { id: 'weekly-goal', emoji: '🏁' },
+  { id: 'streak-30', emoji: '🌳' },
+  { id: 'hours-50', emoji: '⭐' },
+  { id: 'topic-master', emoji: '🧠' },
+  { id: 'notes-5', emoji: '📝' },
+  { id: 'early-bird', emoji: '🌅' },
 ] as const
 
 export type AchievementId = (typeof achievementDefs)[number]['id']

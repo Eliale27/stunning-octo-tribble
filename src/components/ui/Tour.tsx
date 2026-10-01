@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useStore } from '@/store/useStore'
 import { tourSteps } from '@/lib/tour'
 import { cn } from '@/lib/utils'
+import { useT } from '@/i18n'
 
 type Rect = { top: number; left: number; width: number; height: number }
 const PAD = 8          // spotlight padding around the target
@@ -16,6 +17,7 @@ export function Tour() {
   const step = useStore(s => s.tour.step)
   const next = useStore(s => s.nextTourStep)
   const end = useStore(s => s.endTour)
+  const t = useT()
   const navigate = useNavigate()
   const location = useLocation()
   const [rect, setRect] = useState<Rect | null>(null)
@@ -110,7 +112,7 @@ export function Tour() {
   const arrowLeft = spot ? Math.min(Math.max(20, spot.left + spot.width / 2 - (cardStyle.left as number)), W - 20) : 0
 
   return (
-    <div className="fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label="Tour guiado">
+    <div className="fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label={t('app.tour.aria')}>
       {/* dim everything except the target */}
       {spot ? (
         <div className="absolute rounded-2xl transition-all duration-300 ease-out"
@@ -131,17 +133,17 @@ export function Tour() {
               <div className="flex items-start gap-3">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-butter-soft text-xl">{current.emoji}</div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold">{current.title}</p>
-                  <p className="mt-0.5 text-sm text-ink-2">{current.text}</p>
+                  <p className="text-sm font-bold">{t(`app.tour.${current.target}.title`)}</p>
+                  <p className="mt-0.5 text-sm text-ink-2">{t(`app.tour.${current.target}.text`)}</p>
                 </div>
               </div>
               <div className="mt-4 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-1.5" aria-label={`Passo ${step + 1} de ${tourSteps.length}`}>
+                <div className="flex items-center gap-1.5" aria-label={t('app.tour.stepOf', { step: step + 1, total: tourSteps.length })}>
                   {tourSteps.map((_, i) => <span key={i} className={cn('h-1.5 rounded-full transition-all', i === step ? 'w-4 bg-sage' : 'w-1.5 bg-line-2')} />)}
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <button type="button" onClick={end} className="btn btn-ghost h-9 px-3 text-xs">Pular</button>
-                  <button type="button" onClick={next} className="btn btn-primary h-9 px-3.5 text-xs" autoFocus>{last ? 'Concluir' : 'Próximo'}</button>
+                  <button type="button" onClick={end} className="btn btn-ghost h-9 px-3 text-xs">{t('common.actions.skip')}</button>
+                  <button type="button" onClick={next} className="btn btn-primary h-9 px-3.5 text-xs" autoFocus>{last ? t('common.actions.finish') : t('common.actions.next')}</button>
                 </div>
               </div>
             </div>

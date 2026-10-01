@@ -7,43 +7,40 @@ import { ProgressRing } from '@/components/ui/Progress'
 import { Select } from '@/components/ui/Bits'
 import { cn, fmtMinutes, minutesOn } from '@/lib/utils'
 import { AlertSoundControl } from '@/components/ui/AlertSoundControl'
+import { useT } from '@/i18n'
 
 const presets = [15, 25, 45, 50, 60]
-const focusPhrases = [
-  'Você consegue. Continue focado. 🌱',
-  'Um passo de cada vez. Você está avançando.',
-  'Respire. O único lugar para estar agora é aqui.',
-  'A sessão de hoje é o resultado de amanhã.',
-]
+const PHRASE_COUNT = 4 // entries in focus.phrases
 
 export default function Focus() {
-  const t = useFocusTicker()
+  const t = useT()
+  const tk = useFocusTicker()
   const { startFocus, pauseFocus, resumeFocus, resetFocus, completeFocus, setFocusDuration, updateSettings } = useStore()
   const settings = useStore(s => s.settings)
   const subjects = useStore(s => s.subjects)
   const sessions = useStore(s => s.sessions)
-  const [subjectId, setSubjectId] = useState(t.subjectId ?? '')
-  const [topicId, setTopicId] = useState(t.topicId ?? '')
+  const [subjectId, setSubjectId] = useState(tk.subjectId ?? '')
+  const [topicId, setTopicId] = useState(tk.topicId ?? '')
   const [phrase, setPhrase] = useState(0)
   const subject = subjects.find(s => s.id === subjectId)
-  const isFocus = t.mode === 'focus'
-  const idle = !t.running && t.remaining === t.duration
+  const isFocus = tk.mode === 'focus'
+  const idle = !tk.running && tk.remaining === tk.duration
   const minutesToday = minutesOn(sessions, new Date())
 
-  useEffect(() => { setSubjectId(t.subjectId ?? ''); setTopicId(t.topicId ?? '') }, [t.subjectId, t.topicId])
+  useEffect(() => { setSubjectId(tk.subjectId ?? ''); setTopicId(tk.topicId ?? '') }, [tk.subjectId, tk.topicId])
   useEffect(() => {
-    if (!t.running) return
-    const id = setInterval(() => setPhrase(p => (p + 1) % focusPhrases.length), 20000)
+    if (!tk.running) return
+    const id = setInterval(() => setPhrase(p => (p + 1) % PHRASE_COUNT), 20000)
     return () => clearInterval(id)
-  }, [t.running])
+  }, [tk.running])
 
-  const start = () => startFocus({ subjectId: subjectId || undefined, topicId: topicId || undefined, minutes: t.duration / 60 })
+  const start = () => startFocus({ subjectId: subjectId || undefined, topicId: topicId || undefined, minutes: tk.duration / 60 })
 
   return (
     <div className="mx-auto max-w-2xl">
       <div className="mb-6 text-center">
-        <h1 className="page-title">Foco</h1>
-        <p className="page-sub">Uma sessão de cada vez. O resto pode esperar.</p>
+        <h1 className="page-title">{t('focus.title')}</h1>
+        <p className="page-sub">{t('focus.sub')}</p>
       </div>
 
       <motion.div layout data-tour="timer" className={cn('card relative overflow-hidden p-6 sm:p-10 transition-colors duration-700', isFocus ? 'bg-surface' : 'bg-sky-soft/40')}>
@@ -52,38 +49,38 @@ export default function Focus() {
 
         <div className="relative flex flex-col items-center">
           <span className={cn('chip mb-6', isFocus ? 'bg-sage-soft text-sage-ink' : 'bg-sky-soft text-sky-ink')}>
-            {isFocus ? '🌱 Sessão de foco' : '☕ Pausa'}
+            {isFocus ? t('focus.modeFocus') : t('focus.modeBreak')}
           </span>
 
-          <motion.div animate={t.running ? { scale: [1, 1.015, 1] } : { scale: 1 }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}>
-            <ProgressRing value={t.progress} size={260} stroke={14} color={isFocus ? '#A9C4A0' : '#A9C4E0'} track="rgba(43,42,40,0.06)">
+          <motion.div animate={tk.running ? { scale: [1, 1.015, 1] } : { scale: 1 }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}>
+            <ProgressRing value={tk.progress} size={260} stroke={14} color={isFocus ? '#A9C4A0' : '#A9C4E0'} track="rgba(43,42,40,0.06)">
               <div className="text-center">
-                <p className="text-6xl font-extrabold tabular-nums tracking-tight sm:text-7xl">{fmtClock(t.remaining)}</p>
-                <p className="mt-1 text-sm text-muted">{t.running ? (isFocus ? 'em foco' : 'descansando') : idle ? 'pronto para começar' : 'pausado'}</p>
+                <p className="text-6xl font-extrabold tabular-nums tracking-tight sm:text-7xl">{fmtClock(tk.remaining)}</p>
+                <p className="mt-1 text-sm text-muted">{tk.running ? (isFocus ? t('focus.state.focusing') : t('focus.state.resting')) : idle ? t('focus.state.ready') : t('focus.state.paused')}</p>
               </div>
             </ProgressRing>
           </motion.div>
 
           <div className="mt-6 h-6 text-center">
             <AnimatePresence mode="wait">
-              {t.running && isFocus && (
+              {tk.running && isFocus && (
                 <motion.p key={phrase} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="text-sm font-medium text-ink-2">
-                  {focusPhrases[phrase]}
+                  {t(`focus.phrases.${phrase}`)}
                 </motion.p>
               )}
-              {!t.running && isFocus && subject && <p className="text-sm text-muted">{subject.emoji} {subject.name}{topicId && ` · ${subject.topics.find(x => x.id === topicId)?.name}`}</p>}
-              {!isFocus && <p className="text-sm text-muted">Levante, beba água, alongue. Você mereceu.</p>}
+              {!tk.running && isFocus && subject && <p className="text-sm text-muted">{subject.emoji} {subject.name}{topicId && ` · ${subject.topics.find(x => x.id === topicId)?.name}`}</p>}
+              {!isFocus && <p className="text-sm text-muted">{t('focus.breakHint')}</p>}
             </AnimatePresence>
           </div>
 
           <div className="mt-6 flex items-center gap-3">
-            <button onClick={() => resetFocus()} className="btn btn-ghost h-12 w-12 rounded-full p-0" title="Reiniciar"><RotateCcw size={18} /></button>
-            {t.running ? (
-              <button onClick={pauseFocus} className="btn btn-primary h-16 w-16 rounded-full p-0 text-cream shadow-lift" aria-label="Pausar"><Pause size={26} /></button>
+            <button onClick={() => resetFocus()} className="btn btn-ghost h-12 w-12 rounded-full p-0" title={t('focus.restart')}><RotateCcw size={18} /></button>
+            {tk.running ? (
+              <button onClick={pauseFocus} className="btn btn-primary h-16 w-16 rounded-full p-0 text-cream shadow-lift" aria-label={t('focus.pause')}><Pause size={26} /></button>
             ) : (
-              <button onClick={idle ? start : resumeFocus} className={cn('btn h-16 w-16 rounded-full p-0 shadow-lift', isFocus ? 'btn-sage' : 'bg-sky text-white')} aria-label="Iniciar"><Play size={26} className="ml-0.5" /></button>
+              <button onClick={idle ? start : resumeFocus} className={cn('btn h-16 w-16 rounded-full p-0 shadow-lift', isFocus ? 'btn-sage' : 'bg-sky text-white')} aria-label={t('focus.start')}><Play size={26} className="ml-0.5" /></button>
             )}
-            <button onClick={completeFocus} className="btn btn-ghost h-12 w-12 rounded-full p-0" title={isFocus ? 'Concluir agora' : 'Pular pausa'}>{isFocus ? <SkipForward size={18} /> : <Coffee size={18} />}</button>
+            <button onClick={completeFocus} className="btn btn-ghost h-12 w-12 rounded-full p-0" title={isFocus ? t('focus.finishNow') : t('focus.skipBreak')}>{isFocus ? <SkipForward size={18} /> : <Coffee size={18} />}</button>
           </div>
         </div>
       </motion.div>
@@ -92,33 +89,33 @@ export default function Focus() {
         {idle && isFocus && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="mt-4 space-y-4">
             <div className="card p-5">
-              <p className="label">Duração</p>
+              <p className="label">{t('focus.duration')}</p>
               <div className="flex flex-wrap gap-2">
                 {presets.map(m => (
                   <button key={m} onClick={() => { setFocusDuration(m); updateSettings({ focusMinutes: m }) }}
-                    className={cn('btn h-10 min-w-[64px] px-3', t.duration / 60 === m ? 'btn-primary' : 'btn-soft')}>{m} min</button>
+                    className={cn('btn h-10 min-w-[64px] px-3', tk.duration / 60 === m ? 'btn-primary' : 'btn-soft')}>{t('focus.presetMin', { n: m })}</button>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-muted">Pausa de {settings.breakMinutes} min entre sessões · ajuste em Configurações</p>
+              <p className="mt-3 text-xs text-muted">{t('focus.breakInfo', { n: settings.breakMinutes })}</p>
               <div className="mt-4 border-t border-line pt-4">
-                <p className="label">Som ao terminar</p>
+                <p className="label">{t('focus.alertSound')}</p>
                 <AlertSoundControl compact />
               </div>
             </div>
             <div className="card grid gap-3 p-5 sm:grid-cols-2">
-              <div><label className="label">Matéria</label>
-                <Select value={subjectId} onChange={v => { setSubjectId(v); setTopicId('') }} placeholder="Sessão livre" options={subjects.map(s => ({ value: s.id, label: `${s.emoji} ${s.name}` }))} /></div>
-              <div><label className="label">Tópico</label>
-                <Select value={topicId} onChange={setTopicId} placeholder="Nenhum" options={(subject?.topics ?? []).map(tp => ({ value: tp.id, label: tp.name }))} /></div>
+              <div><label className="label">{t('focus.subject')}</label>
+                <Select value={subjectId} onChange={v => { setSubjectId(v); setTopicId('') }} placeholder={t('focus.freeSession')} options={subjects.map(s => ({ value: s.id, label: `${s.emoji} ${s.name}` }))} /></div>
+              <div><label className="label">{t('focus.topic')}</label>
+                <Select value={topicId} onChange={setTopicId} placeholder={t('focus.noTopic')} options={(subject?.topics ?? []).map(tp => ({ value: tp.id, label: tp.name }))} /></div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       <div className="mt-4 grid grid-cols-3 gap-3">
-        <MiniStat label="Sessões hoje" value={String(t.completedToday)} />
-        <MiniStat label="Tempo hoje" value={fmtMinutes(minutesToday)} />
-        <MiniStat label="Meta diária" value={`${Math.min(100, Math.round((minutesToday / settings.dailyGoalMinutes) * 100))}%`} />
+        <MiniStat label={t('focus.stats.sessionsToday')} value={String(tk.completedToday)} />
+        <MiniStat label={t('focus.stats.timeToday')} value={fmtMinutes(minutesToday)} />
+        <MiniStat label={t('focus.stats.dailyGoal')} value={`${Math.min(100, Math.round((minutesToday / settings.dailyGoalMinutes) * 100))}%`} />
       </div>
     </div>
   )
