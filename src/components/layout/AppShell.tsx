@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { Logo, LogoMark } from '@/components/Logo'
 import { Toasts } from '@/components/ui/Toasts'
 import { Tour } from '@/components/ui/Tour'
+import { MusicDock } from '@/components/music/MusicDock'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { useT } from '@/i18n'
 import { useStore } from '@/store/useStore'
@@ -130,6 +131,7 @@ export default function AppShell() {
     <div className="min-h-screen bg-cream">
       <Toasts />
       <Tour />
+      <MusicDock />
       {/* Desktop sidebar */}
       <aside className={cn('fixed inset-y-0 left-0 z-30 hidden border-r border-line bg-cream/80 backdrop-blur-md transition-[width] duration-300 md:block', collapsed ? 'w-[76px]' : 'w-[248px]')}>
         <SidebarContent collapsed={collapsed} />

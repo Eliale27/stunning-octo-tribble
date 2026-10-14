@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/Bits'
 import { cn, fmtMinutes, minutesOn } from '@/lib/utils'
 import { AlertSoundControl } from '@/components/ui/AlertSoundControl'
 import { useT } from '@/i18n'
+import { MusicControls } from '@/components/music/MusicControls'
 
 const presets = [15, 25, 45, 50, 60]
 const PHRASE_COUNT = 4 // entries in focus.phrases
@@ -82,6 +83,8 @@ export default function Focus() {
             )}
             <button onClick={completeFocus} className="btn btn-ghost h-12 w-12 rounded-full p-0" title={isFocus ? t('focus.finishNow') : t('focus.skipBreak')}>{isFocus ? <SkipForward size={18} /> : <Coffee size={18} />}</button>
           </div>
+
+          <MusicControls className="mt-8 max-w-md border-t border-line/80 pt-5" />
         </div>
       </motion.div>
 

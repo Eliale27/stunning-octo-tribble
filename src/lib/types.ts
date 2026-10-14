@@ -91,6 +91,8 @@ export interface Settings {
   longBreakMinutes: number
   soundEnabled: boolean
   alertVolume: number // 0..1
+  /** Spotify URI chosen for the focus player (spotify:playlist:…), empty when none. */
+  musicUri?: string
   weekStartsMonday: boolean
 }
 
