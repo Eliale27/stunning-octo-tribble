@@ -1,0 +1,58 @@
+import type { progress as Pt } from '../pt/progress'
+
+export const progress: typeof Pt = {
+  title: 'Mi progreso',
+  sub: 'Números que cuentan la historia de tu esfuerzo.',
+  week: {
+    label: 'Esta semana',
+    studied: 'Estudiaste {time} esta semana.',
+    delta: 'Eso es un {delta}% respecto a la semana pasada.',
+    first: 'Primera semana registrada.',
+  },
+  month: {
+    label: 'Este mes',
+    studied: '{time} en el mes.',
+    delta: 'Ritmo diario {delta}% respecto al mes pasado.',
+    first: 'Primer mes registrado.',
+  },
+  stats: {
+    hours: 'Horas estudiadas',
+    hoursHint: 'en total',
+    days: 'Días estudiados',
+    daysHint: 'días con sesión',
+    avg: 'Promedio diario',
+    avgHint: 'por día estudiado',
+    accuracy: 'Tasa de acierto',
+    questions_one: '{count} pregunta',
+    questions_other: '{count} preguntas',
+  },
+  charts: {
+    minutesPerDay: 'Minutos por día',
+    range14: '14 días',
+    range30: '30 días',
+    studied: 'Estudiado',
+    weekly: 'Evolución semanal',
+    monthly: 'Evolución mensual',
+    hours: 'Horas',
+    questions: 'Preguntas',
+  },
+  subjects: {
+    title: 'Materias más estudiadas',
+    distribution: 'Distribución',
+    attention: 'Necesita atención',
+    attentionHint: 'Menor tasa de acierto',
+  },
+  achievements: {
+    title: 'Logros',
+    sub: '{n} de {total} desbloqueados. Sin prisa: llegan con la rutina.',
+    yourLevel: 'Tu nivel',
+    totalStudied: '{time} estudiadas en total',
+    toNext: ' · faltan {time} para {name}',
+    streak_one: '¡Estudiaste {count} día seguido!',
+    streak_other: '¡Estudiaste {count} días seguidos!',
+    newStreak: 'Empieza hoy una nueva racha.',
+    unlockedOn: 'Desbloqueado el {date}',
+    dateFmt: 'dd/MM/yyyy',
+    locked: 'Bloqueado',
+  },
+}

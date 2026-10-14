@@ -4,6 +4,7 @@ import { achievementDefs } from '@/data/seed'
 import { PageHeader } from '@/components/ui/Bits'
 import { ProgressBar } from '@/components/ui/Progress'
 import { cn, fmtDate, levelFor, levels, streak, fmtMinutes } from '@/lib/utils'
+import { useT, useLang } from '@/i18n'
 
 export default function Achievements() {
   const unlocked = useStore(s => s.unlocked)
@@ -12,35 +13,37 @@ export default function Achievements() {
   const lvl = levelFor(total)
   const st = streak(sessions)
   const count = Object.keys(unlocked).length
+  const t = useT()
+  const { dfLocale } = useLang()
 
   return (
     <div>
-      <PageHeader title="Conquistas" sub={`${count} de ${achievementDefs.length} desbloqueadas. Sem pressa: elas chegam com a rotina.`} />
+      <PageHeader title={t('progress.achievements.title')} sub={t('progress.achievements.sub', { n: count, total: achievementDefs.length })} />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-3">
         <div className="card p-6 lg:col-span-2">
           <div className="flex items-center gap-4">
             <span className="grid h-16 w-16 place-items-center rounded-2xl bg-butter-soft text-4xl">{lvl.current.emoji}</span>
             <div className="flex-1">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted">Seu nível</p>
-              <h2 className="text-2xl font-extrabold">{lvl.current.name}</h2>
-              <p className="text-sm text-muted">{fmtMinutes(total)} estudadas no total{lvl.next && ` · faltam ${fmtMinutes(Math.max(0, lvl.next.minHours * 60 - total))} para ${lvl.next.name}`}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted">{t('progress.achievements.yourLevel')}</p>
+              <h2 className="text-2xl font-extrabold">{t(lvl.current.nameKey)}</h2>
+              <p className="text-sm text-muted">{t('progress.achievements.totalStudied', { time: fmtMinutes(total) })}{lvl.next && t('progress.achievements.toNext', { time: fmtMinutes(Math.max(0, lvl.next.minHours * 60 - total)), name: t(lvl.next.nameKey) })}</p>
             </div>
           </div>
           <ProgressBar value={lvl.pct} className="mt-5" color="bg-butter" height="h-3" />
           <div className="mt-4 flex justify-between">
             {levels.map((l, i) => (
-              <div key={l.name} className={cn('flex flex-col items-center gap-1 text-center', i > lvl.index && 'opacity-40')}>
+              <div key={l.nameKey} className={cn('flex flex-col items-center gap-1 text-center', i > lvl.index && 'opacity-40')}>
                 <span className={cn('grid h-9 w-9 place-items-center rounded-full text-lg', i <= lvl.index ? 'bg-butter-soft' : 'bg-cream-2')}>{l.emoji}</span>
-                <span className="hidden text-[10px] font-semibold text-muted sm:block">{l.name}</span>
+                <span className="hidden text-[10px] font-semibold text-muted sm:block">{t(l.nameKey)}</span>
               </div>
             ))}
           </div>
         </div>
         <div className="card flex flex-col justify-center bg-peach-soft/60 p-6 text-center">
           <p className="text-5xl">🔥</p>
-          <p className="mt-2 text-3xl font-extrabold">{st} dias</p>
-          <p className="text-sm text-ink-2">{st > 0 ? `Você estudou por ${st} dias seguidos!` : 'Comece hoje uma nova sequência.'}</p>
+          <p className="mt-2 text-3xl font-extrabold">{t('common.streakDays', { count: st })}</p>
+          <p className="text-sm text-ink-2">{st > 0 ? t('progress.achievements.streak', { count: st }) : t('progress.achievements.newStreak')}</p>
         </div>
       </div>
 
@@ -52,9 +55,9 @@ export default function Achievements() {
               className={cn('card flex items-center gap-4 p-4', !date && 'border-dashed bg-cream-2/40 shadow-none')}>
               <span className={cn('grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl', date ? 'bg-butter-soft' : 'bg-cream-2 grayscale opacity-60')}>{a.emoji}</span>
               <div className="min-w-0">
-                <p className={cn('font-semibold', !date && 'text-muted')}>{a.title}</p>
-                <p className="text-xs text-muted">{a.desc}</p>
-                {date ? <p className="mt-1 text-[11px] font-semibold text-sage-ink">Desbloqueada em {fmtDate(date, 'dd/MM/yyyy')}</p> : <p className="mt-1 text-[11px] font-semibold text-muted">Bloqueada</p>}
+                <p className={cn('font-semibold', !date && 'text-muted')}>{t(`common.achievements.${a.id}.title`)}</p>
+                <p className="text-xs text-muted">{t(`common.achievements.${a.id}.desc`)}</p>
+                {date ? <p className="mt-1 text-[11px] font-semibold text-sage-ink">{t('progress.achievements.unlockedOn', { date: fmtDate(date, t('progress.achievements.dateFmt'), dfLocale) })}</p> : <p className="mt-1 text-[11px] font-semibold text-muted">{t('progress.achievements.locked')}</p>}
               </div>
             </motion.div>
           )

@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { X } from 'lucide-react'
 import { useEffect } from 'react'
+import { useT } from '@/i18n'
 
 export function Modal({ open, onClose, title, children, wide = false }:
   { open: boolean; onClose: () => void; title?: string; children: React.ReactNode; wide?: boolean }) {
+  const t = useT()
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
@@ -25,7 +27,7 @@ export function Modal({ open, onClose, title, children, wide = false }:
             transition={{ type: 'spring', stiffness: 380, damping: 32 }}>
             <div className="mb-4 flex items-center justify-between">
               {title && <h3 className="text-lg font-bold">{title}</h3>}
-              <button onClick={onClose} className="btn btn-ghost -mr-2 h-9 w-9 rounded-full p-0" aria-label="Fechar"><X size={18} /></button>
+              <button onClick={onClose} className="btn btn-ghost -mr-2 h-9 w-9 rounded-full p-0" aria-label={t('common.actions.close')}><X size={18} /></button>
             </div>
             {children}
           </motion.div>

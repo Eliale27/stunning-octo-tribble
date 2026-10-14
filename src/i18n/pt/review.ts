@@ -1,0 +1,43 @@
+export const review = {
+  title: 'Revisar',
+  sub: 'Revisão espaçada: o sistema avisa o que revisar, e quando.',
+  buckets: {
+    today: { label: 'Revisar hoje', hint: 'A memória enfraquece: revise agora para fixar.' },
+    soon: { label: 'Revisar em breve', hint: 'Ainda está fresco, mas o prazo se aproxima.' },
+    mastered: { label: 'Dominado', hint: 'Intervalos longos: você já consolidou.' },
+  },
+  empty: {
+    title: 'Nada para revisar ainda',
+    desc: 'Estude um tópico e ele entrará automaticamente no ciclo de revisões.',
+  },
+  studiedToday: 'estudado hoje',
+  studiedAgo_one: 'estudado há {count} dia',
+  studiedAgo_other: 'estudado há {count} dias',
+  dueNow: 'Está na hora de revisar.',
+  dueIn_one: 'Revisar amanhã',
+  dueIn_other: 'Revisar em {count} dias',
+  startReview: 'Começar revisão',
+  review: 'Revisar',
+  recall: {
+    title: 'Antes de olhar as anotações, tente lembrar:',
+    promptBefore: 'Quais são os 3 pontos principais de ',
+    promptAfter: '? Explique em voz alta ou escreva em uma folha.',
+    studied: 'estudados',
+    accuracy: 'de acerto',
+    nth: '{n}ª',
+    reviewLabel: 'revisão',
+    recalled: 'Já lembrei, avaliar',
+  },
+  rate: {
+    question: 'Como foi lembrar deste conteúdo?',
+    hard: '😅 Difícil',
+    ok: '🙂 Lembrei com esforço',
+    easy: '😎 Fácil',
+    again: 'rever em {n}d',
+  },
+  done: {
+    title: 'Revisão registrada',
+    desc: 'O próximo lembrete já está agendado.',
+    continue: 'Continuar',
+  },
+}

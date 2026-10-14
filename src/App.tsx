@@ -1,9 +1,10 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/layout/AppShell'
 import Landing from '@/pages/Landing'
 import Login from '@/pages/Login'
 import Dashboard from '@/pages/Dashboard'
+import { langTags, useLang } from '@/i18n'
 
 const Subjects = lazy(() => import('@/pages/Subjects'))
 const SubjectDetail = lazy(() => import('@/pages/SubjectDetail'))
@@ -23,6 +24,8 @@ const Fallback = () => (
 )
 
 export default function App() {
+  const { lang } = useLang()
+  useEffect(() => { document.documentElement.lang = langTags[lang] }, [lang])
   return (
     <HashRouter>
       <Suspense fallback={<Fallback />}>

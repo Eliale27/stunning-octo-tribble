@@ -5,11 +5,14 @@ import { useStore } from '@/store/useStore'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { Modal } from '@/components/ui/Modal'
 import { SubjectChip } from '@/components/ui/Bits'
-import { TaskForm } from './TaskForm'
+import { TaskForm, categoryLabel } from './TaskForm'
 import { cn, fmtMinutes, priorityMeta, relativeDay } from '@/lib/utils'
 import type { Task } from '@/lib/types'
+import { useT, useLang } from '@/i18n'
 
 export function TaskRow({ task, compact = false, dragHandle }: { task: Task; compact?: boolean; dragHandle?: React.ReactNode }) {
+  const t = useT()
+  const { dfLocale } = useLang()
   const { toggleTask, updateTask, removeTask, addSubtask, toggleSubtask, removeSubtask } = useStore()
   const [open, setOpen] = useState(false)
   const [edit, setEdit] = useState(false)
@@ -28,15 +31,15 @@ export function TaskRow({ task, compact = false, dragHandle }: { task: Task; com
           <p className={cn('truncate text-sm font-medium', done && 'text-muted line-through')}>{task.title}</p>
           {!compact && (
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted">
-              {task.date && <span>{relativeDay(task.date)}</span>}
+              {task.date && <span>{relativeDay(task.date, t, dfLocale)}</span>}
               {task.estimate && <span>· {fmtMinutes(task.estimate)}</span>}
-              {task.category && <span>· {task.category}</span>}
+              {task.category && <span>· {categoryLabel(task.category, t)}</span>}
               {task.subtasks.length > 0 && <span>· {subDone}/{task.subtasks.length}</span>}
             </div>
           )}
         </div>
         <SubjectChip id={task.subjectId} size="xs" className="hidden sm:inline-flex" />
-        <span className={cn('chip px-2 py-0.5 text-[11px]', p.cls)} title={`Prioridade ${p.label}`}>{p.icon}<span className="hidden sm:inline"> {p.label}</span></span>
+        <span className={cn('chip px-2 py-0.5 text-[11px]', p.cls)} title={t('tasks.row.priorityTitle', { label: t(p.labelKey) })}>{p.icon}<span className="hidden sm:inline"> {t(p.labelKey)}</span></span>
         {hasDetails && <button onClick={() => setOpen(o => !o)} className="text-muted"><ChevronDown size={16} className={cn('transition', open && 'rotate-180')} /></button>}
       </div>
       <AnimatePresence>
@@ -55,24 +58,25 @@ export function TaskRow({ task, compact = false, dragHandle }: { task: Task; com
                 ))}
               </ul>
               <form onSubmit={e => { e.preventDefault(); if (newSub.trim()) { addSubtask(task.id, newSub.trim()); setNewSub('') } }} className="mt-2 flex gap-2 pl-8">
-                <input className="input h-8 px-2.5 py-1 text-xs" placeholder="Nova subtarefa…" value={newSub} onChange={e => setNewSub(e.target.value)} />
+                <input className="input h-8 px-2.5 py-1 text-xs" placeholder={t('tasks.row.newSubtask')} value={newSub} onChange={e => setNewSub(e.target.value)} />
                 <button className="btn btn-soft h-8 px-2.5"><Plus size={14} /></button>
               </form>
               <div className="mt-3 flex justify-end gap-1">
-                <button onClick={() => setEdit(true)} className="btn btn-ghost h-8 px-2.5 text-xs"><Pencil size={13} /> Editar</button>
-                <button onClick={() => removeTask(task.id)} className="btn btn-ghost h-8 px-2.5 text-xs text-rose-ink"><Trash2 size={13} /> Excluir</button>
+                <button onClick={() => setEdit(true)} className="btn btn-ghost h-8 px-2.5 text-xs"><Pencil size={13} /> {t('common.actions.edit')}</button>
+                <button onClick={() => removeTask(task.id)} className="btn btn-ghost h-8 px-2.5 text-xs text-rose-ink"><Trash2 size={13} /> {t('common.actions.delete')}</button>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-      <Modal open={edit} onClose={() => setEdit(false)} title="Editar tarefa">
-        <TaskForm initial={task} submitLabel="Salvar" onSubmit={d => { updateTask(task.id, d); setEdit(false) }} />
+      <Modal open={edit} onClose={() => setEdit(false)} title={t('tasks.row.editTask')}>
+        <TaskForm initial={task} submitLabel={t('common.actions.save')} onSubmit={d => { updateTask(task.id, d); setEdit(false) }} />
       </Modal>
     </div>
   )
 }
 
 export function DragHandle(props: React.HTMLAttributes<HTMLButtonElement>) {
-  return <button {...props} className="cursor-grab touch-none text-line-2 hover:text-muted active:cursor-grabbing" aria-label="Arrastar"><GripVertical size={16} /></button>
+  const t = useT()
+  return <button {...props} className="cursor-grab touch-none text-line-2 hover:text-muted active:cursor-grabbing" aria-label={t('tasks.row.drag')}><GripVertical size={16} /></button>
 }
