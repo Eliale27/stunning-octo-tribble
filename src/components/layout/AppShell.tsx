@@ -2,7 +2,7 @@ import { NavLink, useOutlet, useLocation, Navigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import {
   Home, BookOpen, CalendarDays, CheckSquare, FileText, Timer, RefreshCw, BarChart3, Trophy, Settings,
-  PanelLeftClose, PanelLeftOpen, Play, Pause, Menu, X, LogOut, CircleHelp,
+  Users, PanelLeftClose, PanelLeftOpen, Play, Pause, Menu, X, LogOut, CircleHelp,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Logo, LogoMark } from '@/components/Logo'
@@ -23,13 +23,14 @@ const nav = [
   { to: '/app/tarefas', label: 'app.nav.tasks', icon: CheckSquare },
   { to: '/app/anotacoes', label: 'app.nav.notes', icon: FileText },
   { to: '/app/foco', label: 'app.nav.focus', icon: Timer },
+  { to: '/app/sala', label: 'app.nav.room', icon: Users },
   { to: '/app/revisao', label: 'app.nav.review', icon: RefreshCw },
   { to: '/app/progresso', label: 'app.nav.progress', icon: BarChart3 },
   { to: '/app/conquistas', label: 'app.nav.achievements', icon: Trophy },
   { to: '/app/configuracoes', label: 'app.nav.settings', icon: Settings },
 ]
 const mobileNav = [
-  { ...nav[0], short: 'app.mobileNav.home' }, { ...nav[3], short: 'app.mobileNav.tasks' }, { ...nav[5], short: 'app.mobileNav.focus' }, { ...nav[2], short: 'app.mobileNav.planner' }, { ...nav[7], short: 'app.mobileNav.progress' },
+  { ...nav[0], short: 'app.mobileNav.home' }, { ...nav[3], short: 'app.mobileNav.tasks' }, { ...nav[5], short: 'app.mobileNav.focus' }, { ...nav[2], short: 'app.mobileNav.planner' }, { ...nav[8], short: 'app.mobileNav.progress' },
 ]
 
 function MiniTimer({ collapsed }: { collapsed: boolean }) {
@@ -119,13 +120,16 @@ export default function AppShell() {
   useFocusAlarm()
 
   // first visit: open the guided tour once the app has settled
+  // (not when arriving through a study room invite: the tour would pull them out of the room)
+  const inRoom = location.pathname.startsWith('/app/sala')
   useEffect(() => {
-    if (!loggedIn || tourSeen) return
+    if (!loggedIn || tourSeen || inRoom) return
     const id = setTimeout(startTour, 700)
     return () => clearTimeout(id)
-  }, [loggedIn, tourSeen, startTour])
+  }, [loggedIn, tourSeen, inRoom, startTour])
 
-  if (!loggedIn) return <Navigate to="/entrar" replace />
+  // keep where the user was heading (e.g. a study room invite) for after login
+  if (!loggedIn) return <Navigate to="/entrar" replace state={{ from: location.pathname }} />
 
   return (
     <div className="min-h-screen bg-cream">

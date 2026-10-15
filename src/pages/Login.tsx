@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 import { Logo } from '@/components/Logo'
@@ -14,9 +14,11 @@ export default function Login() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const t = useT()
-  if (loggedIn) return <Navigate to="/app" replace />
+  const from = (useLocation().state as { from?: string } | null)?.from
+  const next = from?.startsWith('/app') ? from : '/app'
+  if (loggedIn) return <Navigate to={next} replace />
 
-  const enter = (n?: string) => { login(n); nav('/app') }
+  const enter = (n?: string) => { login(n); nav(next) }
 
   return (
     <div className="grid min-h-screen bg-cream lg:grid-cols-2">

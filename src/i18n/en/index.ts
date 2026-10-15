@@ -9,5 +9,6 @@ import { tasks } from './tasks'
 import { subjects } from './subjects'
 import { notes } from './notes'
 import { focus } from './focus'
+import { room } from './room'
 
-export const en = { common, app, landing, dashboard, progress, review, planner, tasks, subjects, notes, focus }
+export const en = { common, app, landing, dashboard, progress, review, planner, tasks, subjects, notes, focus, room }

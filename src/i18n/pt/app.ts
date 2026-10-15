@@ -1,7 +1,7 @@
 export const app = {
   nav: {
     home: 'Início', subjects: 'Minhas matérias', planner: 'Planejamento', tasks: 'Tarefas', notes: 'Anotações',
-    focus: 'Foco', review: 'Revisão', progress: 'Meu progresso', achievements: 'Conquistas', settings: 'Configurações',
+    focus: 'Foco', room: 'Sala de estudos', review: 'Revisão', progress: 'Meu progresso', achievements: 'Conquistas', settings: 'Configurações',
   },
   mobileNav: { home: 'Início', tasks: 'Tarefas', focus: 'Foco', planner: 'Plano', progress: 'Progresso' },
   timer: { pause: 'Pausar', resume: 'Continuar', focusing: 'Em foco', break: 'Pausa' },

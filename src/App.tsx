@@ -16,6 +16,7 @@ const Review = lazy(() => import('@/pages/Review'))
 const Progress = lazy(() => import('@/pages/Progress'))
 const Achievements = lazy(() => import('@/pages/Achievements'))
 const Settings = lazy(() => import('@/pages/Settings'))
+const StudyRoom = lazy(() => import('@/pages/StudyRoom'))
 
 const Fallback = () => (
   <div className="flex h-64 items-center justify-center text-sm text-muted">
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="tarefas" element={<Tasks />} />
           <Route path="anotacoes" element={<Notes />} />
           <Route path="foco" element={<Focus />} />
+          <Route path="sala/:code?" element={<StudyRoom />} />
           <Route path="revisao" element={<Review />} />
           <Route path="progresso" element={<Progress />} />
           <Route path="conquistas" element={<Achievements />} />
