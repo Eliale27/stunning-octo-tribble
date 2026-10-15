@@ -1,0 +1,38 @@
+import type { room as Pt } from '../pt/room'
+
+export const room: typeof Pt = {
+  title: 'Study room',
+  sub: 'Study alongside other people in a shared space.',
+  lobby: {
+    heading: 'Join the room',
+    name: 'Your name in the room',
+    avatar: 'Avatar',
+    color: 'Colour',
+    code: 'Room code',
+    codeHint: 'Everyone using the same code lands in the same room.',
+    join: 'Join room',
+  },
+  mode: {
+    online: 'Online',
+    local: 'Test mode',
+    localHint: 'For now the room only connects tabs in this browser. Open another tab to see a second avatar.',
+    connecting: 'Connecting…',
+    error: 'Could not connect',
+  },
+  zones: { quiet: 'Quiet desks', group: 'Group study', cafe: 'Café & breaks', lounge: 'Lounge' },
+  status: { focus: 'Focusing', break: 'On a break', idle: 'Available' },
+  you: 'you',
+  people_one: '{count} person in the room',
+  people_other: '{count} people in the room',
+  nearby: 'Near you',
+  nobodyNearby: 'Walk up to someone to see them here.',
+  chat: 'Room chat',
+  chatEmpty: 'No messages yet. Say hi 👋',
+  chatPlaceholder: 'Write a message',
+  send: 'Send',
+  invite: 'Copy invite',
+  copied: 'Link copied',
+  leave: 'Leave room',
+  help: 'Walk with the arrow keys or WASD, or click the map.',
+  timerHint: 'Your status follows the Focus timer.',
+}

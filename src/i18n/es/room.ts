@@ -1,0 +1,38 @@
+import type { room as Pt } from '../pt/room'
+
+export const room: typeof Pt = {
+  title: 'Sala de estudio',
+  sub: 'Estudia junto a otras personas en un espacio compartido.',
+  lobby: {
+    heading: 'Entra en la sala',
+    name: 'Tu nombre en la sala',
+    avatar: 'Avatar',
+    color: 'Color',
+    code: 'Código de la sala',
+    codeHint: 'Quien use el mismo código entra en la misma sala.',
+    join: 'Entrar en la sala',
+  },
+  mode: {
+    online: 'En línea',
+    local: 'Modo de prueba',
+    localHint: 'Por ahora la sala solo conecta las pestañas de este navegador. Abre otra pestaña para ver un segundo avatar.',
+    connecting: 'Conectando…',
+    error: 'No se pudo conectar',
+  },
+  zones: { quiet: 'Mesas silenciosas', group: 'Estudio en grupo', cafe: 'Café y descanso', lounge: 'Sofás' },
+  status: { focus: 'Concentrado', break: 'En descanso', idle: 'Disponible' },
+  you: 'tú',
+  people_one: '{count} persona en la sala',
+  people_other: '{count} personas en la sala',
+  nearby: 'Cerca de ti',
+  nobodyNearby: 'Acércate a alguien para verlo aquí.',
+  chat: 'Chat de la sala',
+  chatEmpty: 'Aún no hay mensajes. Saluda 👋',
+  chatPlaceholder: 'Escribe un mensaje',
+  send: 'Enviar',
+  invite: 'Copiar invitación',
+  copied: 'Enlace copiado',
+  leave: 'Salir de la sala',
+  help: 'Muévete con las flechas o WASD, o haz clic en el mapa.',
+  timerHint: 'Tu estado sigue el cronómetro de Foco.',
+}

@@ -1,0 +1,157 @@
+/**
+ * Real-time link for the study room. Two interchangeable transports:
+ *  - online: Supabase Realtime (presence + broadcast), used when the public
+ *    project URL and anon key are set at build time (VITE_SUPABASE_*);
+ *  - local: BroadcastChannel, which only reaches other tabs of the same
+ *    browser. Handy for testing the room without any account.
+ * Neither stores anything: a room is just whoever is connected right now.
+ */
+
+export type PeerStatus = 'focus' | 'break' | 'idle'
+
+export interface Peer {
+  id: string
+  name: string
+  emoji: string
+  color: string
+  x: number
+  y: number
+  status: PeerStatus
+  /** Epoch ms when the peer's current focus/break ends, if running. */
+  endsAt?: number
+}
+
+export interface ChatMessage { id: string; from: string; name: string; text: string; at: number }
+
+export interface RoomHandlers {
+  onPeer: (p: Peer) => void
+  onLeave: (id: string) => void
+  onChat: (m: ChatMessage) => void
+  onStatus?: (s: 'connecting' | 'online' | 'error') => void
+}
+
+export interface RoomLink {
+  mode: 'online' | 'local'
+  /** Send my latest state (position, status). Cheap to call often. */
+  update: (p: Peer) => void
+  chat: (m: ChatMessage) => void
+  close: () => void
+}
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+
+export const onlineAvailable = !!(SUPABASE_URL && SUPABASE_KEY)
+
+export function connectRoom(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
+  return onlineAvailable ? connectSupabase(roomId, me, h) : connectLocal(roomId, me, h)
+}
+
+// ---------------------------------------------------------------- local
+
+const HEARTBEAT_MS = 3000
+const STALE_MS = 10000
+
+type LocalMsg =
+  | { t: 'state'; p: Peer; hello?: boolean }
+  | { t: 'bye'; id: string }
+  | { t: 'chat'; m: ChatMessage }
+
+function connectLocal(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
+  const ch = new BroadcastChannel(`estuda-room:${roomId}`)
+  let mine = me
+  const seen = new Map<string, number>()
+  const post = (m: LocalMsg) => ch.postMessage(m)
+
+  ch.onmessage = (e: MessageEvent<LocalMsg>) => {
+    const m = e.data
+    if (m.t === 'state') {
+      if (m.p.id === mine.id) return
+      seen.set(m.p.id, Date.now())
+      h.onPeer(m.p)
+      if (m.hello) post({ t: 'state', p: mine }) // let the newcomer see me at once
+    } else if (m.t === 'bye') {
+      seen.delete(m.id); h.onLeave(m.id)
+    } else if (m.t === 'chat') {
+      h.onChat(m.m)
+    }
+  }
+
+  const beat = setInterval(() => {
+    post({ t: 'state', p: mine })
+    const now = Date.now()
+    for (const [id, at] of seen) if (now - at > STALE_MS) { seen.delete(id); h.onLeave(id) }
+  }, HEARTBEAT_MS)
+
+  const bye = () => post({ t: 'bye', id: mine.id })
+  window.addEventListener('pagehide', bye)
+  post({ t: 'state', p: mine, hello: true })
+  h.onStatus?.('online')
+
+  return {
+    mode: 'local',
+    update: p => { mine = p; post({ t: 'state', p }) },
+    chat: m => { post({ t: 'chat', m }); h.onChat(m) },
+    close: () => { bye(); clearInterval(beat); window.removeEventListener('pagehide', bye); ch.close() },
+  }
+}
+
+// ---------------------------------------------------------------- online
+
+/** Presence updates are rate limited, so moves go out as broadcasts and presence is synced after a pause. */
+const PRESENCE_DEBOUNCE_MS = 600
+
+function connectSupabase(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
+  let mine = me
+  let closed = false
+  let send: ((event: string, payload: unknown) => void) | null = null
+  let track: ((p: Peer) => void) | null = null
+  let cleanup: (() => void) | null = null
+  let trackTimer: ReturnType<typeof setTimeout> | undefined
+  h.onStatus?.('connecting')
+
+  import('@supabase/supabase-js').then(({ createClient }) => {
+    if (closed) return
+    const client = createClient(SUPABASE_URL!, SUPABASE_KEY!, { auth: { persistSession: false } })
+    const channel = client.channel(`estuda-room:${roomId}`, {
+      config: { presence: { key: mine.id }, broadcast: { self: false } },
+    })
+    const present = new Set<string>()
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState<Peer>()
+        const now = new Set<string>()
+        for (const [key, metas] of Object.entries(state)) {
+          const p = metas[metas.length - 1]
+          if (!p || key === mine.id) continue
+          now.add(key)
+          h.onPeer(p as unknown as Peer)
+        }
+        for (const id of present) if (!now.has(id)) h.onLeave(id)
+        present.clear(); now.forEach(id => present.add(id))
+      })
+      .on('broadcast', { event: 'state' }, ({ payload }) => { const p = payload as Peer; if (present.has(p.id)) h.onPeer(p) })
+      .on('broadcast', { event: 'chat' }, ({ payload }) => h.onChat(payload as ChatMessage))
+      .subscribe(status => {
+        if (status === 'SUBSCRIBED') { h.onStatus?.('online'); channel.track(mine) }
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') h.onStatus?.('error')
+      })
+
+    send = (event, payload) => { channel.send({ type: 'broadcast', event, payload }) }
+    track = p => { channel.track(p) }
+    cleanup = () => { channel.untrack(); client.removeChannel(channel) }
+  }).catch(() => h.onStatus?.('error'))
+
+  return {
+    mode: 'online',
+    update: p => {
+      mine = p
+      send?.('state', p)
+      clearTimeout(trackTimer)
+      trackTimer = setTimeout(() => track?.(mine), PRESENCE_DEBOUNCE_MS)
+    },
+    chat: m => { send?.('chat', m); h.onChat(m) },
+    close: () => { closed = true; clearTimeout(trackTimer); cleanup?.() },
+  }
+}
