@@ -122,8 +122,14 @@ function connectLocal(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
 
 // ---------------------------------------------------------------- online
 
-/** Presence updates are rate limited, so moves go out as broadcasts and presence is synced after a pause. */
-const PRESENCE_DEBOUNCE_MS = 600
+/** How often my state is re-sent even when nothing changes, so others know I'm still here. */
+const ONLINE_HEARTBEAT_MS = 5000
+/** Someone not heard from for this long is treated as gone. Generous because background tabs send less often; real departures arrive as presence leaves. */
+const ONLINE_STALE_MS = 90000
+/** Moves are coalesced to at most one message per this interval to stay under the service's rate limits. */
+const SEND_STATE_MS = 150
+/** Presence is only a join/leave signal; it is refreshed rarely because it is rate limited. */
+const PRESENCE_DEBOUNCE_MS = 2000
 
 function connectSupabase(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
   let mine = me
@@ -132,50 +138,89 @@ function connectSupabase(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
   let track: ((p: Peer) => void) | null = null
   let cleanup: (() => void) | null = null
   let trackTimer: ReturnType<typeof setTimeout> | undefined
+  let stateTimer: ReturnType<typeof setTimeout> | undefined
+  let lastStateAt = 0
+  // last time each peer was heard from; presence only adds, silence removes
+  const seen = new Map<string, number>()
+  const heard = (p: Peer) => { if (p.id === mine.id) return; seen.set(p.id, Date.now()); h.onPeer(p) }
+  const gone = (id: string) => { if (seen.delete(id)) h.onLeave(id) }
   h.onStatus?.('connecting')
+
+  const sendState = () => {
+    clearTimeout(stateTimer)
+    const wait = SEND_STATE_MS - (Date.now() - lastStateAt)
+    if (wait > 0) { stateTimer = setTimeout(sendState, wait); return }
+    lastStateAt = Date.now()
+    send?.('state', mine)
+  }
+
+  const beat = setInterval(() => {
+    sendState()
+    const now = Date.now()
+    for (const [id, at] of seen) if (now - at > ONLINE_STALE_MS) gone(id)
+  }, ONLINE_HEARTBEAT_MS)
+
+  // coming back to the tab: tell everyone at once instead of waiting for the next beat
+  const onVisible = () => { if (document.visibilityState === 'visible') sendState() }
+  document.addEventListener('visibilitychange', onVisible)
+  const bye = () => send?.('bye', { id: mine.id })
+  window.addEventListener('pagehide', bye)
 
   import('@supabase/supabase-js').then(({ createClient }) => {
     if (closed) return
-    const client = createClient(SUPABASE_URL!, SUPABASE_KEY!, { auth: { persistSession: false } })
+    const client = createClient(SUPABASE_URL!, SUPABASE_KEY!, {
+      auth: { persistSession: false },
+      // heartbeats from a worker keep the connection alive while the tab is in the background
+      realtime: { worker: true, heartbeatIntervalMs: 15000 },
+    })
     const channel = client.channel(`estuda-room:${roomId}`, {
       config: { presence: { key: mine.id }, broadcast: { self: false } },
     })
-    const present = new Set<string>()
 
     channel
       .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState<Peer>()
-        const now = new Set<string>()
-        for (const [key, metas] of Object.entries(state)) {
-          const p = metas[metas.length - 1]
-          if (!p || key === mine.id) continue
-          now.add(key)
-          h.onPeer(p as unknown as Peer)
+        for (const metas of Object.values(channel.presenceState<Peer>())) {
+          const p = metas[metas.length - 1] as unknown as Peer | undefined
+          if (p?.id) heard(p)
         }
-        for (const id of present) if (!now.has(id)) h.onLeave(id)
-        present.clear(); now.forEach(id => present.add(id))
       })
-      .on('broadcast', { event: 'state' }, ({ payload }) => { const p = payload as Peer; if (present.has(p.id)) h.onPeer(p) })
-      .on('broadcast', { event: 'evt' }, ({ payload }) => h.onEvent(payload as RoomEvent))
+      .on('presence', { event: 'leave' }, ({ key }) => {
+        // a leave can be a reconnect; only drop them if they also went quiet
+        setTimeout(() => { if (Date.now() - (seen.get(key) ?? 0) > ONLINE_HEARTBEAT_MS * 1.5) gone(key) }, ONLINE_HEARTBEAT_MS * 1.5)
+      })
+      .on('broadcast', { event: 'state' }, ({ payload }) => heard(payload as Peer))
+      .on('broadcast', { event: 'bye' }, ({ payload }) => gone((payload as { id: string }).id))
+      .on('broadcast', { event: 'evt' }, ({ payload }) => {
+        const e = payload as RoomEvent
+        if (seen.has(e.from)) seen.set(e.from, Date.now())
+        h.onEvent(e)
+      })
       .subscribe(status => {
-        if (status === 'SUBSCRIBED') { h.onStatus?.('online'); channel.track(mine) }
+        if (status === 'SUBSCRIBED') { h.onStatus?.('online'); channel.track(mine); sendState() }
         else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') h.onStatus?.('error')
       })
 
-    send = (event, payload) => { channel.send({ type: 'broadcast', event, payload }) }
-    track = p => { channel.track(p) }
-    cleanup = () => { channel.untrack(); client.removeChannel(channel) }
+    send = (event, payload) => { void channel.send({ type: 'broadcast', event, payload }) }
+    track = p => { void channel.track(p) }
+    cleanup = () => { void channel.untrack(); void client.removeChannel(channel) }
   }).catch(() => h.onStatus?.('error'))
 
   return {
     mode: 'online',
     update: p => {
       mine = p
-      send?.('state', p)
+      sendState()
       clearTimeout(trackTimer)
       trackTimer = setTimeout(() => track?.(mine), PRESENCE_DEBOUNCE_MS)
     },
     emit: e => { send?.('evt', e); h.onEvent(e) },
-    close: () => { closed = true; clearTimeout(trackTimer); cleanup?.() },
+    close: () => {
+      closed = true
+      bye()
+      clearTimeout(trackTimer); clearTimeout(stateTimer); clearInterval(beat)
+      document.removeEventListener('visibilitychange', onVisible)
+      window.removeEventListener('pagehide', bye)
+      cleanup?.()
+    },
   }
 }

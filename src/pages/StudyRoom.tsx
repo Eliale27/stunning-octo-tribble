@@ -12,7 +12,8 @@ import { fmtClock, useFocusTicker } from '@/lib/useFocusTicker'
 import { COLS, ROWS, TILE, findPath, items, spawnPoint, walkable, zones } from '@/lib/room/map'
 import { connectRoom, onlineAvailable, type Availability, type ChatMessage, type Peer, type PeerStatus, type RoomEvent, type RoomLink } from '@/lib/room/transport'
 import { playBlip, playGong, playWave } from '@/lib/room/sounds'
-import { VoiceMesh } from '@/lib/room/voice'
+import { VoiceMesh, type VoiceState } from '@/lib/room/voice'
+import { loadIce } from '@/lib/room/rtc'
 import { ScreenShare, canShareScreen } from '@/lib/room/screen'
 
 const EMOJIS = ['🦊', '🐼', '🐸', '🐱', '🐻', '🦉', '🐧', '🐨', '🦄', '🐙']
@@ -157,6 +158,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const [avail, setAvail] = useState<Availability>('available')
   const [dancing, setDancing] = useState(false)
   const [peers, setPeers] = useState<Record<string, Peer>>({})
+  const peersRef = useRef(peers)
+  peersRef.current = peers
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [reactions, setReactions] = useState<{ id: string; from: string; emoji: string; at: number }[]>([])
   const [blocked, setBlocked] = useState<Set<string>>(new Set())
@@ -168,7 +171,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const [voiceOn, setVoiceOn] = useState(false)
   const [micOn, setMicOn] = useState(true)
   const [speaking, setSpeaking] = useState<Set<string>>(new Set())
-  const [talkingWith, setTalkingWith] = useState<Set<string>>(new Set())
+  const [voiceStates, setVoiceStates] = useState<Map<string, VoiceState>>(new Map())
   const voice = useRef<VoiceMesh | null>(null)
   const [sharing, setSharing] = useState(false)
   const [screens, setScreens] = useState<Record<string, MediaStream>>({})
@@ -255,6 +258,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   }
   const toggleMic = () => { voice.current?.setMicEnabled(!micOn); setMicOn(m => !m) }
   useEffect(() => () => voice.current?.stop(), [])
+  // fetch the relay settings up front, so links made later (also to watch a screen) can use them
+  useEffect(() => { void loadIce() }, [])
 
   // ---- screen sharing (always ready to receive; sending starts on demand)
   useEffect(() => {
@@ -265,6 +270,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
         return stream ? { ...rest, [from]: stream } : rest
       }),
       () => setSharing(false),
+      viewer => pushToast({ title: t('room.screen.failed', { name: peersRef.current[viewer]?.name ?? '?' }), desc: t('room.screen.failedHint'), emoji: '📡' }),
     )
     screen.current = sc
     return () => { sc.close(); screen.current = null }
@@ -287,7 +293,11 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     if (!sc) return
     const nearby = Object.values(peers).filter(p => !blocked.has(p.id) && near(p, pos))
     if (sharing) sc.sync(new Set(nearby.map(p => p.id)))
-    sc.keepWatching(new Set(nearby.filter(p => p.sharing).map(p => p.id)))
+    // an unknown sharer (e.g. their state is late) keeps streaming until the link itself closes
+    sc.stopWatching(pid => {
+      const p = peers[pid]
+      return blocked.has(pid) || (!!p && (!p.sharing || !near(p, pos)))
+    })
   }, [peers, pos, sharing, blocked])
 
   // talk to whoever is inside my circle with voice on; louder when closer
@@ -306,14 +316,15 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
 
   // who is talking (green ring) and who I am connected to
   useEffect(() => {
-    if (!voiceOn) { setSpeaking(new Set()); setTalkingWith(new Set()); return }
+    if (!voiceOn) { setSpeaking(new Set()); setVoiceStates(new Map()); return }
     const same = (a: Set<string>, b: Set<string>) => a.size === b.size && [...a].every(x => b.has(x))
+    const sameMap = (a: Map<string, VoiceState>, b: Map<string, VoiceState>) => a.size === b.size && [...a].every(([k, v]) => b.get(k) === v)
     const iv = setInterval(() => {
       const v = voice.current
       if (!v) return
-      const s = v.speaking(), c = v.connected()
+      const s = v.speaking(), c = v.states()
       setSpeaking(prev => (same(prev, s) ? prev : s))
-      setTalkingWith(prev => (same(prev, c) ? prev : c))
+      setVoiceStates(prev => (sameMap(prev, c) ? prev : c))
     }, 200)
     return () => clearInterval(iv)
   }, [voiceOn])
@@ -533,7 +544,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
           {sortedOthers.length === 0 && <p className="text-xs text-muted">{t('room.alone')}</p>}
           <div className="max-h-56 overflow-y-auto">
             {sortedOthers.map(p => (
-              <PeerRow key={p.id} p={p} now={now} isNear={near(p, pos)} blocked={blocked.has(p.id)} talking={talkingWith.has(p.id)}
+              <PeerRow key={p.id} p={p} now={now} isNear={near(p, pos)} blocked={blocked.has(p.id)} voice={voiceOn && near(p, pos) && !blocked.has(p.id) ? (p.voice ? voiceStates.get(p.id) ?? 'connecting' : 'off') : undefined}
                 onWave={p.avail === 'dnd' || blocked.has(p.id) ? undefined : () => emit({ t: 'wave', name: me.name, to: p.id })}
                 onBlock={() => toggleBlock(p.id)} />
             ))}
@@ -566,8 +577,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   )
 }
 
-function PeerRow({ p, now, you, isNear, blocked, talking, onWave, onBlock }:
-  { p: Peer; now: number; you?: string; isNear?: boolean; blocked?: boolean; talking?: boolean; onWave?: () => void; onBlock?: () => void }) {
+function PeerRow({ p, now, you, isNear, blocked, voice, onWave, onBlock }:
+  { p: Peer; now: number; you?: string; isNear?: boolean; blocked?: boolean; voice?: VoiceState | 'off'; onWave?: () => void; onBlock?: () => void }) {
   const t = useT()
   return (
     <div className={cn('group flex items-center gap-2.5 py-1.5', blocked && 'opacity-50')}>
@@ -579,7 +590,10 @@ function PeerRow({ p, now, you, isNear, blocked, talking, onWave, onBlock }:
         </p>
         <p className="flex items-center gap-1.5 text-[11px] text-muted">
           <span className={cn('h-1.5 w-1.5 rounded-full', dotClass(p))} />{blocked ? t('room.blocked') : statusLabel(t, p, now)}
-          {talking && <span className="font-semibold text-sky-ink">· 🔊 {t('room.voice.talking')}</span>}
+          {voice === 'connected' && <span className="font-semibold text-sky-ink">· 🔊 {t('room.voice.talking')}</span>}
+          {voice === 'connecting' && <span>· ⏳ {t('room.voice.connecting')}</span>}
+          {voice === 'failed' && <span className="font-semibold text-rose-ink" title={t('room.voice.failedHint')}>· ⚠️ {t('room.voice.failed')}</span>}
+          {voice === 'off' && <span>· 🔇 {t('room.voice.off')}</span>}
         </p>
       </div>
       {onBlock && (
