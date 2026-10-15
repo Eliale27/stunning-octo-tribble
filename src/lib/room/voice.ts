@@ -23,6 +23,8 @@ export class VoiceMesh {
   private localAnalyser: AnalyserNode | null = null
   /** When a link last failed, to show it for a while instead of silently retrying. */
   private failedAt = new Map<string, number>()
+  /** The browser refused to start playback on its own; a click on "turn on sound" fixes it. */
+  audioBlocked = false
 
   constructor(private myId: string, private send: (s: Signal) => void) {}
 
@@ -44,6 +46,14 @@ export class VoiceMesh {
     this.local?.getTracks().forEach(t => t.stop())
     this.local = null
     this.localAnalyser = null
+    this.audioBlocked = false
+  }
+
+  /** Retry playback from a click, which browsers always allow. */
+  resumeAudio() {
+    if (this.ctx?.state === 'suspended') void this.ctx.resume()
+    this.audioBlocked = false
+    for (const l of this.links.values()) if (l.audio.srcObject) this.play(l.audio)
   }
 
   /** Keep links only with `ids` (nearby, mic on). The lower id makes the offer, so there is never a clash. */
@@ -123,14 +133,17 @@ export class VoiceMesh {
 
   private open(id: string): Link {
     const pc = new RTCPeerConnection(iceConfig())
-    const audio = new Audio()
+    const audio = document.createElement('audio')
     audio.autoplay = true
+    audio.setAttribute('playsinline', '')
+    audio.hidden = true
+    document.body.appendChild(audio) // some mobile browsers only play media that is in the page
     const l: Link = { pc, audio, pending: [], since: Date.now() }
     this.local!.getTracks().forEach(t => pc.addTrack(t, this.local!))
     pc.ontrack = e => {
       const stream = e.streams[0] ?? new MediaStream([e.track])
       audio.srcObject = stream
-      void audio.play().catch(() => {})
+      this.play(audio)
       l.analyser = this.analyse(stream)
     }
     pc.onconnectionstatechange = () => { if (pc.connectionState === 'failed') { this.failedAt.set(id, Date.now()); this.drop(id) } }
@@ -143,7 +156,12 @@ export class VoiceMesh {
     if (!l) return
     l.pc.close()
     l.audio.srcObject = null
+    l.audio.remove()
     this.links.delete(id)
+  }
+
+  private play(audio: HTMLAudioElement) {
+    audio.play().catch(() => { this.audioBlocked = true })
   }
 
   private analyse(stream: MediaStream): AnalyserNode | undefined {
