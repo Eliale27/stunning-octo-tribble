@@ -25,6 +25,8 @@ export interface Peer {
   dancing?: boolean
   /** Microphone on: joins voice with nearby people who also have it on. */
   voice?: boolean
+  /** Sharing their screen with people nearby. */
+  sharing?: boolean
 }
 
 /** Chat with `near` set is only shown to people within a few tiles of that spot. */
@@ -38,7 +40,7 @@ export type RoomEvent =
   | { t: 'gong'; id: string; from: string; name: string; reason?: string; at: number }
   | { t: 'confetti'; id: string; from: string; at: number }
   /** WebRTC signalling for proximity voice, addressed to one peer. */
-  | { t: 'rtc'; id: string; from: string; to: string; at: number; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit }
+  | { t: 'rtc'; id: string; from: string; to: string; at: number; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit; ch?: 'screen'; fromSharer?: boolean }
 
 export interface RoomHandlers {
   onPeer: (p: Peer) => void

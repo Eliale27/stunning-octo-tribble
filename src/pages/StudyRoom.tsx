@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import confetti from 'canvas-confetti'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Ban, Bell, BellOff, Mic, MicOff, Headphones, Link2, LogOut, Send, Undo2, Wifi, FlaskConical } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Ban, Bell, BellOff, Mic, MicOff, Headphones, MonitorUp, MonitorX, Maximize2, Link2, LogOut, Send, Undo2, Wifi, FlaskConical } from 'lucide-react'
 import { PageHeader, Segmented } from '@/components/ui/Bits'
 import { useStore } from '@/store/useStore'
 import { useT, type TFn } from '@/i18n'
@@ -13,6 +13,7 @@ import { COLS, ROWS, TILE, findPath, items, spawnPoint, walkable, zones } from '
 import { connectRoom, onlineAvailable, type Availability, type ChatMessage, type Peer, type PeerStatus, type RoomEvent, type RoomLink } from '@/lib/room/transport'
 import { playBlip, playGong, playWave } from '@/lib/room/sounds'
 import { VoiceMesh } from '@/lib/room/voice'
+import { ScreenShare, canShareScreen } from '@/lib/room/screen'
 
 const EMOJIS = ['🦊', '🐼', '🐸', '🐱', '🐻', '🦉', '🐧', '🐨', '🦄', '🐙']
 const COLORS = ['sage', 'sky', 'lilac', 'rose', 'butter', 'peach']
@@ -169,14 +170,17 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const [speaking, setSpeaking] = useState<Set<string>>(new Set())
   const [talkingWith, setTalkingWith] = useState<Set<string>>(new Set())
   const voice = useRef<VoiceMesh | null>(null)
+  const [sharing, setSharing] = useState(false)
+  const [screens, setScreens] = useState<Record<string, MediaStream>>({})
+  const screen = useRef<ScreenShare | null>(null)
   const link = useRef<RoomLink | null>(null)
   const path = useRef<{ x: number; y: number }[]>([])
   const lastStep = useRef(0)
   const chatEnd = useRef<HTMLDivElement>(null)
 
   const me: Peer = useMemo(() => ({
-    id, name: name.trim() || '?', emoji, color, x: pos.x, y: pos.y, status: my.status, endsAt: my.endsAt, avail, dancing, voice: voiceOn,
-  }), [id, name, emoji, color, pos.x, pos.y, my.status, my.endsAt, avail, dancing, voiceOn])
+    id, name: name.trim() || '?', emoji, color, x: pos.x, y: pos.y, status: my.status, endsAt: my.endsAt, avail, dancing, voice: voiceOn, sharing,
+  }), [id, name, emoji, color, pos.x, pos.y, my.status, my.endsAt, avail, dancing, voiceOn, sharing])
   const meRef = useRef(me)
   meRef.current = me
   // event handlers read the latest settings through refs so the connection is opened only once
@@ -212,7 +216,9 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
         fireConfetti()
         break
       case 'rtc':
-        if (e.to === meRef.current.id) void voice.current?.onSignal(e.from, e).catch(() => {})
+        if (e.to !== meRef.current.id) break
+        if (e.ch === 'screen') void screen.current?.onSignal(e.from, { ...e, fromSharer: !!e.fromSharer }).catch(() => {})
+        else void voice.current?.onSignal(e.from, e).catch(() => {})
         break
     }
   }, [pushToast])
@@ -249,6 +255,40 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   }
   const toggleMic = () => { voice.current?.setMicEnabled(!micOn); setMicOn(m => !m) }
   useEffect(() => () => voice.current?.stop(), [])
+
+  // ---- screen sharing (always ready to receive; sending starts on demand)
+  useEffect(() => {
+    const sc = new ScreenShare(
+      sig => link.current?.emit({ t: 'rtc', id: uid(), from: id, at: Date.now(), ch: 'screen', ...sig }),
+      (from, stream) => setScreens(ss => {
+        const { [from]: _, ...rest } = ss
+        return stream ? { ...rest, [from]: stream } : rest
+      }),
+      () => setSharing(false),
+    )
+    screen.current = sc
+    return () => { sc.close(); screen.current = null }
+  }, [id])
+
+  const toggleShare = async () => {
+    const sc = screen.current
+    if (!sc) return
+    if (sharing) { sc.stop(); setSharing(false); return }
+    try {
+      await sc.start()
+      setSharing(true)
+      if (!sc.hasAudio) pushToast({ title: t('room.screen.noAudio'), desc: t('room.screen.noAudioHint'), emoji: '🔇' })
+    } catch { /* the person cancelled the picker */ }
+  }
+
+  // send my screen to everyone in my circle; watch sharers in my circle
+  useEffect(() => {
+    const sc = screen.current
+    if (!sc) return
+    const nearby = Object.values(peers).filter(p => !blocked.has(p.id) && near(p, pos))
+    if (sharing) sc.sync(new Set(nearby.map(p => p.id)))
+    sc.keepWatching(new Set(nearby.filter(p => p.sharing).map(p => p.id)))
+  }, [peers, pos, sharing, blocked])
 
   // talk to whoever is inside my circle with voice on; louder when closer
   useEffect(() => {
@@ -386,6 +426,13 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
           </div>
         </div>
 
+        {Object.keys(screens).length > 0 && (
+          <div className={cn('mb-3 grid gap-3', Object.keys(screens).length > 1 && 'sm:grid-cols-2')}>
+            {Object.entries(screens).map(([pid, stream]) => (
+              <ScreenTile key={pid} stream={stream} name={peers[pid]?.name ?? '?'} />
+            ))}
+          </div>
+        )}
         <div ref={wrap} className="w-full">
           <div className="card overflow-hidden" style={{ width: COLS * TILE * scale, height: ROWS * TILE * scale }}>
             <div className="relative origin-top-left cursor-pointer select-none bg-cream-2"
@@ -421,7 +468,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
                     </div>
                   </div>
                   <span className="absolute left-1/2 top-[calc(100%-2px)] -translate-x-1/2 whitespace-nowrap rounded-full bg-ink/75 px-1.5 text-[10px] font-semibold text-cream">
-                    {p.avail === 'dnd' && '🔕 '}{p.voice && '🎙️ '}{p.id === id ? `${p.name} (${t('room.you')})` : p.name}
+                    {p.avail === 'dnd' && '🔕 '}{p.voice && '🎙️ '}{p.sharing && '🖥️ '}{p.id === id ? `${p.name} (${t('room.you')})` : p.name}
                   </span>
                 </div>
               ))}
@@ -442,6 +489,11 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
             <button className={cn('btn h-9 w-9 p-0', micOn ? 'btn-soft' : 'bg-rose-soft text-rose-ink')} onClick={toggleMic}
               title={micOn ? t('room.voice.mute') : t('room.voice.unmute')}>
               {micOn ? <Mic size={15} /> : <MicOff size={15} />}
+            </button>
+          )}
+          {canShareScreen && (
+            <button className={cn('btn h-9 px-3', sharing ? 'bg-rose-soft text-rose-ink' : 'btn-soft')} onClick={toggleShare}>
+              {sharing ? <MonitorX size={15} /> : <MonitorUp size={15} />}{sharing ? t('room.screen.stop') : t('room.screen.share')}
             </button>
           )}
           <span className="mx-1 h-6 w-px bg-line" />
@@ -538,6 +590,29 @@ function PeerRow({ p, now, you, isNear, blocked, talking, onWave, onBlock }:
           </button>
         </div>
       )}
+    </div>
+  )
+}
+
+function ScreenTile({ stream, name }: { stream: MediaStream; name: string }) {
+  const t = useT()
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const v = ref.current
+    if (!v) return
+    v.srcObject = stream
+    void v.play().catch(() => {})
+  }, [stream])
+  return (
+    <div className="card relative overflow-hidden bg-ink">
+      <video ref={ref} autoPlay playsInline controls className="aspect-video w-full bg-ink object-contain" />
+      <div className="absolute left-2 top-2 flex items-center gap-1.5">
+        <span className="chip bg-ink/70 text-cream">🖥️ {t('room.screen.of', { name })}</span>
+      </div>
+      <button className="btn absolute right-2 top-2 h-8 w-8 bg-ink/70 p-0 text-cream hover:bg-ink" title={t('room.screen.full')}
+        onClick={() => void ref.current?.requestFullscreen?.()}>
+        <Maximize2 size={14} />
+      </button>
     </div>
   )
 }
