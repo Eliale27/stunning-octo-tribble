@@ -14,9 +14,10 @@ import { useT } from '@/i18n'
 import { useStore } from '@/store/useStore'
 import { cn, levelFor, streak } from '@/lib/utils'
 import { fmtClock, useFocusAlarm, useFocusTicker } from '@/lib/useFocusTicker'
+import { ROOM_ENABLED } from '@/lib/room/enabled'
 
 // labels are translation keys under `app.nav.*` / `app.mobileNav.*`
-const nav = [
+const allNav = [
   { to: '/app', label: 'app.nav.home', icon: Home, end: true },
   { to: '/app/materias', label: 'app.nav.subjects', icon: BookOpen },
   { to: '/app/planejamento', label: 'app.nav.planner', icon: CalendarDays },
@@ -29,8 +30,9 @@ const nav = [
   { to: '/app/conquistas', label: 'app.nav.achievements', icon: Trophy },
   { to: '/app/configuracoes', label: 'app.nav.settings', icon: Settings },
 ]
+const nav = allNav.filter(n => ROOM_ENABLED || n.to !== '/app/sala')
 const mobileNav = [
-  { ...nav[0], short: 'app.mobileNav.home' }, { ...nav[3], short: 'app.mobileNav.tasks' }, { ...nav[5], short: 'app.mobileNav.focus' }, { ...nav[2], short: 'app.mobileNav.planner' }, { ...nav[8], short: 'app.mobileNav.progress' },
+  { ...allNav[0], short: 'app.mobileNav.home' }, { ...allNav[3], short: 'app.mobileNav.tasks' }, { ...allNav[5], short: 'app.mobileNav.focus' }, { ...allNav[2], short: 'app.mobileNav.planner' }, { ...allNav[8], short: 'app.mobileNav.progress' },
 ]
 
 function MiniTimer({ collapsed }: { collapsed: boolean }) {

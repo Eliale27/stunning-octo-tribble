@@ -5,6 +5,7 @@ import Landing from '@/pages/Landing'
 import Login from '@/pages/Login'
 import Dashboard from '@/pages/Dashboard'
 import { langTags, useLang } from '@/i18n'
+import { ROOM_ENABLED } from '@/lib/room/enabled'
 
 const Subjects = lazy(() => import('@/pages/Subjects'))
 const SubjectDetail = lazy(() => import('@/pages/SubjectDetail'))
@@ -41,7 +42,7 @@ export default function App() {
           <Route path="tarefas" element={<Tasks />} />
           <Route path="anotacoes" element={<Notes />} />
           <Route path="foco" element={<Focus />} />
-          <Route path="sala/:code?" element={<StudyRoom />} />
+          {ROOM_ENABLED && <Route path="sala/:code?" element={<StudyRoom />} />}
           <Route path="revisao" element={<Review />} />
           <Route path="progresso" element={<Progress />} />
           <Route path="conquistas" element={<Achievements />} />
