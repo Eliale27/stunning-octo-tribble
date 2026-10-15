@@ -3,7 +3,7 @@ import type { app as Pt } from '../pt/app'
 export const app: typeof Pt = {
   nav: {
     home: 'Home', subjects: 'My subjects', planner: 'Planner', tasks: 'Tasks', notes: 'Notes',
-    focus: 'Focus', review: 'Review', progress: 'My progress', achievements: 'Achievements', settings: 'Settings',
+    focus: 'Focus', room: 'Study room', review: 'Review', progress: 'My progress', achievements: 'Achievements', settings: 'Settings',
   },
   mobileNav: { home: 'Home', tasks: 'Tasks', focus: 'Focus', planner: 'Plan', progress: 'Progress' },
   timer: { pause: 'Pause', resume: 'Resume', focusing: 'Focusing', break: 'Break' },

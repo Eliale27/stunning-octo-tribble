@@ -156,3 +156,17 @@ body {
   display: flex; gap: .75rem; padding: 1rem 1.1rem; border-radius: 1rem; background: var(--color-butter-soft);
   border: 1px solid color-mix(in oklab, var(--color-butter) 60%, white);
 }
+
+/* Study room: floating reactions and dancing avatars */
+@keyframes room-float {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(.6); }
+  15% { opacity: 1; transform: translate(-50%, -14px) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -46px) scale(1); }
+}
+.room-float { animation: room-float 2.5s ease-out forwards; }
+@keyframes room-dance {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25% { transform: translateY(-5px) rotate(-12deg); }
+  75% { transform: translateY(-5px) rotate(12deg); }
+}
+.room-dance { animation: room-dance .6s ease-in-out infinite; }
