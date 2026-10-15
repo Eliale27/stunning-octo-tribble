@@ -36,6 +36,12 @@ export const room: typeof Pt = {
   react: 'React',
   dance: 'Dance', confetti: 'Confetti', gong: 'Gong',
   gonged: '{name} rang the gong!',
+  voice: {
+    join: 'Join voice', leave: 'Leave voice', mute: 'Mute microphone', unmute: 'Unmute microphone',
+    hint: 'Voice on: you talk with people inside your circle who also turned voice on. The closer, the louder.',
+    denied: 'Could not use the microphone. Check the browser permission.',
+    talking: 'talking',
+  },
   you: 'you',
   people_one: '{count} person in the room',
   people_other: '{count} people in the room',
