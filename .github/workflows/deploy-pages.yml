@@ -29,6 +29,8 @@ jobs:
           # public Supabase project for the study room; empty keeps the room in local test mode
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          # optional TURN relay for voice/screen on networks that block direct links
+          VITE_TURN_CREDENTIALS_URL: ${{ vars.VITE_TURN_CREDENTIALS_URL }}
       - uses: actions/configure-pages@v5
         with:
           enablement: true

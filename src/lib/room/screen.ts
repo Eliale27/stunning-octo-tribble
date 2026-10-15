@@ -4,7 +4,7 @@
  * the system's sound, when the browser offers it) travels with the video.
  */
 
-import { ICE, gathered } from './rtc'
+import { gathered, iceConfig, loadIce } from './rtc'
 
 /** `fromSharer` tells which side sent it, since two people can share to each other at once. */
 export type ScreenSignal = { to: string; fromSharer: boolean; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit }
@@ -38,6 +38,7 @@ export class ScreenShare {
 
   async start() {
     if (this.stream) return
+    void loadIce()
     this.stream = await navigator.mediaDevices.getDisplayMedia({
       video: { frameRate: { ideal: 15, max: 30 } },
       // Chrome/Edge offer "share tab audio" (and system audio on Windows); others ignore it
@@ -108,7 +109,7 @@ export class ScreenShare {
   }
 
   private async offer(id: string) {
-    const pc = new RTCPeerConnection(ICE)
+    const pc = new RTCPeerConnection(iceConfig())
     const l: Link = { pc, pending: [], since: Date.now() }
     this.out.set(id, l)
     this.stream!.getTracks().forEach(t => pc.addTransceiver(t, { direction: 'sendonly', streams: [this.stream!] }))
@@ -119,7 +120,7 @@ export class ScreenShare {
   }
 
   private openIn(from: string): Link {
-    const pc = new RTCPeerConnection(ICE)
+    const pc = new RTCPeerConnection(iceConfig())
     const l: Link = { pc, pending: [], since: Date.now() }
     this.in.set(from, l)
     let stream: MediaStream | null = null

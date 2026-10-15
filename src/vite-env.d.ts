@@ -7,4 +7,6 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_ANON_KEY?: string
   /** "1" keeps the study room in local (same-browser) test mode. */
   readonly VITE_ROOM_LOCAL?: string
+  /** Metered TURN credentials URL (with its apiKey) so voice/screen work across strict networks. */
+  readonly VITE_TURN_CREDENTIALS_URL?: string
 }

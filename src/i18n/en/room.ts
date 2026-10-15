@@ -41,6 +41,8 @@ export const room: typeof Pt = {
     hint: 'Voice on: you talk with people inside your circle who also turned voice on. The closer, the louder.',
     denied: 'Could not use the microphone. Check the browser permission.',
     talking: 'talking',
+    connecting: 'connecting voice…', failed: 'voice did not connect', off: 'voice off',
+    failedHint: "One of your networks blocked the direct link. Try another network, such as a phone's mobile data.",
   },
   screen: {
     share: 'Share screen', stop: 'Stop sharing', of: "{name}'s screen", full: 'Full screen',

@@ -5,7 +5,9 @@
  * share of networks (strict corporate/mobile NATs) cannot connect directly.
  */
 
-import { ICE, gathered } from './rtc'
+import { gathered, iceConfig, loadIce } from './rtc'
+
+export type VoiceState = 'connecting' | 'connected' | 'failed'
 
 export type Signal = { to: string; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit }
 
@@ -19,6 +21,8 @@ export class VoiceMesh {
   private local: MediaStream | null = null
   private ctx: AudioContext | null = null
   private localAnalyser: AnalyserNode | null = null
+  /** When a link last failed, to show it for a while instead of silently retrying. */
+  private failedAt = new Map<string, number>()
 
   constructor(private myId: string, private send: (s: Signal) => void) {}
 
@@ -27,6 +31,7 @@ export class VoiceMesh {
   /** Ask for the microphone. Throws if the person refuses. */
   async start() {
     if (this.local) return
+    await loadIce()
     this.local = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
     this.localAnalyser = this.analyse(this.local) ?? null
   }
@@ -47,8 +52,10 @@ export class VoiceMesh {
     const now = Date.now()
     for (const [id, l] of [...this.links]) {
       const stale = l.pc.connectionState !== 'connected' && now - l.since > CONNECT_TIMEOUT_MS
+      if (stale) this.failedAt.set(id, now)
       if (!ids.has(id) || stale) this.drop(id)
     }
+    for (const id of [...this.failedAt.keys()]) if (!ids.has(id)) this.failedAt.delete(id)
     for (const id of ids) if (!this.links.has(id) && this.myId < id) void this.call(id)
   }
 
@@ -96,6 +103,17 @@ export class VoiceMesh {
     return out
   }
 
+  /** Link state with each person I should be talking to. */
+  states(): Map<string, VoiceState> {
+    const out = new Map<string, VoiceState>()
+    for (const [id] of this.failedAt) out.set(id, 'failed')
+    for (const [id, l] of this.links) {
+      if (l.pc.connectionState === 'connected') { out.set(id, 'connected'); this.failedAt.delete(id) }
+      else if (!out.has(id)) out.set(id, 'connecting')
+    }
+    return out
+  }
+
   private async call(id: string) {
     const l = this.open(id)
     await l.pc.setLocalDescription(await l.pc.createOffer())
@@ -104,7 +122,7 @@ export class VoiceMesh {
   }
 
   private open(id: string): Link {
-    const pc = new RTCPeerConnection(ICE)
+    const pc = new RTCPeerConnection(iceConfig())
     const audio = new Audio()
     audio.autoplay = true
     const l: Link = { pc, audio, pending: [], since: Date.now() }
@@ -115,7 +133,7 @@ export class VoiceMesh {
       void audio.play().catch(() => {})
       l.analyser = this.analyse(stream)
     }
-    pc.onconnectionstatechange = () => { if (pc.connectionState === 'failed') this.drop(id) }
+    pc.onconnectionstatechange = () => { if (pc.connectionState === 'failed') { this.failedAt.set(id, Date.now()); this.drop(id) } }
     this.links.set(id, l)
     return l
   }

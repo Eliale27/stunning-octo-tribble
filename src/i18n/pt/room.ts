@@ -39,6 +39,8 @@ export const room = {
     hint: 'Voz ligada: você fala e ouve quem está dentro do seu círculo e também ligou a voz. Quanto mais perto, mais alto.',
     denied: 'Não foi possível usar o microfone. Verifique a permissão do navegador.',
     talking: 'em conversa',
+    connecting: 'conectando voz…', failed: 'voz não conectou', off: 'sem voz ligada',
+    failedHint: 'A rede de um de vocês bloqueou a conexão direta. Tente outra rede, como o 4G do celular.',
   },
   screen: {
     share: 'Compartilhar tela', stop: 'Parar de compartilhar', of: 'Tela de {name}', full: 'Tela cheia',
