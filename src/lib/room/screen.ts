@@ -4,13 +4,13 @@
  * the system's sound, when the browser offers it) travels with the video.
  */
 
+import { ICE, gathered } from './rtc'
+
 /** `fromSharer` tells which side sent it, since two people can share to each other at once. */
 export type ScreenSignal = { to: string; fromSharer: boolean; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit }
 
-const ICE: RTCConfiguration = {
-  iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }],
-}
 const CONNECT_TIMEOUT_MS = 10000
+const NEW_LINK_GRACE_MS = 5000
 
 interface Link { pc: RTCPeerConnection; pending: RTCIceCandidateInit[]; since: number }
 
@@ -29,6 +29,8 @@ export class ScreenShare {
     private onRemote: (from: string, stream: MediaStream | null) => void,
     /** My share ended, e.g. from the browser's own "Stop sharing" bar. */
     private onEnded: () => void,
+    /** A viewer could not be reached directly (usually a network that blocks peer-to-peer). */
+    private onFailed: (viewer: string) => void = () => {},
   ) {}
 
   get sharing() { return !!this.stream }
@@ -61,9 +63,13 @@ export class ScreenShare {
     for (const id of ids) if (!this.out.has(id)) void this.offer(id)
   }
 
-  /** Stop watching sharers that are no longer in range or no longer sharing. */
-  keepWatching(ids: Set<string>) {
-    for (const id of [...this.in.keys()]) if (!ids.has(id)) this.dropIn(id)
+  /**
+   * Stop watching sharers for whom `shouldStop` says so (walked away, stopped sharing).
+   * Brand-new links are kept for a moment: the offer can arrive before their "sharing" state does.
+   */
+  stopWatching(shouldStop: (id: string) => boolean) {
+    const now = Date.now()
+    for (const [id, l] of [...this.in]) if (now - l.since > NEW_LINK_GRACE_MS && shouldStop(id)) this.dropIn(id)
   }
 
   async onSignal(from: string, s: ScreenSignal) {
@@ -74,6 +80,7 @@ export class ScreenShare {
         await l.pc.setRemoteDescription(s.sdp)
         for (const c of l.pending.splice(0)) await l.pc.addIceCandidate(c).catch(() => {})
         await l.pc.setLocalDescription(await l.pc.createAnswer())
+        await gathered(l.pc)
         this.send({ to: from, fromSharer: false, sdp: l.pc.localDescription!.toJSON() })
       } else if (s.ice) {
         const l = this.in.get(from)
@@ -105,9 +112,9 @@ export class ScreenShare {
     const l: Link = { pc, pending: [], since: Date.now() }
     this.out.set(id, l)
     this.stream!.getTracks().forEach(t => pc.addTransceiver(t, { direction: 'sendonly', streams: [this.stream!] }))
-    pc.onicecandidate = e => { if (e.candidate) this.send({ to: id, fromSharer: true, ice: e.candidate.toJSON() }) }
-    pc.onconnectionstatechange = () => { if (pc.connectionState === 'failed') this.dropOut(id) }
+    pc.onconnectionstatechange = () => { if (pc.connectionState === 'failed') { this.dropOut(id); this.onFailed(id) } }
     await pc.setLocalDescription(await pc.createOffer())
+    await gathered(pc)
     this.send({ to: id, fromSharer: true, sdp: pc.localDescription!.toJSON() })
   }
 
@@ -116,7 +123,6 @@ export class ScreenShare {
     const l: Link = { pc, pending: [], since: Date.now() }
     this.in.set(from, l)
     let stream: MediaStream | null = null
-    pc.onicecandidate = e => { if (e.candidate) this.send({ to: from, fromSharer: false, ice: e.candidate.toJSON() }) }
     pc.ontrack = e => {
       stream ??= e.streams[0] ?? new MediaStream()
       if (!stream.getTracks().includes(e.track)) stream.addTrack(e.track)

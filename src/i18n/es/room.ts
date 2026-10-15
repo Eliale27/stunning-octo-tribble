@@ -46,6 +46,8 @@ export const room: typeof Pt = {
     share: 'Compartir pantalla', stop: 'Dejar de compartir', of: 'Pantalla de {name}', full: 'Pantalla completa',
     noAudio: 'Compartiendo sin sonido',
     noAudioHint: 'Para enviar el sonido, comparte de nuevo y marca "Compartir audio" (en Chrome o Edge, eligiendo una pestaña, o la pantalla completa en Windows).',
+    failed: 'La pantalla no le llegó a {name}',
+    failedHint: 'La red de alguno de ustedes puede estar bloqueando la conexión directa. Prueba otra red (por ejemplo, el hotspot del móvil).',
   },
   you: 'tú',
   people_one: '{count} persona en la sala',

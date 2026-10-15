@@ -44,6 +44,8 @@ export const room = {
     share: 'Compartilhar tela', stop: 'Parar de compartilhar', of: 'Tela de {name}', full: 'Tela cheia',
     noAudio: 'Compartilhando sem som',
     noAudioHint: 'Para enviar o som, compartilhe de novo e marque "Compartilhar áudio" (no Chrome ou Edge, escolhendo uma aba ou a tela inteira no Windows).',
+    failed: 'A tela não chegou para {name}',
+    failedHint: 'A rede de um de vocês pode estar bloqueando a conexão direta. Tente outra rede (por exemplo, o 4G do celular como roteador).',
   },
   you: 'você',
   people_one: '{count} pessoa na sala',

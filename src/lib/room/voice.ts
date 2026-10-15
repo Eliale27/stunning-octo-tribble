@@ -5,11 +5,9 @@
  * share of networks (strict corporate/mobile NATs) cannot connect directly.
  */
 
-export type Signal = { to: string; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit }
+import { ICE, gathered } from './rtc'
 
-const ICE: RTCConfiguration = {
-  iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }],
-}
+export type Signal = { to: string; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit }
 
 interface Link { pc: RTCPeerConnection; audio: HTMLAudioElement; analyser?: AnalyserNode; pending: RTCIceCandidateInit[]; since: number }
 
@@ -68,6 +66,7 @@ export class VoiceMesh {
       await l.pc.setRemoteDescription(s.sdp)
       for (const c of l.pending.splice(0)) await l.pc.addIceCandidate(c).catch(() => {})
       await l.pc.setLocalDescription(await l.pc.createAnswer())
+      await gathered(l.pc)
       this.send({ to: from, sdp: l.pc.localDescription!.toJSON() })
     } else if (s.sdp?.type === 'answer') {
       const l = this.links.get(from)
@@ -100,6 +99,7 @@ export class VoiceMesh {
   private async call(id: string) {
     const l = this.open(id)
     await l.pc.setLocalDescription(await l.pc.createOffer())
+    await gathered(l.pc)
     this.send({ to: id, sdp: l.pc.localDescription!.toJSON() })
   }
 
@@ -109,7 +109,6 @@ export class VoiceMesh {
     audio.autoplay = true
     const l: Link = { pc, audio, pending: [], since: Date.now() }
     this.local!.getTracks().forEach(t => pc.addTrack(t, this.local!))
-    pc.onicecandidate = e => { if (e.candidate) this.send({ to: id, ice: e.candidate.toJSON() }) }
     pc.ontrack = e => {
       const stream = e.streams[0] ?? new MediaStream([e.track])
       audio.srcObject = stream

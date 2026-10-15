@@ -46,6 +46,8 @@ export const room: typeof Pt = {
     share: 'Share screen', stop: 'Stop sharing', of: "{name}'s screen", full: 'Full screen',
     noAudio: 'Sharing without sound',
     noAudioHint: 'To send sound, share again and tick "Share audio" (in Chrome or Edge, picking a tab, or the entire screen on Windows).',
+    failed: "Your screen didn't reach {name}",
+    failedHint: "One of your networks may be blocking direct connections. Try another network (for example, your phone's hotspot).",
   },
   you: 'you',
   people_one: '{count} person in the room',

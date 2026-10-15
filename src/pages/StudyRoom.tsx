@@ -157,6 +157,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const [avail, setAvail] = useState<Availability>('available')
   const [dancing, setDancing] = useState(false)
   const [peers, setPeers] = useState<Record<string, Peer>>({})
+  const peersRef = useRef(peers)
+  peersRef.current = peers
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [reactions, setReactions] = useState<{ id: string; from: string; emoji: string; at: number }[]>([])
   const [blocked, setBlocked] = useState<Set<string>>(new Set())
@@ -265,6 +267,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
         return stream ? { ...rest, [from]: stream } : rest
       }),
       () => setSharing(false),
+      viewer => pushToast({ title: t('room.screen.failed', { name: peersRef.current[viewer]?.name ?? '?' }), desc: t('room.screen.failedHint'), emoji: '📡' }),
     )
     screen.current = sc
     return () => { sc.close(); screen.current = null }
@@ -287,7 +290,11 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     if (!sc) return
     const nearby = Object.values(peers).filter(p => !blocked.has(p.id) && near(p, pos))
     if (sharing) sc.sync(new Set(nearby.map(p => p.id)))
-    sc.keepWatching(new Set(nearby.filter(p => p.sharing).map(p => p.id)))
+    // an unknown sharer (e.g. their state is late) keeps streaming until the link itself closes
+    sc.stopWatching(pid => {
+      const p = peers[pid]
+      return blocked.has(pid) || (!!p && (!p.sharing || !near(p, pos)))
+    })
   }, [peers, pos, sharing, blocked])
 
   // talk to whoever is inside my circle with voice on; louder when closer
