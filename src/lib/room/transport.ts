@@ -23,6 +23,8 @@ export interface Peer {
   endsAt?: number
   avail: Availability
   dancing?: boolean
+  /** Microphone on: joins voice with nearby people who also have it on. */
+  voice?: boolean
 }
 
 /** Chat with `near` set is only shown to people within a few tiles of that spot. */
@@ -35,6 +37,8 @@ export type RoomEvent =
   | { t: 'react'; id: string; from: string; emoji: string; at: number }
   | { t: 'gong'; id: string; from: string; name: string; reason?: string; at: number }
   | { t: 'confetti'; id: string; from: string; at: number }
+  /** WebRTC signalling for proximity voice, addressed to one peer. */
+  | { t: 'rtc'; id: string; from: string; to: string; at: number; sdp?: RTCSessionDescriptionInit; ice?: RTCIceCandidateInit }
 
 export interface RoomHandlers {
   onPeer: (p: Peer) => void
@@ -58,7 +62,8 @@ export interface RoomLink {
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined) || 'https://cygwwydfobezakfvxqca.supabase.co'
 const SUPABASE_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) || 'sb_publishable_vyDu01CtQvrKM0P35T8nAg_r668t4HG'
 
-export const onlineAvailable = !!(SUPABASE_URL && SUPABASE_KEY)
+/** VITE_ROOM_LOCAL=1 forces the local test mode, e.g. for testing without network. */
+export const onlineAvailable = !!(SUPABASE_URL && SUPABASE_KEY) && import.meta.env.VITE_ROOM_LOCAL !== '1'
 
 export function connectRoom(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
   return onlineAvailable ? connectSupabase(roomId, me, h) : connectLocal(roomId, me, h)

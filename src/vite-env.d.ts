@@ -5,4 +5,6 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL?: string
   /** Public "anon" key: safe in the browser by design. */
   readonly VITE_SUPABASE_ANON_KEY?: string
+  /** "1" keeps the study room in local (same-browser) test mode. */
+  readonly VITE_ROOM_LOCAL?: string
 }

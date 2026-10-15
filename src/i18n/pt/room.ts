@@ -34,6 +34,12 @@ export const room = {
   react: 'Reagir',
   dance: 'Dançar', confetti: 'Confete', gong: 'Gongo',
   gonged: '{name} tocou o gongo!',
+  voice: {
+    join: 'Entrar na voz', leave: 'Sair da voz', mute: 'Desligar microfone', unmute: 'Ligar microfone',
+    hint: 'Voz ligada: você fala e ouve quem está dentro do seu círculo e também ligou a voz. Quanto mais perto, mais alto.',
+    denied: 'Não foi possível usar o microfone. Verifique a permissão do navegador.',
+    talking: 'em conversa',
+  },
   you: 'você',
   people_one: '{count} pessoa na sala',
   people_other: '{count} pessoas na sala',

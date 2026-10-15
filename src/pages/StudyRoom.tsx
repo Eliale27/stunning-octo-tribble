@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import confetti from 'canvas-confetti'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Ban, Bell, BellOff, Link2, LogOut, Send, Undo2, Wifi, FlaskConical } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Ban, Bell, BellOff, Mic, MicOff, Headphones, Link2, LogOut, Send, Undo2, Wifi, FlaskConical } from 'lucide-react'
 import { PageHeader, Segmented } from '@/components/ui/Bits'
 import { useStore } from '@/store/useStore'
 import { useT, type TFn } from '@/i18n'
@@ -12,6 +12,7 @@ import { fmtClock, useFocusTicker } from '@/lib/useFocusTicker'
 import { COLS, ROWS, TILE, findPath, items, spawnPoint, walkable, zones } from '@/lib/room/map'
 import { connectRoom, onlineAvailable, type Availability, type ChatMessage, type Peer, type PeerStatus, type RoomEvent, type RoomLink } from '@/lib/room/transport'
 import { playBlip, playGong, playWave } from '@/lib/room/sounds'
+import { VoiceMesh } from '@/lib/room/voice'
 
 const EMOJIS = ['🦊', '🐼', '🐸', '🐱', '🐻', '🦉', '🐧', '🐨', '🦄', '🐙']
 const COLORS = ['sage', 'sky', 'lilac', 'rose', 'butter', 'peach']
@@ -163,14 +164,19 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const [conn, setConn] = useState<'connecting' | 'online' | 'error'>('connecting')
   const [draft, setDraft] = useState('')
   const [copied, setCopied] = useState(false)
+  const [voiceOn, setVoiceOn] = useState(false)
+  const [micOn, setMicOn] = useState(true)
+  const [speaking, setSpeaking] = useState<Set<string>>(new Set())
+  const [talkingWith, setTalkingWith] = useState<Set<string>>(new Set())
+  const voice = useRef<VoiceMesh | null>(null)
   const link = useRef<RoomLink | null>(null)
   const path = useRef<{ x: number; y: number }[]>([])
   const lastStep = useRef(0)
   const chatEnd = useRef<HTMLDivElement>(null)
 
   const me: Peer = useMemo(() => ({
-    id, name: name.trim() || '?', emoji, color, x: pos.x, y: pos.y, status: my.status, endsAt: my.endsAt, avail, dancing,
-  }), [id, name, emoji, color, pos.x, pos.y, my.status, my.endsAt, avail, dancing])
+    id, name: name.trim() || '?', emoji, color, x: pos.x, y: pos.y, status: my.status, endsAt: my.endsAt, avail, dancing, voice: voiceOn,
+  }), [id, name, emoji, color, pos.x, pos.y, my.status, my.endsAt, avail, dancing, voiceOn])
   const meRef = useRef(me)
   meRef.current = me
   // event handlers read the latest settings through refs so the connection is opened only once
@@ -205,6 +211,9 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
       case 'confetti':
         fireConfetti()
         break
+      case 'rtc':
+        if (e.to === meRef.current.id) void voice.current?.onSignal(e.from, e).catch(() => {})
+        break
     }
   }, [pushToast])
 
@@ -221,6 +230,53 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   }, [code, onEvent])
 
   useEffect(() => { link.current?.update(me) }, [me])
+
+  // ---- proximity voice
+  const toggleVoice = async () => {
+    if (voiceOn) { voice.current?.stop(); setVoiceOn(false); return }
+    const v = voice.current ?? new VoiceMesh(id, sig => {
+      link.current?.emit({ t: 'rtc', id: uid(), from: id, at: Date.now(), ...sig })
+    })
+    voice.current = v
+    try {
+      await v.start()
+      v.setMicEnabled(true)
+      setMicOn(true)
+      setVoiceOn(true)
+    } catch {
+      pushToast({ title: t('room.voice.denied'), emoji: '🎙️' })
+    }
+  }
+  const toggleMic = () => { voice.current?.setMicEnabled(!micOn); setMicOn(m => !m) }
+  useEffect(() => () => voice.current?.stop(), [])
+
+  // talk to whoever is inside my circle with voice on; louder when closer
+  useEffect(() => {
+    const v = voice.current
+    if (!v || !voiceOn) return
+    const ids = new Set<string>()
+    for (const p of Object.values(peers)) {
+      if (!p.voice || blocked.has(p.id) || !near(p, pos)) continue
+      ids.add(p.id)
+      const d = Math.abs(p.x - pos.x) + Math.abs(p.y - pos.y)
+      v.setVolume(p.id, 1 - Math.max(0, d - 1) * 0.25)
+    }
+    v.sync(ids)
+  }, [peers, pos, voiceOn, blocked])
+
+  // who is talking (green ring) and who I am connected to
+  useEffect(() => {
+    if (!voiceOn) { setSpeaking(new Set()); setTalkingWith(new Set()); return }
+    const same = (a: Set<string>, b: Set<string>) => a.size === b.size && [...a].every(x => b.has(x))
+    const iv = setInterval(() => {
+      const v = voice.current
+      if (!v) return
+      const s = v.speaking(), c = v.connected()
+      setSpeaking(prev => (same(prev, s) ? prev : s))
+      setTalkingWith(prev => (same(prev, c) ? prev : c))
+    }, 200)
+    return () => clearInterval(iv)
+  }, [voiceOn])
   useEffect(() => { chatEnd.current?.scrollIntoView({ block: 'nearest' }) }, [messages.length, tab])
 
   const emit = useCallback((e: DistributiveOmit<RoomEvent, 'id' | 'from' | 'at'>) => {
@@ -359,13 +415,13 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
                     <span key={r.id} className="room-float absolute left-1/2 top-0 -translate-x-1/2 text-xl">{r.emoji}</span>
                   ))}
                   <div className="grid h-full place-items-center">
-                    <div className={cn('relative', p.dancing && 'room-dance')}>
+                    <div className={cn('relative rounded-full', p.dancing && 'room-dance', speaking.has(p.id) && 'ring-4 ring-sage-ink/60')}>
                       <Avatar emoji={p.emoji} color={p.color} ring={p.id === id} />
                       <span className={cn('absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white', dotClass(p))} />
                     </div>
                   </div>
                   <span className="absolute left-1/2 top-[calc(100%-2px)] -translate-x-1/2 whitespace-nowrap rounded-full bg-ink/75 px-1.5 text-[10px] font-semibold text-cream">
-                    {p.avail === 'dnd' && '🔕 '}{p.id === id ? `${p.name} (${t('room.you')})` : p.name}
+                    {p.avail === 'dnd' && '🔕 '}{p.voice && '🎙️ '}{p.id === id ? `${p.name} (${t('room.you')})` : p.name}
                   </span>
                 </div>
               ))}
@@ -379,13 +435,23 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
             <button key={r} className="btn btn-ghost h-9 w-9 p-0 text-lg" onClick={() => emit({ t: 'react', emoji: r })} title={t('room.react')}>{r}</button>
           ))}
           <span className="mx-1 h-6 w-px bg-line" />
+          <button className={cn('btn h-9 px-3', voiceOn ? 'btn-sage' : 'btn-primary')} onClick={toggleVoice}>
+            <Headphones size={15} />{voiceOn ? t('room.voice.leave') : t('room.voice.join')}
+          </button>
+          {voiceOn && (
+            <button className={cn('btn h-9 w-9 p-0', micOn ? 'btn-soft' : 'bg-rose-soft text-rose-ink')} onClick={toggleMic}
+              title={micOn ? t('room.voice.mute') : t('room.voice.unmute')}>
+              {micOn ? <Mic size={15} /> : <MicOff size={15} />}
+            </button>
+          )}
+          <span className="mx-1 h-6 w-px bg-line" />
           <button className={cn('btn h-9 px-3', dancing ? 'btn-sage' : 'btn-soft')} onClick={() => setDancing(d => !d)}>💃 {t('room.dance')}</button>
           <button className="btn btn-soft h-9 px-3" onClick={() => emit({ t: 'confetti' })}>🎊 {t('room.confetti')}</button>
           <button className="btn btn-soft h-9 px-3" onClick={() => emit({ t: 'gong', name: me.name })}>🔔 {t('room.gong')}</button>
         </div>
 
         <div className="mt-3 flex items-center justify-between gap-3">
-          <p className="text-xs text-muted">{t('room.help')} {t('room.timerHint')}</p>
+          <p className="text-xs text-muted">{voiceOn ? t('room.voice.hint') : `${t('room.help')} ${t('room.timerHint')}`}</p>
           {/* touch d-pad */}
           <div className="grid shrink-0 grid-cols-3 gap-1 md:hidden">
             <span />
@@ -415,7 +481,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
           {sortedOthers.length === 0 && <p className="text-xs text-muted">{t('room.alone')}</p>}
           <div className="max-h-56 overflow-y-auto">
             {sortedOthers.map(p => (
-              <PeerRow key={p.id} p={p} now={now} isNear={near(p, pos)} blocked={blocked.has(p.id)}
+              <PeerRow key={p.id} p={p} now={now} isNear={near(p, pos)} blocked={blocked.has(p.id)} talking={talkingWith.has(p.id)}
                 onWave={p.avail === 'dnd' || blocked.has(p.id) ? undefined : () => emit({ t: 'wave', name: me.name, to: p.id })}
                 onBlock={() => toggleBlock(p.id)} />
             ))}
@@ -448,8 +514,8 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   )
 }
 
-function PeerRow({ p, now, you, isNear, blocked, onWave, onBlock }:
-  { p: Peer; now: number; you?: string; isNear?: boolean; blocked?: boolean; onWave?: () => void; onBlock?: () => void }) {
+function PeerRow({ p, now, you, isNear, blocked, talking, onWave, onBlock }:
+  { p: Peer; now: number; you?: string; isNear?: boolean; blocked?: boolean; talking?: boolean; onWave?: () => void; onBlock?: () => void }) {
   const t = useT()
   return (
     <div className={cn('group flex items-center gap-2.5 py-1.5', blocked && 'opacity-50')}>
@@ -461,6 +527,7 @@ function PeerRow({ p, now, you, isNear, blocked, onWave, onBlock }:
         </p>
         <p className="flex items-center gap-1.5 text-[11px] text-muted">
           <span className={cn('h-1.5 w-1.5 rounded-full', dotClass(p))} />{blocked ? t('room.blocked') : statusLabel(t, p, now)}
+          {talking && <span className="font-semibold text-sky-ink">· 🔊 {t('room.voice.talking')}</span>}
         </p>
       </div>
       {onBlock && (
