@@ -15,7 +15,7 @@ export const app: typeof Pt = {
     aria: 'Guided tour',
     stepOf: 'Step {step} of {total}',
     timer: { title: 'Timer', text: 'Pick a duration, hit play and study in Pomodoro sessions with automatic breaks.' },
-    music: { title: 'Music', text: 'Paste a Spotify playlist link and play or pause your music right here, next to the timer.' },
+    music: { title: 'Music', text: 'Paste a Spotify or YouTube link and play or pause your music right here, next to the timer.' },
     language: { title: 'Language', text: 'Switch the interface language whenever you like; your choice is saved for next time.' },
     planner: { title: 'Planner', text: 'Organize your week as a calendar, list or kanban board and keep track of your goals.' },
     review: { title: 'Review', text: 'Spaced repetition tells you what to review and when, so what you learn really sticks.' },

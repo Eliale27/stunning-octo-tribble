@@ -15,7 +15,7 @@ export const app: typeof Pt = {
     aria: 'Tour guiado',
     stepOf: 'Paso {step} de {total}',
     timer: { title: 'Cronómetro', text: 'Elige la duración, dale a play y estudia en sesiones Pomodoro con pausas automáticas.' },
-    music: { title: 'Música', text: 'Pega el enlace de una playlist de Spotify y reproduce o pausa la música aquí, junto al cronómetro.' },
+    music: { title: 'Música', text: 'Pega un enlace de Spotify o de YouTube y reproduce o pausa la música aquí, junto al cronómetro.' },
     language: { title: 'Idioma', text: 'Cambia el idioma de la interfaz cuando quieras; tu elección se guarda para las próximas visitas.' },
     planner: { title: 'Planificación', text: 'Organiza tu semana en calendario, lista o kanban y sigue tus metas.' },
     review: { title: 'Repaso', text: 'El repaso espaciado te avisa qué repasar y cuándo, para que lo aprendido se quede de verdad.' },
