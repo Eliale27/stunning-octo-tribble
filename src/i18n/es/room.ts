@@ -42,6 +42,11 @@ export const room: typeof Pt = {
     denied: 'No se pudo usar el micrófono. Revisa el permiso del navegador.',
     talking: 'en conversación',
   },
+  screen: {
+    share: 'Compartir pantalla', stop: 'Dejar de compartir', of: 'Pantalla de {name}', full: 'Pantalla completa',
+    noAudio: 'Compartiendo sin sonido',
+    noAudioHint: 'Para enviar el sonido, comparte de nuevo y marca "Compartir audio" (en Chrome o Edge, eligiendo una pestaña, o la pantalla completa en Windows).',
+  },
   you: 'tú',
   people_one: '{count} persona en la sala',
   people_other: '{count} personas en la sala',

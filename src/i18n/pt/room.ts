@@ -40,6 +40,11 @@ export const room = {
     denied: 'Não foi possível usar o microfone. Verifique a permissão do navegador.',
     talking: 'em conversa',
   },
+  screen: {
+    share: 'Compartilhar tela', stop: 'Parar de compartilhar', of: 'Tela de {name}', full: 'Tela cheia',
+    noAudio: 'Compartilhando sem som',
+    noAudioHint: 'Para enviar o som, compartilhe de novo e marque "Compartilhar áudio" (no Chrome ou Edge, escolhendo uma aba ou a tela inteira no Windows).',
+  },
   you: 'você',
   people_one: '{count} pessoa na sala',
   people_other: '{count} pessoas na sala',

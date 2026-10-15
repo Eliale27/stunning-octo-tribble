@@ -42,6 +42,11 @@ export const room: typeof Pt = {
     denied: 'Could not use the microphone. Check the browser permission.',
     talking: 'talking',
   },
+  screen: {
+    share: 'Share screen', stop: 'Stop sharing', of: "{name}'s screen", full: 'Full screen',
+    noAudio: 'Sharing without sound',
+    noAudioHint: 'To send sound, share again and tick "Share audio" (in Chrome or Edge, picking a tab, or the entire screen on Windows).',
+  },
   you: 'you',
   people_one: '{count} person in the room',
   people_other: '{count} people in the room',
