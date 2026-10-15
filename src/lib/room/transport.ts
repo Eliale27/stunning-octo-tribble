@@ -52,8 +52,11 @@ export interface RoomLink {
   close: () => void
 }
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+// Eliale's Supabase project. The publishable key is meant to ship in browser code:
+// it only allows what the project allows, and the room uses Realtime channels, no tables.
+// Build-time env vars override these (e.g. a fork pointing at its own project).
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined) || 'https://cygwwydfobezakfvxqca.supabase.co'
+const SUPABASE_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) || 'sb_publishable_vyDu01CtQvrKM0P35T8nAg_r668t4HG'
 
 export const onlineAvailable = !!(SUPABASE_URL && SUPABASE_KEY)
 
