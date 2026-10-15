@@ -171,6 +171,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const [voiceOn, setVoiceOn] = useState(false)
   const [micOn, setMicOn] = useState(true)
   const [speaking, setSpeaking] = useState<Set<string>>(new Set())
+  const [audioBlocked, setAudioBlocked] = useState(false)
   const [voiceStates, setVoiceStates] = useState<Map<string, VoiceState>>(new Map())
   const voice = useRef<VoiceMesh | null>(null)
   const [sharing, setSharing] = useState(false)
@@ -316,7 +317,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
 
   // who is talking (green ring) and who I am connected to
   useEffect(() => {
-    if (!voiceOn) { setSpeaking(new Set()); setVoiceStates(new Map()); return }
+    if (!voiceOn) { setSpeaking(new Set()); setVoiceStates(new Map()); setAudioBlocked(false); return }
     const same = (a: Set<string>, b: Set<string>) => a.size === b.size && [...a].every(x => b.has(x))
     const sameMap = (a: Map<string, VoiceState>, b: Map<string, VoiceState>) => a.size === b.size && [...a].every(([k, v]) => b.get(k) === v)
     const iv = setInterval(() => {
@@ -325,6 +326,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
       const s = v.speaking(), c = v.states()
       setSpeaking(prev => (same(prev, s) ? prev : s))
       setVoiceStates(prev => (sameMap(prev, c) ? prev : c))
+      setAudioBlocked(v.audioBlocked)
     }, 200)
     return () => clearInterval(iv)
   }, [voiceOn])
@@ -500,6 +502,11 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
             <button className={cn('btn h-9 w-9 p-0', micOn ? 'btn-soft' : 'bg-rose-soft text-rose-ink')} onClick={toggleMic}
               title={micOn ? t('room.voice.mute') : t('room.voice.unmute')}>
               {micOn ? <Mic size={15} /> : <MicOff size={15} />}
+            </button>
+          )}
+          {voiceOn && audioBlocked && (
+            <button className="btn btn-primary h-9 animate-pulse px-3" onClick={() => { voice.current?.resumeAudio(); setAudioBlocked(false) }}>
+              🔊 {t('room.voice.enableSound')}
             </button>
           )}
           {canShareScreen && (

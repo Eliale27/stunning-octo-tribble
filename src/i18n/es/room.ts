@@ -41,6 +41,7 @@ export const room: typeof Pt = {
     hint: 'Voz activada: hablas con quien está dentro de tu círculo y también activó la voz. Cuanto más cerca, más alto.',
     denied: 'No se pudo usar el micrófono. Revisa el permiso del navegador.',
     talking: 'en conversación',
+    enableSound: 'Activar sonido',
     connecting: 'conectando voz…', failed: 'la voz no conectó', off: 'sin voz activada',
     failedHint: 'La red de uno de ustedes bloqueó la conexión directa. Prueba otra red, como los datos del móvil.',
   },
