@@ -13,7 +13,7 @@ export const app = {
     aria: 'Tour guiado',
     stepOf: 'Passo {step} de {total}',
     timer: { title: 'Cronômetro', text: 'Escolha a duração, aperte o play e estude em sessões Pomodoro com pausas automáticas.' },
-    music: { title: 'Música', text: 'Cole o link de uma playlist do Spotify e toque ou pause a música aqui, ao lado do cronômetro.' },
+    music: { title: 'Música', text: 'Cole um link do Spotify ou do YouTube e toque ou pause a música aqui, ao lado do cronômetro.' },
     language: { title: 'Idioma', text: 'Troque o idioma da interface quando quiser; a escolha fica salva para as próximas visitas.' },
     planner: { title: 'Planejamento', text: 'Organize a semana em calendário, lista ou kanban e acompanhe suas metas.' },
     review: { title: 'Revisão', text: 'A revisão espaçada avisa o que revisar e quando, para o conteúdo fixar de verdade.' },
