@@ -120,11 +120,13 @@ export default function AppShell() {
   useFocusAlarm()
 
   // first visit: open the guided tour once the app has settled
+  // (not when arriving through a study room invite: the tour would pull them out of the room)
+  const inRoom = location.pathname.startsWith('/app/sala')
   useEffect(() => {
-    if (!loggedIn || tourSeen) return
+    if (!loggedIn || tourSeen || inRoom) return
     const id = setTimeout(startTour, 700)
     return () => clearTimeout(id)
-  }, [loggedIn, tourSeen, startTour])
+  }, [loggedIn, tourSeen, inRoom, startTour])
 
   // keep where the user was heading (e.g. a study room invite) for after login
   if (!loggedIn) return <Navigate to="/entrar" replace state={{ from: location.pathname }} />

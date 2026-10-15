@@ -8,6 +8,8 @@
  */
 
 export type PeerStatus = 'focus' | 'break' | 'idle'
+/** Availability the person picks by hand; 'dnd' also silences waves. */
+export type Availability = 'available' | 'busy' | 'dnd'
 
 export interface Peer {
   id: string
@@ -19,14 +21,25 @@ export interface Peer {
   status: PeerStatus
   /** Epoch ms when the peer's current focus/break ends, if running. */
   endsAt?: number
+  avail: Availability
+  dancing?: boolean
 }
 
-export interface ChatMessage { id: string; from: string; name: string; text: string; at: number }
+/** Chat with `near` set is only shown to people within a few tiles of that spot. */
+export interface ChatMessage { id: string; from: string; name: string; text: string; at: number; near?: { x: number; y: number } }
+
+/** One-off happenings in the room. Everything is ephemeral: nothing is stored. */
+export type RoomEvent =
+  | ({ t: 'chat' } & ChatMessage)
+  | { t: 'wave'; id: string; from: string; name: string; to: string; at: number }
+  | { t: 'react'; id: string; from: string; emoji: string; at: number }
+  | { t: 'gong'; id: string; from: string; name: string; reason?: string; at: number }
+  | { t: 'confetti'; id: string; from: string; at: number }
 
 export interface RoomHandlers {
   onPeer: (p: Peer) => void
   onLeave: (id: string) => void
-  onChat: (m: ChatMessage) => void
+  onEvent: (e: RoomEvent) => void
   onStatus?: (s: 'connecting' | 'online' | 'error') => void
 }
 
@@ -34,7 +47,8 @@ export interface RoomLink {
   mode: 'online' | 'local'
   /** Send my latest state (position, status). Cheap to call often. */
   update: (p: Peer) => void
-  chat: (m: ChatMessage) => void
+  /** Send an event to everyone, including myself. */
+  emit: (e: RoomEvent) => void
   close: () => void
 }
 
@@ -55,7 +69,7 @@ const STALE_MS = 10000
 type LocalMsg =
   | { t: 'state'; p: Peer; hello?: boolean }
   | { t: 'bye'; id: string }
-  | { t: 'chat'; m: ChatMessage }
+  | { t: 'evt'; e: RoomEvent }
 
 function connectLocal(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
   const ch = new BroadcastChannel(`estuda-room:${roomId}`)
@@ -72,8 +86,8 @@ function connectLocal(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
       if (m.hello) post({ t: 'state', p: mine }) // let the newcomer see me at once
     } else if (m.t === 'bye') {
       seen.delete(m.id); h.onLeave(m.id)
-    } else if (m.t === 'chat') {
-      h.onChat(m.m)
+    } else if (m.t === 'evt') {
+      h.onEvent(m.e)
     }
   }
 
@@ -91,7 +105,7 @@ function connectLocal(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
   return {
     mode: 'local',
     update: p => { mine = p; post({ t: 'state', p }) },
-    chat: m => { post({ t: 'chat', m }); h.onChat(m) },
+    emit: e => { post({ t: 'evt', e }); h.onEvent(e) },
     close: () => { bye(); clearInterval(beat); window.removeEventListener('pagehide', bye); ch.close() },
   }
 }
@@ -132,7 +146,7 @@ function connectSupabase(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
         present.clear(); now.forEach(id => present.add(id))
       })
       .on('broadcast', { event: 'state' }, ({ payload }) => { const p = payload as Peer; if (present.has(p.id)) h.onPeer(p) })
-      .on('broadcast', { event: 'chat' }, ({ payload }) => h.onChat(payload as ChatMessage))
+      .on('broadcast', { event: 'evt' }, ({ payload }) => h.onEvent(payload as RoomEvent))
       .subscribe(status => {
         if (status === 'SUBSCRIBED') { h.onStatus?.('online'); channel.track(mine) }
         else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') h.onStatus?.('error')
@@ -151,7 +165,7 @@ function connectSupabase(roomId: string, me: Peer, h: RoomHandlers): RoomLink {
       clearTimeout(trackTimer)
       trackTimer = setTimeout(() => track?.(mine), PRESENCE_DEBOUNCE_MS)
     },
-    chat: m => { send?.('chat', m); h.onChat(m) },
+    emit: e => { send?.('evt', e); h.onEvent(e) },
     close: () => { closed = true; clearTimeout(trackTimer); cleanup?.() },
   }
 }

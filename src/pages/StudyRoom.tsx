@@ -2,20 +2,26 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Link2, LogOut, Send, Wifi, FlaskConical } from 'lucide-react'
-import { PageHeader } from '@/components/ui/Bits'
+import confetti from 'canvas-confetti'
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Ban, Bell, BellOff, Link2, LogOut, Send, Undo2, Wifi, FlaskConical } from 'lucide-react'
+import { PageHeader, Segmented } from '@/components/ui/Bits'
 import { useStore } from '@/store/useStore'
 import { useT, type TFn } from '@/i18n'
 import { cn, uid } from '@/lib/utils'
 import { fmtClock, useFocusTicker } from '@/lib/useFocusTicker'
 import { COLS, ROWS, TILE, findPath, items, spawnPoint, walkable, zones } from '@/lib/room/map'
-import { connectRoom, onlineAvailable, type ChatMessage, type Peer, type PeerStatus, type RoomLink } from '@/lib/room/transport'
+import { connectRoom, onlineAvailable, type Availability, type ChatMessage, type Peer, type PeerStatus, type RoomEvent, type RoomLink } from '@/lib/room/transport'
+import { playBlip, playGong, playWave } from '@/lib/room/sounds'
 
 const EMOJIS = ['🦊', '🐼', '🐸', '🐱', '🐻', '🦉', '🐧', '🐨', '🦄', '🐙']
 const COLORS = ['sage', 'sky', 'lilac', 'rose', 'butter', 'peach']
 const STEP_MS = 120
 const NEAR = 3
 const BUBBLE_MS = 6000
+const REACTION_MS = 2500
+const REACTIONS = ['👍', '❤️', '😂', '🎉', '🔥', '👏']
+
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never
 
 /** Avatar look and last room, remembered between visits. */
 const useRoomProfile = create<{ emoji: string; color: string; code: string; set: (p: Partial<{ emoji: string; color: string; code: string }>) => void }>()(
@@ -115,24 +121,45 @@ function useNow() {
   return now
 }
 
-function statusLabel(t: TFn, p: Pick<Peer, 'status' | 'endsAt'>, now: number) {
+/** Manual availability wins over the timer; otherwise show focus/break with time left. */
+function statusLabel(t: TFn, p: Pick<Peer, 'status' | 'endsAt' | 'avail'>, now: number) {
+  if (p.avail !== 'available') return t(`room.avail.${p.avail}`)
   const left = p.endsAt ? Math.max(0, Math.round((p.endsAt - now) / 1000)) : 0
   return p.status === 'idle' ? t('room.status.idle') : `${t(`room.status.${p.status}`)} · ${fmtClock(left)}`
 }
 
-const statusDot: Record<PeerStatus, string> = { focus: 'bg-sage-ink', break: 'bg-sky-ink', idle: 'bg-muted' }
+function dotClass(p: Pick<Peer, 'status' | 'avail'>) {
+  if (p.avail === 'dnd') return 'bg-rose-ink'
+  if (p.avail === 'busy') return 'bg-butter-ink'
+  return { focus: 'bg-sage-ink', break: 'bg-sky-ink', idle: 'bg-sage' }[p.status]
+}
+
+const near = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) <= NEAR
+const AVAILS: Availability[] = ['available', 'busy', 'dnd']
+
+function fireConfetti() {
+  confetti({ particleCount: 120, spread: 100, startVelocity: 32, ticks: 200, origin: { y: 0.35 }, colors: ['#A9C4A0', '#A9C4E0', '#C5B8E0', '#EFB8C4', '#F2DC9B'] })
+}
 
 function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const t = useT()
   const name = useStore(s => s.settings.name)
+  const pushToast = useStore(s => s.pushToast)
+  const unlocked = useStore(s => s.unlocked)
   const { emoji, color } = useRoomProfile()
   const my = useMyStatus()
   const now = useNow()
 
   const [id] = useState(uid)
   const [pos, setPos] = useState(spawnPoint)
+  const [avail, setAvail] = useState<Availability>('available')
+  const [dancing, setDancing] = useState(false)
   const [peers, setPeers] = useState<Record<string, Peer>>({})
   const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [reactions, setReactions] = useState<{ id: string; from: string; emoji: string; at: number }[]>([])
+  const [blocked, setBlocked] = useState<Set<string>>(new Set())
+  const [muted, setMuted] = useState(false)
+  const [tab, setTab] = useState<'room' | 'near'>('room')
   const [conn, setConn] = useState<'connecting' | 'online' | 'error'>('connecting')
   const [draft, setDraft] = useState('')
   const [copied, setCopied] = useState(false)
@@ -141,25 +168,74 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   const lastStep = useRef(0)
   const chatEnd = useRef<HTMLDivElement>(null)
 
-  const me: Peer = useMemo(() => ({ id, name: name.trim() || '?', emoji, color, x: pos.x, y: pos.y, status: my.status, endsAt: my.endsAt }),
-    [id, name, emoji, color, pos.x, pos.y, my.status, my.endsAt])
+  const me: Peer = useMemo(() => ({
+    id, name: name.trim() || '?', emoji, color, x: pos.x, y: pos.y, status: my.status, endsAt: my.endsAt, avail, dancing,
+  }), [id, name, emoji, color, pos.x, pos.y, my.status, my.endsAt, avail, dancing])
   const meRef = useRef(me)
   meRef.current = me
+  // event handlers read the latest settings through refs so the connection is opened only once
+  const live = useRef({ blocked, muted, t })
+  live.current = { blocked, muted, t }
+
+  const onEvent = useCallback((e: RoomEvent) => {
+    const { blocked, muted, t } = live.current
+    const self = e.from === meRef.current.id
+    if (blocked.has(e.from)) return
+    switch (e.t) {
+      case 'chat': {
+        // near-chat only reaches people standing close to where it was said
+        if (e.near && !self && !near(e.near, meRef.current)) return
+        setMessages(ms => [...ms.slice(-199), e])
+        if (!self && !muted) playBlip()
+        break
+      }
+      case 'wave':
+        if (e.to !== meRef.current.id || meRef.current.avail === 'dnd') return
+        if (!muted) playWave()
+        pushToast({ title: t('room.waved', { name: e.name }), emoji: '👋' })
+        break
+      case 'react':
+        setReactions(rs => [...rs.filter(r => Date.now() - r.at < REACTION_MS), { id: e.id, from: e.from, emoji: e.emoji, at: Date.now() }])
+        break
+      case 'gong':
+        if (!muted) playGong()
+        fireConfetti()
+        pushToast({ title: t('room.gonged', { name: self ? t('room.youCap') : e.name }), desc: e.reason, emoji: '🔔' })
+        break
+      case 'confetti':
+        fireConfetti()
+        break
+    }
+  }, [pushToast])
 
   // connect once per room; later state changes go through update()
   useEffect(() => {
     const l = connectRoom(code, meRef.current, {
       onPeer: p => setPeers(ps => ({ ...ps, [p.id]: p })),
       onLeave: pid => setPeers(ps => { const { [pid]: _, ...rest } = ps; return rest }),
-      onChat: m => setMessages(ms => [...ms.slice(-99), m]),
+      onEvent,
       onStatus: setConn,
     })
     link.current = l
     return () => { l.close(); link.current = null }
-  }, [code])
+  }, [code, onEvent])
 
   useEffect(() => { link.current?.update(me) }, [me])
-  useEffect(() => { chatEnd.current?.scrollIntoView({ block: 'nearest' }) }, [messages.length])
+  useEffect(() => { chatEnd.current?.scrollIntoView({ block: 'nearest' }) }, [messages.length, tab])
+
+  const emit = useCallback((e: DistributiveOmit<RoomEvent, 'id' | 'from' | 'at'>) => {
+    link.current?.emit({ ...e, id: uid(), from: meRef.current.id, at: Date.now() } as RoomEvent)
+  }, [])
+
+  // ring the gong for everyone when I unlock an achievement while in the room
+  const seenUnlocked = useRef(new Set(Object.keys(unlocked)))
+  useEffect(() => {
+    for (const a of Object.keys(unlocked)) {
+      if (seenUnlocked.current.has(a)) continue
+      seenUnlocked.current.add(a)
+      emit({ t: 'gong', name: meRef.current.name, reason: t(`common.achievements.${a}.title`) })
+    }
+  }, [unlocked, emit, t])
 
   const step = useCallback((dx: number, dy: number) => {
     const t0 = Date.now()
@@ -176,7 +252,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     }
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement
-      if (el.closest('input, textarea, [contenteditable="true"]')) return
+      if (el.closest('input, textarea, select, [contenteditable="true"]')) return
       const k = keys[e.key.length === 1 ? e.key.toLowerCase() : e.key]
       if (!k) return
       e.preventDefault()
@@ -216,7 +292,7 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     e.preventDefault()
     const text = draft.trim()
     if (!text) return
-    link.current?.chat({ id: uid(), from: id, name: me.name, text: text.slice(0, 300), at: Date.now() })
+    emit({ t: 'chat', name: me.name, text: text.slice(0, 300), near: tab === 'near' ? { x: pos.x, y: pos.y } : undefined })
     setDraft('')
   }
 
@@ -225,14 +301,20 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
     try { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { window.prompt(t('room.invite'), url) }
   }
 
-  const everyone = [me, ...Object.values(peers)]
-  const nearby = Object.values(peers).filter(p => Math.abs(p.x - pos.x) + Math.abs(p.y - pos.y) <= NEAR)
+  const toggleBlock = (pid: string) => setBlocked(b => { const n = new Set(b); if (n.has(pid)) n.delete(pid); else n.add(pid); return n })
+
+  const others = Object.values(peers)
+  const everyone = [me, ...others]
+  const sortedOthers = [...others].sort((a, b) => Number(near(b, pos)) - Number(near(a, pos)) || a.name.localeCompare(b.name))
   const bubbles = new Map<string, string>()
-  for (const m of messages) if (now - m.at < BUBBLE_MS) bubbles.set(m.from, m.text)
+  if (!muted) for (const m of messages) if (now - m.at < BUBBLE_MS) bubbles.set(m.from, m.text)
+  const floating = reactions.filter(r => now - r.at < REACTION_MS)
+  const shown = messages.filter(m => (tab === 'near' ? !!m.near : !m.near))
+  const unreadNear = tab === 'room' && messages.some(m => m.near && m.from !== id && now - m.at < BUBBLE_MS)
   const mode = link.current?.mode ?? (onlineAvailable ? 'online' : 'local')
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+    <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
       <div className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <span className={cn('chip', mode === 'online' ? 'bg-sage-soft text-sage-ink' : 'bg-butter-soft text-butter-ink')}
@@ -257,6 +339,10 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
                   <span className="absolute left-2 top-1 text-[10px] font-bold uppercase tracking-wide text-ink-2/60">{t(`room.zones.${z.label}`)}</span>
                 </div>
               ))}
+              {/* hearing range around me */}
+              <div className="pointer-events-none absolute rounded-full border-2 border-dashed border-ink/10 transition-transform ease-linear"
+                style={{ width: (NEAR * 2 + 1) * TILE, height: (NEAR * 2 + 1) * TILE, left: 0, top: 0, transitionDuration: `${STEP_MS}ms`,
+                  transform: `translate(${(pos.x - NEAR) * TILE}px, ${(pos.y - NEAR) * TILE}px)` }} />
               {items.map((it, i) => (
                 <div key={i} className={cn('absolute grid place-items-center text-base', it.tone, it.round ? 'rounded-full' : 'rounded-lg', it.tone !== 'bg-transparent' && 'shadow-soft')}
                   style={{ left: it.x * TILE + 2, top: it.y * TILE + 2, width: it.w * TILE - 4, height: it.h * TILE - 4 }}>{it.emoji}</div>
@@ -264,24 +350,38 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
               {everyone.map(p => (
                 <div key={p.id} className="pointer-events-none absolute left-0 top-0 transition-transform ease-linear"
                   style={{ transform: `translate(${p.x * TILE}px, ${p.y * TILE}px)`, width: TILE, height: TILE, transitionDuration: p.id === id ? `${STEP_MS}ms` : '200ms', zIndex: 10 + p.y }}>
-                  {bubbles.has(p.id) && (
+                  {bubbles.has(p.id) && !blocked.has(p.id) && (
                     <div className="absolute bottom-[calc(100%+16px)] left-1/2 w-max max-w-[160px] -translate-x-1/2 animate-pop rounded-xl bg-surface px-2.5 py-1.5 text-[11px] leading-snug shadow-lift">
                       {bubbles.get(p.id)}
                     </div>
                   )}
+                  {floating.filter(r => r.from === p.id).map(r => (
+                    <span key={r.id} className="room-float absolute left-1/2 top-0 -translate-x-1/2 text-xl">{r.emoji}</span>
+                  ))}
                   <div className="grid h-full place-items-center">
-                    <div className="relative">
+                    <div className={cn('relative', p.dancing && 'room-dance')}>
                       <Avatar emoji={p.emoji} color={p.color} ring={p.id === id} />
-                      <span className={cn('absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white', statusDot[p.status])} />
+                      <span className={cn('absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white', dotClass(p))} />
                     </div>
                   </div>
                   <span className="absolute left-1/2 top-[calc(100%-2px)] -translate-x-1/2 whitespace-nowrap rounded-full bg-ink/75 px-1.5 text-[10px] font-semibold text-cream">
-                    {p.id === id ? `${p.name} (${t('room.you')})` : p.name}
+                    {p.avail === 'dnd' && '🔕 '}{p.id === id ? `${p.name} (${t('room.you')})` : p.name}
                   </span>
                 </div>
               ))}
             </div>
           </div>
+        </div>
+
+        {/* my actions */}
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          {REACTIONS.map(r => (
+            <button key={r} className="btn btn-ghost h-9 w-9 p-0 text-lg" onClick={() => emit({ t: 'react', emoji: r })} title={t('room.react')}>{r}</button>
+          ))}
+          <span className="mx-1 h-6 w-px bg-line" />
+          <button className={cn('btn h-9 px-3', dancing ? 'btn-sage' : 'btn-soft')} onClick={() => setDancing(d => !d)}>💃 {t('room.dance')}</button>
+          <button className="btn btn-soft h-9 px-3" onClick={() => emit({ t: 'confetti' })}>🎊 {t('room.confetti')}</button>
+          <button className="btn btn-soft h-9 px-3" onClick={() => emit({ t: 'gong', name: me.name })}>🔔 {t('room.gong')}</button>
         </div>
 
         <div className="mt-3 flex items-center justify-between gap-3">
@@ -300,22 +400,46 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
 
       <aside className="flex flex-col gap-4">
         <div className="card p-4">
-          <h3 className="section-title mb-3">{t('room.nearby')}</h3>
           <PeerRow p={me} now={now} you={t('room.you')} />
-          {nearby.map(p => <PeerRow key={p.id} p={p} now={now} />)}
-          {nearby.length === 0 && <p className="mt-2 text-xs text-muted">{t('room.nobodyNearby')}</p>}
+          <div className="mt-2">
+            <div className="grid grid-cols-3 gap-1 rounded-xl bg-beige p-1">
+              {AVAILS.map(a => (
+                <button key={a} onClick={() => setAvail(a)}
+                  className={cn('rounded-lg px-1 py-1.5 text-xs font-semibold transition-all', avail === a ? 'bg-surface text-ink shadow-soft' : 'text-muted hover:text-ink')}>
+                  {t(`room.avail.${a}`)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <h3 className="section-title mb-1 mt-4">{t('room.inRoom')}</h3>
+          {sortedOthers.length === 0 && <p className="text-xs text-muted">{t('room.alone')}</p>}
+          <div className="max-h-56 overflow-y-auto">
+            {sortedOthers.map(p => (
+              <PeerRow key={p.id} p={p} now={now} isNear={near(p, pos)} blocked={blocked.has(p.id)}
+                onWave={p.avail === 'dnd' || blocked.has(p.id) ? undefined : () => emit({ t: 'wave', name: me.name, to: p.id })}
+                onBlock={() => toggleBlock(p.id)} />
+            ))}
+          </div>
         </div>
-        <div className="card flex min-h-[280px] flex-1 flex-col p-4">
-          <h3 className="section-title mb-3">{t('room.chat')}</h3>
+        <div className="card flex min-h-[300px] flex-1 flex-col p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <Segmented value={tab} onChange={setTab} className="flex-1"
+              options={[{ value: 'room', label: t('room.chatRoom') }, { value: 'near', label: `${t('room.chatNear')}${unreadNear ? ' •' : ''}` }]} />
+            <button className="btn btn-ghost h-9 w-9 p-0 text-muted" onClick={() => setMuted(m => !m)} title={muted ? t('room.unmute') : t('room.mute')}>
+              {muted ? <BellOff size={16} /> : <Bell size={16} />}
+            </button>
+          </div>
+          {tab === 'near' && <p className="mb-2 text-[11px] text-muted">{t('room.nearHint')}</p>}
           <div className="max-h-72 flex-1 space-y-2 overflow-y-auto pr-1 text-sm">
-            {messages.length === 0 && <p className="text-xs text-muted">{t('room.chatEmpty')}</p>}
-            {messages.map(m => (
+            {shown.length === 0 && <p className="text-xs text-muted">{t('room.chatEmpty')}</p>}
+            {shown.map(m => (
               <p key={m.id} className="break-words"><span className="font-bold">{m.name}</span> <span className="text-ink-2">{m.text}</span></p>
             ))}
             <div ref={chatEnd} />
           </div>
           <form onSubmit={sendChat} className="mt-3 flex gap-2">
-            <input className="input" value={draft} maxLength={300} onChange={e => setDraft(e.target.value)} placeholder={t('room.chatPlaceholder')} />
+            <input className="input" value={draft} maxLength={300} onChange={e => setDraft(e.target.value)}
+              placeholder={tab === 'near' ? t('room.chatNearPlaceholder') : t('room.chatPlaceholder')} />
             <button className="btn btn-primary px-3" aria-label={t('room.send')}><Send size={15} /></button>
           </form>
         </div>
@@ -324,17 +448,29 @@ function Room({ code, onLeave }: { code: string; onLeave: () => void }) {
   )
 }
 
-function PeerRow({ p, now, you }: { p: Peer; now: number; you?: string }) {
+function PeerRow({ p, now, you, isNear, blocked, onWave, onBlock }:
+  { p: Peer; now: number; you?: string; isNear?: boolean; blocked?: boolean; onWave?: () => void; onBlock?: () => void }) {
   const t = useT()
   return (
-    <div className="flex items-center gap-2.5 py-1.5">
+    <div className={cn('group flex items-center gap-2.5 py-1.5', blocked && 'opacity-50')}>
       <Avatar emoji={p.emoji} color={p.color} />
-      <div className="min-w-0">
-        <p className="truncate text-sm font-semibold">{p.name}{you && <span className="font-normal text-muted"> ({you})</span>}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold">
+          {p.name}{you && <span className="font-normal text-muted"> ({you})</span>}
+          {isNear && <span className="chip ml-1.5 bg-sage-soft px-1.5 py-0 text-[10px] text-sage-ink">{t('room.near')}</span>}
+        </p>
         <p className="flex items-center gap-1.5 text-[11px] text-muted">
-          <span className={cn('h-1.5 w-1.5 rounded-full', statusDot[p.status])} />{statusLabel(t, p, now)}
+          <span className={cn('h-1.5 w-1.5 rounded-full', dotClass(p))} />{blocked ? t('room.blocked') : statusLabel(t, p, now)}
         </p>
       </div>
+      {onBlock && (
+        <div className="flex shrink-0 gap-0.5">
+          {onWave && <button className="btn btn-ghost h-8 w-8 p-0" onClick={onWave} title={t('room.wave')}>👋</button>}
+          <button className="btn btn-ghost h-8 w-8 p-0 text-muted" onClick={onBlock} title={blocked ? t('room.unblock') : t('room.block')}>
+            {blocked ? <Undo2 size={14} /> : <Ban size={14} />}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
